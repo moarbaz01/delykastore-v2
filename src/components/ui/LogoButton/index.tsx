@@ -1,0 +1,26 @@
+"use client";
+import Image from "next/image";
+import { usePathname } from "next/navigation";
+
+const LogoButton = () => {
+  const pathname = usePathname();
+  if (pathname.startsWith("/dashboard") || pathname.startsWith("/product"))
+    return null;
+  return (
+    <a
+      href=""
+      target="_blank"
+      className="bg-[#c4c1c1] shadow-md shadow-gray-400 h-[60px] cursor-pointer hover:opacity-80 transition w-[60px] aspect-square rounded-full fixed bottom-28 md:bottom-10 right-4 "
+    >
+      <Image
+        width={100}
+        height={100}
+        alt="logo"
+        className="h-full w-full rounded-full"
+        src="/images/logo.png"
+      />
+    </a>
+  );
+};
+
+export default LogoButton;
