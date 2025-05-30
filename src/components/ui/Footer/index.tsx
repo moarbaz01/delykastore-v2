@@ -37,7 +37,7 @@ const Footer = () => {
             <div className="flex items-center space-x-3">
               <div className="h-14 w-14 ">
                 <Image
-                  src="/images/KHQR.svg"
+                  src="/images/aba.png"
                   alt="KHQR Payment"
                   width={80}
                   height={80}

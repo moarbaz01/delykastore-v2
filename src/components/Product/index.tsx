@@ -526,7 +526,7 @@ const Product = ({
                   type="submit"
                   onClick={handleSubmitCheckRole}
                   disabled={loading}
-                  className="bg-[#f79703] w-full rounded-lg p-2 text-white shadow-md font-bold"
+                  className="bg-red-500 w-full rounded-lg p-2 text-white shadow-md font-bold"
                 >
                   {loading ? "Loading..." : "ពិនិត្យ ឈ្មោះ"}
                 </button>
@@ -539,10 +539,7 @@ const Product = ({
             {groupedCost.map((item, index) => (
               <div key={index} className="mt-4">
                 {item.category !== "no_category" && item.items.length !== 0 && (
-                  <div className="bg-yellow-500 flex items-center mx-auto mt-2 gap-2 text-black rounded-xl p-2 w-fit ">
-                    <div className="bg-red-500 text-white rounded-full flex items-center justify-center p-4 h-4 w-4">
-                      {index + 1}
-                    </div>
+                  <div className="bg-red-500 text-white flex items-center mx-auto mt-2 gap-2  rounded-xl py-2 px-4 w-fit ">
                     <h1 className="font-bold text-lg  ">{item.category}</h1>
                   </div>
                 )}
@@ -650,10 +647,10 @@ const Product = ({
             <div className=" w-full rounded-xl p-4 bg-gray-500 border-white border flex items-center justify-between mt-4 ">
               <div className="flex items-center gap-4">
                 <Image
-                  src="/images/KHQR.svg"
+                  src="/images/aba.png"
                   alt="KHQR Payment"
-                  width={80}
-                  height={80}
+                  width={50}
+                  height={50}
                   className="aspect-square"
                 />
                 <div>

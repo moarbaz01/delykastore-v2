@@ -13,9 +13,9 @@ const CostItem = ({ item, i, amountSelected, setAmountSelected }) => {
       className={`rounded-xl ${
         `${amountSelected?.id + amountSelected?.amount}` ===
         `${item.id + item.amount}`
-          ? "bg-red-500 "
-          : "bg-black"
-      } cursor-pointer border-2 shadow-xl justify-between border-red-500 transition p-2 min-h-16 flex relative gap-2 items-center`}
+          ? "bg-red-400 "
+          : "bg-gray-500"
+      } cursor-pointer border-4 border-gray-800 shadow-xl justify-between  transition p-2 min-h-16 flex relative gap-2 items-center`}
     >
       {item.note && (
         <div className="bg-red-400 rounded-tr-md -top-3 -left-1 absolute p-[4px] text-[10px]">
