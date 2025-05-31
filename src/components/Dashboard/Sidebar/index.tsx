@@ -90,7 +90,7 @@ const Sidebar = () => {
                 />
               </div>
               <h1 className="text-white font-extrabold text-xl drop-shadow-[0px_0px_4px_red]">
-                GETO TOPUP
+                WinWin TOPUP
               </h1>
             </Link>
           </div>

@@ -9,7 +9,7 @@ import Provider from "@/components/Provider";
 import LogoButton from "@/components/ui/LogoButton";
 
 export const metadata: Metadata = {
-  title: "Geto Top-Up",
+  title: "Win Win Top-Up",
   description: "Top-up your favorite games by using Geto Top-Up",
 };
 

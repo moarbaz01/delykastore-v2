@@ -66,7 +66,7 @@ const Navbar = () => {
       <div className="w-full py-4 md:px-6 px-4 fixed top-0 left-0 z-[999] md:hidden bg-gray-700">
         <div className="flex justify-between items-center">
           <h1 className="text-white font-extrabold text-3xl drop-shadow-[0px_0px_4px_red]">
-            GETO TOPUP
+            WinWin TOPUP
           </h1>
           <div onClick={() => setIsOpen(true)}>
             <IoMenu className="text-3xl text-primary" />
@@ -80,7 +80,7 @@ const Navbar = () => {
             <div className="flex justify-between items-center px-4 py-6">
               <Link href="/dashboard" className="text-white font-bold text-xl">
                 <h1 className="text-white font-extrabold text-2xl drop-shadow-[0px_0px_4px_red]">
-                  GETO TOPUP
+                  WinWin TOPUP
                 </h1>
               </Link>
               <div onClick={() => setIsOpen(false)}>
