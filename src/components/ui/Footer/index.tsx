@@ -32,12 +32,22 @@ const Footer = () => {
           </div>
 
           {/* Payment Methods Section */}
-          <div className="flex flex-col md:flex-row md:gap-4  items-center">
-            <p className="text-sm mb-2">We accpet with ABA and</p>
+          <div className="flex flex-col md:flex-row md:gap-2  items-center">
+            <p className="text-sm">We accpet with</p>
             <div className="flex items-center space-x-3">
+              <div className=" ">
+                <Image
+                  src="/images/abalogo.png"
+                  alt="KHQR Payment"
+                  width={80}
+                  height={80}
+                  className=""
+                />
+              </div>
+              <p className="text-sm">And</p>
               <div className="h-14 w-14 ">
                 <Image
-                  src="/images/aba.png"
+                  src="/images/KHQR.svg"
                   alt="KHQR Payment"
                   width={80}
                   height={80}
