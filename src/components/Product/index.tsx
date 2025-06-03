@@ -500,11 +500,11 @@ const Product = ({
               )}
               {message &&
                 (game === "magicchess" ? (
-                  <p className="text-yellow-500 rounded-lg font-bold bg-white text-lg p-2 my-1">
+                  <p className="text-red-500 rounded-lg font-bold bg-white text-lg p-2 my-1">
                     {message}
                   </p>
                 ) : (
-                  <p className="text-yellow-500 rounded-lg bg-white text-lg p-2 my-1">
+                  <p className="text-red-500 rounded-lg bg-white text-lg p-2 my-1">
                     USERNAME : {message}
                   </p>
                 ))}
@@ -714,10 +714,9 @@ const Product = ({
               </div>
               <button
                 disabled={
-                  // !isAgree ||
-                  // (game === "mobilelegends" && !playerAvailable) ||
-                  // !amountSelected.id
-                  true
+                  !isAgree ||
+                  (game === "mobilelegends" && !playerAvailable) ||
+                  !amountSelected.id
                 }
                 onClick={createOrder}
                 className="bg-red-500 shadow-md shadow-red-500 disabled:opacity-50 w-[100px] rounded-lg p-2 text-white font-bold "
