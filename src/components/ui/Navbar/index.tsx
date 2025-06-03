@@ -63,14 +63,14 @@ const Navbar = () => {
     <>
       <div className="py-4 border-b bg-black border-white/20 relative z-[999] h-[90px] flex items-center px-4 justify-center">
         <div className="max-w-screen-xl w-full  flex items-center gap-4 justify-between ">
-          <Link href="/" className="flex items-center aspect-square  ">
+          <Link href="/" className="flex items-center  ">
             <Image
               src="/images/logo.gif"
               alt="Win Win Topup"
               width={200}
               height={80}
               className=" h-[60px] w-full"
-              priority
+              priority={true}
             />
             {/* {!show && (
               <Image

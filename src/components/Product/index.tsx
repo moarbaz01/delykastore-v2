@@ -7,6 +7,7 @@ import toast from "react-hot-toast";
 import SliderComponent from "../Home/Banner/Component";
 import PaymentForm from "./PaymentForm";
 import CostItem from "./CostItem";
+import { BackgroundGradient } from "../ui/BackgroundGradient";
 
 interface ApplyCouponParams {
   couponCode: string;
@@ -459,8 +460,8 @@ const Product = ({
           )}
         </div>
         {/* Checkout */}
-        <div className=" lg:col-span-2 flex flex-col gap-4">
-          <div className="px-4 py-8 bg-gray-700 rounded-xl relative ">
+        <div className=" lg:col-span-2 flex flex-col gap-8">
+          <BackgroundGradient className="px-4 py-8 bg-black rounded-3xl relative ">
             <Label text={"បញ្ចូល អាយឌី"} number={1} />
             <form className="flex flex-col gap-4 mt-4">
               <input
@@ -470,7 +471,7 @@ const Product = ({
                 value={userId}
                 name="userId"
                 autoComplete="on"
-                className="rounded-lg bg-white border-2 text-black placeholder:font-bold focus:outline-blue-500 focus:outline border-[#bdbdbd] py-2 px-4"
+                className="rounded-lg bg-white w-full border-2 text-black placeholder:font-bold focus:outline-blue-500 focus:outline border-[#bdbdbd] py-2 px-4"
               />
               {["mobilelegends", "magicchess"].includes(game) && (
                 <input
@@ -532,9 +533,9 @@ const Product = ({
                 </button>
               )}
             </form>
-          </div>
+          </BackgroundGradient>
 
-          <div className="px-4 py-8 rounded-xl bg-gray-700 relative">
+          <BackgroundGradient className="px-4 py-8 rounded-3xl bg-black relative">
             <Label text={"ជ្រើសរើសកញ្ចប់ ពេជ្រ"} number={2} />
             {groupedCost.map((item, index) => (
               <div key={index} className="mt-4">
@@ -559,10 +560,10 @@ const Product = ({
                 </div>
               </div>
             ))}
-          </div>
+          </BackgroundGradient>
 
           {/* Updated Coupon Section */}
-          <div className="px-4 py-8 relative bg-gray-700 rounded-xl">
+          <BackgroundGradient className="px-4 py-8 relative bg-black rounded-3xl">
             <Label text={"អនុវត្តកូដកា"} number={appliedCoupon ? "✓" : "3"} />
 
             <div className="mt-4 flex flex-col gap-2">
@@ -639,10 +640,10 @@ const Product = ({
                 </div>
               )}
             </div>
-          </div>
+          </BackgroundGradient>
 
           {/* Payment Options */}
-          <div className="px-4 py-8 bg-gray-700 relative rounded-t-xl">
+          <BackgroundGradient className="px-4 py-8 bg-black relative rounded-3xl">
             <Label text={"ទូទាត់ប្រាក់បានគ្រប់ធនាគារ"} number={4} />
             <div className=" w-full rounded-xl p-4 bg-gray-500 border-white border flex items-center justify-between mt-4 ">
               <div className="flex items-center gap-4">
@@ -678,10 +679,10 @@ const Product = ({
                 </span>
               </label>
             </div>
-          </div>
+          </BackgroundGradient>
 
           {/* Payment Summary - Updated to show discount breakdown */}
-          <div className="md:static z-[50] fixed bottom-2 left-0 w-full md:px-0 px-2">
+          <div className="md:static z-[50] fixed bottom-2 left-0 w-full md:px-0 md:mt-2 px-2">
             <div className="bg-red-50  md:rounded-none rounded-2xl  text-black -mt-8 p-4 flex items-center justify-between">
               <div>
                 <div className="text-lg">
