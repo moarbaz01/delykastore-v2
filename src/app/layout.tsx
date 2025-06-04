@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
-import { Koulen,  } from "next/font/google";
+import { Koulen } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
 import { Toaster } from "react-hot-toast";
 import Provider from "@/components/Provider";
 import LogoButton from "@/components/ui/LogoButton";
+import PaywayScript from "@/components/PaywayScript";
 
 export const metadata: Metadata = {
   title: "Win Win Top-Up",
@@ -27,6 +28,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${koulen.variable} antialiased `}>
+        <PaywayScript />
+
         <Provider>
           <NextTopLoader color="red" />
           <Toaster />

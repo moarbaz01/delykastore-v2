@@ -110,7 +110,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ paymentData, formRef }) => {
               value={paymentData.merchant_id}
             />
             <input type="hidden" name="req_time" value={paymentData.req_time} />
-            <input type="hidden" value="true" name="is_plugin_js"></input>
           </form>
         )}
       </div>

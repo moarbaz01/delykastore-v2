@@ -283,12 +283,15 @@ const Product = ({
     await fetchCheckRole();
   };
 
-  // useEffect to handle form submission
   useEffect(() => {
     if (paymentData && formRef.current) {
-      formRef.current.submit(); // Submit the form when paymentData is updated
+      if (window?.AbaPayway?.checkout) {
+        window.AbaPayway.checkout();
+      } else {
+        console.error("AbaPayway script not loaded");
+      }
     }
-  }, [paymentData]); // Trigger this effect whenever paymentData changes
+  }, [paymentData]);
 
   // Input Change
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

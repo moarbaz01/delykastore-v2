@@ -24,6 +24,14 @@ declare module "next-auth" {
   }
 }
 
+declare global {
+  interface Window {
+    AbaPayway: {
+      checkout: () => void;
+    };
+  }
+}
+
 
 declare module "@mui/material/styles" {
   interface Components {
@@ -33,12 +41,5 @@ declare module "@mui/material/styles" {
   }
 }
 
-
-// Declare the Payway checkout global object
-declare global {
-  interface Window {
-    AbaPayway: any
-  }
-}
 
 export { };
