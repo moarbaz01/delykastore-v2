@@ -650,7 +650,7 @@ const Product = ({
             <div className=" w-full rounded-xl p-4 bg-gray-500 border-white border flex items-center justify-between mt-4 ">
               <div className="flex items-center gap-4">
                 <Image
-                  src="/images/aba.png"
+                  src="/images/aba.svg"
                   alt="KHQR Payment"
                   width={50}
                   height={50}

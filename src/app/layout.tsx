@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
-import { Poppins } from "next/font/google";
+import { Koulen,  } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
@@ -13,10 +13,10 @@ export const metadata: Metadata = {
   description: "Top-up your favorite games by using Geto Top-Up",
 };
 
-const popins = Poppins({
+const koulen = Koulen({
   subsets: ["latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
-  variable: "--font-poppins",
+  weight: "400",
+  variable: "--font-koulen",
 });
 
 export default function RootLayout({
@@ -26,7 +26,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${popins.variable} antialiased `}>
+      <body className={`${koulen.variable} antialiased `}>
         <Provider>
           <NextTopLoader color="red" />
           <Toaster />

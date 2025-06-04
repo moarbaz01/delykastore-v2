@@ -44,7 +44,6 @@ const Footer = () => {
                   className=""
                 />
               </div>
-              <p className="text-sm">And</p>
               <div className="h-14 w-14 ">
                 <Image
                   src="/images/KHQR.svg"
