@@ -57,7 +57,7 @@ const MyComponent = () => {
               <tbody>
                 <tr className="bg-orange-500 border-4 border-white">
                   <td className="text-2xl ">តាមរយ:</td>
-                  <td>ABA BANK KHQR</td>
+                  <td>ABA KHQR</td>
                 </tr>
 
                 <tr className="bg-orange-500 border-4 border-white">
