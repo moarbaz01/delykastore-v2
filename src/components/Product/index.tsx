@@ -21,11 +21,13 @@ interface ApplyCouponParams {
 
 const Label = ({ number, text }) => {
   return (
-    <div className="flex items-center w-fit  gap-2 bg-gray-800 text-white border-2 border-red-500 py-2 px-4 absolute -top-5 left-2 rounded-xl ">
-      <div className="bg-red-500 text-white font-bold rounded-full h-8 w-8 flex items-center justify-center">
-        {number}
-      </div>
-      <h1 className="text-lg text-white">{text}</h1>
+    <div className="absolute -top-5 left-2  ">
+      <BackgroundGradient className="flex items-center w-fit h-auto  gap-2 bg-black text-white rounded-3xl  py-2 px-4 ">
+        <div className="bg-red-500 text-white font-bold rounded-full h-8 w-8 flex items-center justify-center">
+          {number}
+        </div>
+        <h1 className="text-lg text-white">{text}</h1>
+      </BackgroundGradient>
     </div>
   );
 };
