@@ -11,6 +11,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ paymentData, formRef }) => {
           <form
             ref={formRef}
             method="POST"
+            target="aba_webservice"
             action={process.env.NEXT_PUBLIC_PAYWAY_URL!}
             id="aba_merchant_request"
           >
@@ -32,8 +33,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ paymentData, formRef }) => {
               value={paymentData.amount}
               id="amount"
             />
-
-            <input type="hidden" name="view_type" value="hosted_view" />
 
             {paymentData.items && (
               <input type="hidden" name="items" value={paymentData.items} />
