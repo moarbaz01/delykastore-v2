@@ -28,8 +28,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${koulen.variable} antialiased `}>
-        <PaywayScript />
-
         <Provider>
           <NextTopLoader color="red" />
           <Toaster />
@@ -38,6 +36,7 @@ export default function RootLayout({
           <Footer />
           <LogoButton />
         </Provider>
+        <PaywayScript />
       </body>
     </html>
   );
