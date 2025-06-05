@@ -9,6 +9,8 @@ import PaymentForm from "./PaymentForm";
 import CostItem from "./CostItem";
 import { BackgroundGradient } from "../ui/BackgroundGradient";
 
+declare const AbaPayway: any;
+
 interface ApplyCouponParams {
   couponCode: string;
   amountSelected: {
@@ -285,10 +287,12 @@ const Product = ({
 
   useEffect(() => {
     if (paymentData && formRef.current) {
-      if (window?.AbaPayway?.checkout) {
-        window.AbaPayway.checkout();
-      } else {
-        console.error("AbaPayway script not loaded");
+      try {
+        if (typeof AbaPayway !== "undefined") {
+          AbaPayway.checkout();
+        }
+      } catch (error) {
+        console.error("Error calling AbaPayway.checkout:", error);
       }
     }
   }, [paymentData]);
@@ -447,7 +451,7 @@ const Product = ({
     );
   }
   return (
-    <div className="">
+    <>
       <div className="grid grid-cols-1 lg:grid-cols-3  max-w-screen-xl mx-auto gap-6 py-6 sm:px-6 px-4  ">
         <div className="">
           {/* <Banner /> */}
@@ -566,6 +570,10 @@ const Product = ({
               </div>
             ))}
           </BackgroundGradient>
+
+          <button onClick={() => (window as any)?.AbaPayway?.checkout?.()}>
+            Trigger Checkout
+          </button>
 
           {/* Updated Coupon Section */}
           <BackgroundGradient className="px-4 py-8 relative bg-black rounded-3xl">
@@ -736,7 +744,7 @@ const Product = ({
 
       {/* Payment Form */}
       <PaymentForm paymentData={paymentData} formRef={formRef} />
-    </div>
+    </>
   );
 };
 export default Product;

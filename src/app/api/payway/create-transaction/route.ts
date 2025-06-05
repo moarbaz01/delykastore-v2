@@ -81,7 +81,7 @@ export async function POST(req: Request) {
       ...(userId && { userId: userId }),
     }).toString()}`; // Trim trailing spaces
     const cancel_url = `${process.env
-      .NEXT_PUBLIC_BASE_URL!}/success?message=Top-Up+Failed`;
+      .NEXT_PUBLIC_BASE_URL!}/failed?message=Top-Up+Failed`;
 
     // Define all parameters in the correct order
     const params = {
