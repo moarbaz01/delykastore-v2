@@ -6,6 +6,7 @@ import { Coupon } from "@/models/coupon.model";
 import { freeFireTopup, ghorApiTopup } from "@/utils/unipin";
 import { GhorTopUp } from "@/utils/topupghor";
 import { createHmac } from "crypto";
+import "@/models/product.model"
 import axios from "axios";
 
 const isValidTransaction = (trans) => {
