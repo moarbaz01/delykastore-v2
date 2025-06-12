@@ -571,10 +571,7 @@ const Product = ({
             ))}
           </BackgroundGradient>
 
-          <button onClick={() => (window as any)?.AbaPayway?.checkout?.()}>
-            Trigger Checkout
-          </button>
-
+     
           {/* Updated Coupon Section */}
           <BackgroundGradient className="px-4 py-8 relative bg-black rounded-3xl">
             <Label text={"អនុវត្តកូដកា"} number={appliedCoupon ? "✓" : "3"} />

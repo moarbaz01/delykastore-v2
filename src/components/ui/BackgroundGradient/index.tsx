@@ -13,21 +13,35 @@ export const BackgroundGradient = ({
 }) => {
   return (
     <div className={cn("relative p-[4px] group", containerClassName)}>
+      {/* Animated border gradient */}
       <div
         className={cn(
-          "absolute inset-0 rounded-3xl z-[1] blur-xl opacity-60 ",
-          "animate-gradient bg-[length:400%_400%]",
-          "bg-[radial-gradient(circle_farthest-side_at_0_100%,#ff4d4d,transparent),radial-gradient(circle_farthest-side_at_100%_0,#4b0082,transparent),radial-gradient(circle_farthest-side_at_100%_100%,#1e3a8a,transparent),radial-gradient(circle_farthest-side_at_0_0,#990000,#0f172a)]"
-        )}
-      />
-      <div             
-        className={cn(
           "absolute inset-0 rounded-3xl z-[1]",
-          "animate-gradient bg-[length:400%_400%]",
-          "bg-[radial-gradient(circle_farthest-side_at_0_100%,#ff4d4d,transparent),radial-gradient(circle_farthest-side_at_100%_0,#4b0082,transparent),radial-gradient(circle_farthest-side_at_100%_100%,#1e3a8a,transparent),radial-gradient(circle_farthest-side_at_0_0,#990000,#0f172a)]"
+          "will-change-transform",
+          "animate-gradient bg-[length:200%_200%]",
+          "bg-gradient-to-br from-red-500 via-purple-800 to-blue-800"
         )}
       />
-      <div className={cn("relative z-10", className)}>{children}</div>
+      {/* Glow effect (optional, only on larger screens) */}
+      <div
+        className={cn(
+          "absolute inset-0 rounded-3xl z-[0]",
+          "will-change-transform",
+          "hidden md:block blur-xl opacity-40",
+          "animate-gradient bg-[length:200%_200%]",
+          "bg-gradient-to-br from-red-500 via-purple-800 to-blue-800"
+        )}
+      />
+      {/* Content with background */}
+      <div 
+        className={cn(
+          "relative z-10 rounded-3xl bg-black/90 backdrop-blur-sm",
+          "m-[2px]", // Creates the border effect
+          className
+        )}
+      >
+        {children}
+      </div>
     </div>
   );
 };
