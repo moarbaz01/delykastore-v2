@@ -74,7 +74,7 @@ export async function POST(req: Request) {
 
     // Generate request timestamp
 
-    const roundedAmount = Math.round(parseFloat(amount) * 100) / 100;
+    const roundedAmount = Math.round(parseFloat(afterDiscountAmount) * 100) / 100;
 
     const return_url = `${process.env
       .NEXT_PUBLIC_API_URL!}/payment/pay?orderId=${order._id.toString()}`;
