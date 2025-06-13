@@ -37,9 +37,19 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Invalid Request" }, { status: 400 });
     }
 
-
     const req_time = Math.floor(Date.now() / 1000).toString();
     const tran_id = "TXN" + req_time; // Unique transaction ID
+
+    let afterDiscountAmount = amount;
+    if (isCouponApplied && couponDetails) {
+      if (couponDetails.type === "percentage") {
+        const discountAmount = (amount * couponDetails.discountValue) / 100;
+        afterDiscountAmount = amount - discountAmount;
+      } else if (couponDetails.type === "flat") {
+        const discountAmount = couponDetails.discountValue;
+        afterDiscountAmount = amount - discountAmount;
+      }
+    }
 
     const order = new Order({
       orderDetails,
@@ -48,7 +58,7 @@ export async function POST(req: Request) {
       gameCredentials: { userId, zoneId, game },
       transactionId: tran_id,
       product: productId,
-      amount,
+      amount: afterDiscountAmount,
       costId,
       method: "abapay",
       status: "pending",
