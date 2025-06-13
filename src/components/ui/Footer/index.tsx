@@ -19,13 +19,13 @@ const Footer = () => {
           <div className="flex flex-col items-center md:items-start">
             <h3 className="text-xl font-bold mb-3">Contact Us</h3>
             <div className="flex space-x-4 text-4xl">
-              <Link href="" className="hover:text-blue-400 transition-colors">
+              <Link href="https://t.me/winwintopup_channel" className="hover:text-blue-400 transition-colors">
                 <FaTelegram />
               </Link>
-              <Link href="" className="hover:text-blue-600 transition-colors">
+              <Link href="https://www.facebook.com/share/16SGWEAsPh/?mibextid=wwXIfr" className="hover:text-blue-600 transition-colors">
                 <FaFacebook />
               </Link>
-              <Link href="" className="hover:text-pink-500 transition-colors">
+              <Link href="tiktok.com/@winwintopup" className="hover:text-pink-500 transition-colors">
                 <FaTiktok />
               </Link>
             </div>
