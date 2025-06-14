@@ -1,4 +1,5 @@
 import { dbConnect } from "@/lib/database";
+import { Coupon } from "@/models/coupon.model";
 import { Order } from "@/models/order.model";
 import { Product } from "@/models/product.model";
 import { createHmac } from "crypto";
@@ -10,7 +11,6 @@ export async function POST(req: Request) {
     const {
       // Product Data
       name,
-      amount,
       productId,
       costId,
       orderDetails,
@@ -21,7 +21,6 @@ export async function POST(req: Request) {
       game,
       couponCode,
       isCouponApplied,
-      couponDetails,
     } = await req.json();
 
     const isValidProduct = await Product.findById(productId);
@@ -30,26 +29,48 @@ export async function POST(req: Request) {
     }
 
     const isValidCost = isValidProduct?.cost?.find((cost) => {
-      return cost.id === costId && cost.price === amount;
+      return cost.id === costId;
     });
 
-    if (!isValidCost) {
+    if (!isValidCost || !isValidCost.price) {
       return NextResponse.json({ message: "Invalid Request" }, { status: 400 });
+    }
+
+    // Is valid coupon
+    let couponDetails = null;
+    if (couponCode) {
+      const coupon = await Coupon.findOne({ coupon: couponCode });
+      if (!coupon) {
+        return NextResponse.json(
+          { message: "Invalid Coupon Code" },
+          { status: 400 }
+        );
+      }
+      couponDetails = {
+        code: coupon.coupon,
+        type: coupon.type,
+        discountValue: coupon.discount,
+      };
+
+      console.log("Coupon Details", couponDetails);
     }
 
     const req_time = Math.floor(Date.now() / 1000).toString();
     const tran_id = "TXN" + req_time; // Unique transaction ID
 
-    let afterDiscountAmount = amount;
+    let afterDiscountAmount = isValidCost.price;
     if (isCouponApplied && couponDetails) {
       if (couponDetails.type === "percentage") {
-        const discountAmount = (amount * couponDetails.discountValue) / 100;
-        afterDiscountAmount = amount - discountAmount;
+        const discountAmount =
+          (isValidCost.price * couponDetails.discountValue) / 100;
+        afterDiscountAmount = isValidCost.price - discountAmount;
       } else if (couponDetails.type === "flat") {
         const discountAmount = couponDetails.discountValue;
-        afterDiscountAmount = amount - discountAmount;
+        afterDiscountAmount = isValidCost.price - discountAmount;
       }
     }
+
+    console.log( "After discount", afterDiscountAmount)
 
     const order = new Order({
       orderDetails,
@@ -74,7 +95,7 @@ export async function POST(req: Request) {
 
     // Generate request timestamp
 
-    const roundedAmount = Math.round(parseFloat(amount) * 100) / 100;
+    const roundedAmount = Math.round(parseFloat(afterDiscountAmount) * 100) / 100;
 
     const return_url = `${process.env
       .NEXT_PUBLIC_API_URL!}/payment/pay?orderId=${order._id.toString()}`;
@@ -98,7 +119,7 @@ export async function POST(req: Request) {
       req_time,
       merchant_id,
       tran_id,
-      amount: roundedAmount.toFixed(2),
+      amount: afterDiscountAmount,
       items: "",
       shipping: "0", // Optional, default to empty string
       ctid: "", // Optional, default to empty string

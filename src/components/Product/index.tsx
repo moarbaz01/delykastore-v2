@@ -363,10 +363,8 @@ const Product = ({
       game,
       region: region,
       productId: _id,
-      amount: amountSelected.price,
       couponCode: appliedCoupon?.code,
       isCouponApplied: !!appliedCoupon,
-      couponDetails: appliedCoupon?.couponDetails,
     };
 
     try {
