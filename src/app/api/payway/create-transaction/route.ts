@@ -70,7 +70,7 @@ export async function POST(req: Request) {
       }
     }
 
-    console.log( "After discount", afterDiscountAmount)
+    console.log("After discount", afterDiscountAmount);
 
     const order = new Order({
       orderDetails,
@@ -95,7 +95,8 @@ export async function POST(req: Request) {
 
     // Generate request timestamp
 
-    const roundedAmount = Math.round(parseFloat(afterDiscountAmount) * 100) / 100;
+    const roundedAmount =
+      Math.round(parseFloat(afterDiscountAmount) * 100) / 100;
 
     const return_url = `${process.env
       .NEXT_PUBLIC_API_URL!}/payment/pay?orderId=${order._id.toString()}`;
@@ -121,22 +122,22 @@ export async function POST(req: Request) {
       tran_id,
       amount: afterDiscountAmount,
       items: "",
-      shipping: "0", // Optional, default to empty string
-      ctid: "", // Optional, default to empty string
-      pwt: "", // Optional, default to empty string
-      firstname: "", // Optional, default to empty string
-      lastname: "", // Optional, default to empty string
-      email: "", // Optional, default to empty string
-      phone: "", // Optional, default to empty string
-      type: "purchase", // Default to "purchase"
-      payment_option: "abapay_khqr", // Default to "abapay"
-      return_url: encodedReturnUrl || "", // Optional, default to empty string
-      cancel_url: cancel_url || "", // Optional, default to empty string
-      continue_success_url: continue_success_url || "", // Optional, default to empty string
-      return_deeplink: "", // Optional, default to empty string
-      currency: "USD", // Default to "USD"
-      custom_fields: "", // Optional, default to empty string
-      return_params: "", // Optional, default to empty string
+      shipping: "0",
+      ctid: "",
+      pwt: "",
+      firstname: "",
+      lastname: "",
+      email: "",
+      phone: "",
+      type: "purchase",
+      payment_option: "abapay_khqr",
+      return_url: encodedReturnUrl || "",
+      cancel_url: cancel_url || "",
+      continue_success_url: continue_success_url || "",
+      return_deeplink: "",
+      currency: "USD",
+      custom_fields: "",
+      return_params: "",
       payout: "",
       lifetime: "",
       additional_params: "",
