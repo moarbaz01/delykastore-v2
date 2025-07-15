@@ -309,6 +309,8 @@ const ProductForm = ({ product }: { product?: Product }) => {
       data.append("apiName", formData.apiName);
       if (formData.game === "mobilelegends") {
         data.append("region", formData.region);
+      } else {
+        data.append("region", "");
       }
     }
     if (formData.image && typeof formData.image !== "string") {

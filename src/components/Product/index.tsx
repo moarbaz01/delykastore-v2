@@ -208,7 +208,7 @@ const Product = ({
     }
   }, [game, userId, zoneId]);
 
-  // Fetch Check Role
+  // Fetch Check Role - optimized with better error handling
   const fetchCheckRole = useCallback(async () => {
     if (!userId) {
       setErrorMessage("Please fill userId");
@@ -230,11 +230,13 @@ const Product = ({
       return;
     }
 
-    if (region !== "brazil") {
+    if (!region || region !== "brazil") {
       await checkUserAccount();
+      console.log("region");
       return;
     }
     try {
+      console.log("checkrole", region);
       setLoading(true);
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // Add timeout
@@ -276,7 +278,6 @@ const Product = ({
       setLoading(false);
     }
   }, [userId, zoneId, game]);
-
   // Check Role
   const handleSubmitCheckRole = async (
     e: React.SyntheticEvent<HTMLButtonElement>
