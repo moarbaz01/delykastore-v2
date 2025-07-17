@@ -208,6 +208,8 @@ export const checkAccount = async ({
       url = `${url}/${zoneId?.trim()}`;
     }
 
+    console.log(url);
+
     const res = await axiosWithProxy.get(url, {
       headers: {
         "X-Api-Key": process.env.GHOR_API_KEY!,
@@ -215,7 +217,7 @@ export const checkAccount = async ({
     });
 
     const data = res.data;
-    console.log(data.msg)
+    console.log("checkAccount", data);
     if (data?.status === "success" && data?.msg === "id_found") {
       return {
         error: false,
@@ -223,7 +225,6 @@ export const checkAccount = async ({
         message: "Account is verified",
       };
     }
-
     return {
       error: true,
       username: null,

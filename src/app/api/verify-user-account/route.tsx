@@ -16,15 +16,15 @@ export async function POST(req: Request) {
     if (game === "pubg") {
       game_path = "pubg";
     } else if (game === "freefire") {
-      game_path = "ff/mysg";
+      game_path = "free-fire/mysg";
     } else if (game === "honorofkings") {
-      game_path = "hok";
+      game_path = "honor-of-kings";
     } else if (game === "mobilelegends") {
-      game_path = "ml";
+      game_path = "mobile-legends";
     } else if (game === "genshinimpact") {
-      game_path = "gi";
+      game_path = "genshin-impact";
     } else if (game === "bloodstrike") {
-      game_path = "bst";
+      game_path = "blood-strike";
     } else {
       return NextResponse.json({ error: "Invalid game" }, { status: 400 });
     }
