@@ -327,6 +327,7 @@ const Orders: React.FC<OrdersProps> = ({
               <TableCell>Pack</TableCell>
               <TableCell>Product</TableCell>
               <TableCell>User ID</TableCell>
+              <TableCell>Zone ID</TableCell>
               <TableCell>
                 <TableSortLabel
                   active={orderBy === "createdAt"}
@@ -366,6 +367,9 @@ const Orders: React.FC<OrdersProps> = ({
                     </TableCell>
                     <TableCell>
                       {order?.gameCredentials?.userId || "N/A"}
+                    </TableCell>
+                    <TableCell>
+                      {order?.gameCredentials?.zoneId || "N/A"}
                     </TableCell>
                     <TableCell>
                       {new Date(order?.createdAt).toLocaleString()}
