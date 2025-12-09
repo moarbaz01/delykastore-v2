@@ -14,8 +14,8 @@ const MyComponent = () => {
 
   return (
     <Suspense fallback={<Loader />}>
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center max-w-lg p-8 shadow-lg rounded-lg">
+      <div className="min-h-screen flex items-center  justify-center m-2">
+        <div className="text-center max-w-lg p-8 shadow-lg bg-secondary rounded-lg">
           <h1 className="text-4xl font-bold text-primary mb-4">
             Oops! Something Went Wrong
           </h1>

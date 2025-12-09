@@ -8,15 +8,21 @@ export default {
   ],
   theme: {
     extend: {
+      fontFamily: {
+        sans: ["var(--font-battambang)"],
+      },
       animation: {
         gradient: "gradientBG 8s ease infinite",
       },
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
-        primary: "#f68181",
-        secondary: "#989797",
-        accent: "#d4a158",
+        primary: "#ff962d",
+        secondary: "#252F45",
+        "card-bg": "#1F2228",
+        accent: "#8b6f47",
+        navy: "#1a2332",
+        darkBlue: "#2d3e50",
       },
       keyframes: {
         gradientBG: {

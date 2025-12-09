@@ -41,7 +41,7 @@ const SliderComponent = ({
                   priority={true}
                   width={1600} // Adjust for large screen resolution
                   height={600} // Adjust height proportionally
-                  className="w-full max-h-[80vh] object-cover rounded-xl border-2 border-white" // Ensures image scaling with aspect ratio
+                  className="w-full max-h-[80vh] object-cover rounded-xl border border-gray-600" // Ensures image scaling with aspect ratio
                 />
               </SwiperSlide>
             ))}
@@ -55,7 +55,7 @@ const SliderComponent = ({
                   priority={true}
                   width={1600} // Adjust for large screen resolution
                   height={600} // Adjust height proportionally
-                  className="w-full max-h-[80vh] object-cover rounded-xl border-2 border-white" // Ensures image scaling with aspect ratio
+                  className="w-full max-h-[80vh] object-cover rounded-xl border border-gray-600" // Ensures image scaling with aspect ratio
                 />
               </SwiperSlide>
             ))}

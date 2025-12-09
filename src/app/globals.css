@@ -3,10 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --background: black;
+  --background: linear-gradient(
+      0deg,
+      rgba(45, 150, 255, 0.08),
+      rgba(45, 150, 255, 0.08)
+    ),
+    #110e19;
   --foreground: white;
 }
-
 body {
   color: var(--foreground);
   background: var(--background);
@@ -38,4 +42,11 @@ button {
 /* Style the active dot */
 .swiper-pagination-bullet-active {
   background-color: white !important; /* Active dot will also be white */
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0px 1000px #1F2228 inset !important;
+  -webkit-text-fill-color: white !important;
 }

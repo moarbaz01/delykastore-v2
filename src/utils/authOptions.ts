@@ -19,19 +19,18 @@ export const authOptions: AuthOptions = {
           email: credentials?.email,
         }).select("+password");
 
-        
-
         if (!user) {
           throw new Error("User not found");
         }
 
-       
-        const isValidPassword = await user.comparePassword(credentials?.password);
-        console.log("Hello",isValidPassword);
+        const isValidPassword = await user.comparePassword(
+          credentials?.password
+        );
+        console.log("Hello", isValidPassword);
         if (!isValidPassword) {
           throw new Error("Invalid credentials");
         }
-       
+
         // 🚨 Restrict login to only admins
         if (user.role !== "admin") {
           throw new Error("Access Denied: Admins Only");
@@ -58,7 +57,10 @@ export const authOptions: AuthOptions = {
 
     async jwt({ token, user }: { token: JWT; user?: any }): Promise<JWT> {
       if (user) {
-        console.log("🛠️ Assigning JWT Token:", { id: user._id.toString(), role: user.role });
+        console.log("🛠️ Assigning JWT Token:", {
+          id: user._id.toString(),
+          role: user.role,
+        });
 
         token.id = user._id.toString(); // ✅ Convert `_id` to string
         token.role = user.role;

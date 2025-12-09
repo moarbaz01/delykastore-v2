@@ -8,11 +8,11 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
   const pathname = usePathname();
 
-  if (pathname.includes("dashboard")) {
+  if (["dashboard", "product"].includes(pathname.split("/")[1] || "")) {
     return null;
   }
   return (
-    <footer className="  py-6  border-t border-white/20 relative z-0 overflow-hidden ">
+    <footer className="  py-6  border-t border-gray-600 bg-secondary relative z-0 overflow-hidden ">
       <div className="max-w-screen-xl mx-auto px-4  md:flex md:justify-between gap-8   ">
         <div className="flex flex-col md:flex-row justify-between md:w-full items-center space-y-4 md:space-y-0">
           {/* Contact and Social Media Section */}

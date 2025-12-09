@@ -41,7 +41,7 @@ export default function LoginPage() {
 
   return (
     <div className="flex items-center justify-center min-h-screen px-4">
-      <div className="max-w-md w-full space-y-6 bg-gray-800 p-6 rounded-lg shadow-lg">
+      <div className="max-w-md w-full space-y-6 bg-secondary p-6 rounded-lg shadow-lg">
         <h2 className="text-center text-3xl font-bold text-white">Login</h2>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -50,7 +50,7 @@ export default function LoginPage() {
             <input
               type="email"
               required
-              className="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-white focus:ring focus:ring-yellow-400"
+              className="w-full p-2 border border-gray-600 rounded-md bg-gray-700 text-white focus:ring focus:ring-primary"
               placeholder="Enter email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
@@ -84,7 +84,7 @@ export default function LoginPage() {
             <input
               type="checkbox"
               id="remember-me"
-              className="h-4 w-4 text-yellow-400 focus:ring-yellow-400 border-gray-600 rounded"
+              className="h-4 w-4 text-primary focus:ring-yellow-400 border-gray-600 rounded"
             />
             <label htmlFor="remember-me" className="ml-2 text-sm text-white">
               Remember me
@@ -94,7 +94,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full flex justify-center items-center gap-2 p-2 bg-yellow-500 text-white font-semibold rounded-md hover:bg-yellow-600 disabled:bg-yellow-400"
+            className="w-full flex justify-center items-center gap-2 p-2 bg-primary text-white font-semibold rounded-md hover:bg-primary/50 disabled:bg-background-400"
           >
             {isLoading && <Loader2 className="animate-spin" size={18} />} Sign
             in

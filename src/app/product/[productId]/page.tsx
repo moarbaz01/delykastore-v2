@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import Product from "@/components/Product";
-import Loader from "@/components/Loader";
+import ProductSkeleton from "@/components/Product/ProductSkeleton";
 
 export default function Page({ params }: { params: { productId: string } }) {
   const [product, setProduct] = useState<any>(null);
@@ -34,13 +34,14 @@ export default function Page({ params }: { params: { productId: string } }) {
   }, [params.productId]);
 
   if (loading) {
-    return <Loader />;
+    // return <Loader />;
+    return <ProductSkeleton />;
   }
 
   if (error) {
     return (
       <div>
-        <h1>Error</h1>
+        <h1>កំហុស</h1>
         <p>{error}</p>
       </div>
     );
@@ -49,11 +50,8 @@ export default function Page({ params }: { params: { productId: string } }) {
   if (!product) {
     return (
       <div>
-        <h1>Product Not Found</h1>
-        <p>
-          We couldn&apos;t find the product you&apos;re looking for. Please
-          check the ID.
-        </p>
+        <h1>រកមិនឃើញផលិតផល</h1>
+        <p>យើងរកមិនឃើញផលិតផលដែលអ្នកកំពុងស្វែងរក។ សូមពិនិត្យ ID។</p>
       </div>
     );
   }

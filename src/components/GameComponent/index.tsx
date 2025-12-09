@@ -15,30 +15,26 @@ const GameComponent = ({
 }) => {
   return (
     <Link href={`/product/${_id}`}>
-      <BackgroundGradient className="text-white hover:opacity-80 transition bg-black h-auto p-2 shadow-sm  rounded-3xl ">
-        <div className="flex items-center flex-col">
-          <div className="md:h-auto h-[100px] ">
+      <div className="text-white hover:opacity-80 transition bg-gradient-to-b from-primary/40 via-primary/20 to-secondary  h-auto p-3  rounded-lg overflow-hidden">
+        <div className="flex   flex-col">
+          <div className="w-full h-[80%]">
             <Image
               src={image}
               alt={name}
               priority={true}
               height={150}
               width={150}
-              className={`rounded-xl w-full h-auto aspect-square object-cover ${
+              className={`rounded-lg md:w-full h-auto aspect-square object-cover ${
                 !stock ? "grayscale" : ""
               }`}
             />
           </div>
-          <div className=" h-[45px] mt-2 text-center  flex items-center font-extrabold stroke-black stroke-2 text-[12px] sm:text-xl ">
-            {name}
-          </div>
-          <div className=" flex items-center justify-center w-full ">
-            <button className="bg-red-500 md:w-2/3  w-full text-nowrap flex items-center justify-center translate-y-5  text-white md:py-1 py-[2px] px-12 md:px-6 text-sm sm:text-base rounded-full hover:bg-slate-700 transition-colors">
-              {stock ? "Top - Up" : "Not Available"}
-            </button>
-          </div>
+          <div className="mt-2 h-[20%]  font-bold text-sm">{name}</div>
+          <button className="mt-2 w-full bg-primary text-black font-bold py-2 rounded-lg">
+            Top Up
+          </button>
         </div>
-      </BackgroundGradient>
+      </div>
     </Link>
   );
 };

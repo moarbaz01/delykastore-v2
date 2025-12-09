@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import NextTopLoader from "nextjs-toploader";
-import { Koulen } from "next/font/google";
+import { Koulen, Battambang } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/ui/Navbar";
 import Footer from "@/components/ui/Footer";
@@ -20,6 +20,12 @@ const koulen = Koulen({
   variable: "--font-koulen",
 });
 
+const battambang = Battambang({
+  subsets: ["khmer"],
+  weight: ["400", "700"],
+  variable: "--font-battambang",
+});
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -27,9 +33,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${koulen.variable} antialiased `}>
+      <body className={`${koulen.variable} ${battambang.variable} font-sans antialiased `}>
         <Provider>
-          <NextTopLoader color="red" />
+          <NextTopLoader color="#ff962d" />
           <Toaster />
           <Navbar /> {/* Conditionally render Navbar */}
           {children}

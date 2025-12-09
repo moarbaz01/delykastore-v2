@@ -10,13 +10,13 @@ const TrendingGames = async () => {
   const products = await Product.find().lean();
 
   return (
-    <div className="py-6 md:py-12 px-3 md:px-6 my-6 md:rounded-xl ">
-      <div className="max-w-screen-xl mx-auto ">
+    <div className=" mx-4 md:mx-auto max-w-7xl mt-8 mb-6">
+      <div className="w-full bg-secondary border border-gray-600 p-4 rounded-lg ">
         <div className=" font-extrabold flex items-center gap-2 text-xl">
           <IoLogoGameControllerB className="text-2xl" />
           <span>GAME TOPUP</span>
         </div>
-        <div className="grid grid-cols-3 md:grid-cols-3  items-center justify-center lg:grid-cols-4 md:gap-6 gap-4 mt-4">
+        <div className="grid grid-cols-2 md:grid-cols-3  items-center justify-center lg:grid-cols-4 md:gap-6 gap-4 mt-4">
           {products.length > 0 ? (
             products.map((item) => (
               <GameComponent
