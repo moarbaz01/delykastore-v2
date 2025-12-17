@@ -50,7 +50,7 @@ export async function GET(req: NextRequest) {
           convertedAmount: {
             $cond: [
               { $eq: [{ $type: "$amount" }, "string"] },
-              { $toDouble: "$amount" },
+              { $toDouble: { $trim: { input: "$amount" } } },
               "$amount",
             ],
           },
@@ -100,7 +100,7 @@ export async function GET(req: NextRequest) {
           convertedAmount: {
             $cond: [
               { $eq: [{ $type: "$amount" }, "string"] },
-              { $toDouble: "$amount" },
+              { $toDouble: { $trim: { input: "$amount" } } },
               "$amount",
             ],
           },
@@ -129,7 +129,7 @@ export async function GET(req: NextRequest) {
           convertedAmount: {
             $cond: [
               { $eq: [{ $type: "$amount" }, "string"] },
-              { $toDouble: "$amount" },
+              { $toDouble: { $trim: { input: "$amount" } } },
               "$amount",
             ],
           },
@@ -163,7 +163,7 @@ export async function GET(req: NextRequest) {
           convertedAmount: {
             $cond: [
               { $eq: [{ $type: "$amount" }, "string"] },
-              { $toDouble: "$amount" },
+              { $toDouble: { $trim: { input: "$amount" } } },
               "$amount",
             ],
           },
