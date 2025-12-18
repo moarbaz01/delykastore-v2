@@ -87,8 +87,8 @@ const Analytics = () => {
           ...response.data,
           monthlyIncome: 94204,
           todaysIncome: 1245,
-          revenue: 126500,
-          orders: 65403,
+          revenue: 1855573,
+          orders: 1265403,
           orderStatusCounts: [
             { _id: 'failed', count: 2000 }
             ,
