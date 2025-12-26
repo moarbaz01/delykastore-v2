@@ -17,7 +17,7 @@ const SliderComponent = ({
 }) => {
   return (
     <div className="relative z-0 w-full">
-      <div className="max-w-screen-xl mx-auto mt-6 md:px-0">
+      <div className="max-w-screen-xl mx-auto  md:px-0">
         <Swiper
           spaceBetween={10} // Adjust space between slides
           slidesPerView={1} // Only one slide per view

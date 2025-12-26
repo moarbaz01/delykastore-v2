@@ -1,8 +1,11 @@
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { encryptData } from "@/utils/encryption";
 
 export const useOrder = (setPaymentData: (value: any) => void) => {
+  const [isLoading, setIsLoading] = useState(false);
+
   const createOrder = useCallback(
     async (params: {
       userId: string;
@@ -81,10 +84,13 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
         isCouponApplied: !!appliedCoupon,
       };
 
+      const encryptedPayload = encryptData(orderParams);
+
       try {
+        setIsLoading(true);
         const res = await axios.post(
           "/api/payway/create-transaction",
-          orderParams,
+          { payload: encryptedPayload },
           {
             headers: { "Content-Type": "application/json" },
           }
@@ -95,10 +101,12 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
         }
       } catch (error) {
         toast.error("Error Creating Order");
+      } finally {
+        setIsLoading(false);
       }
     },
     [setPaymentData]
   );
 
-  return { createOrder };
+  return { createOrder, isLoading };
 };

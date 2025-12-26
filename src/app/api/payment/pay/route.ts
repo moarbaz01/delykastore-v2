@@ -6,8 +6,9 @@ import { Coupon } from "@/models/coupon.model";
 import { freeFireTopup, ghorApiTopup } from "@/utils/unipin";
 import { GhorTopUp } from "@/utils/topupghor";
 import { createHmac } from "crypto";
-import "@/models/product.model"
+import "@/models/product.model";
 import axios from "axios";
+import { makePurchase } from "@/utils/bangla_api";
 
 const isValidTransaction = (trans) => {
   return (
@@ -130,8 +131,12 @@ export async function POST(req: Request) {
       } else if (game === "freefire") {
         if (order?.product?.apiName === "TopUp Ghor Api") {
           orderResponse = await GhorTopUp(order, "582");
-        } else {
-          orderResponse = await freeFireTopup(order);
+        } else if (order?.product?.apiName === "Bangla Api") {
+          orderResponse = await makePurchase({
+            playerid: order.gameCredentials.userId,
+            orderid: order.transactionId,
+            pacakge: order.product,
+          });
         }
       } else if (game === "pubg") {
         // If game is free fire
@@ -161,7 +166,16 @@ export async function POST(req: Request) {
     }
 
     // Save order and notify customer
-    order.status = order.orderType === "API Order" ? "success" : "pending";
+    if (order.orderType === "API Order") {
+      if (order.product.apiName === "Bangla Api") {
+        order.status = "pending";
+      } else {
+        order.status = "success";
+      }
+    } else {
+      order.status = "pending";
+    }
+
     if (order.isCouponApplied) {
       const updateResult = await Coupon.findOneAndUpdate(
         { coupon: order.couponCode },

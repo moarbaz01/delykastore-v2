@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 import { dbConnect } from "@/lib/database";
 import { Product } from "@/models/product.model";
 import { cloudinaryDelete, cloudinaryUpload } from "@/utils/cloudinary";
+import { encryptData } from "@/utils/encryption";
 import { extractPublicId } from "@/utils/getPublicId";
 import mongoose from "mongoose";
 import { getToken } from "next-auth/jwt";
@@ -140,18 +141,40 @@ export async function GET(req: Request) {
 
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
+    const grouped = searchParams.get("grouped");
 
     let products;
     if (id) {
-      products = await Product.findById(id);
+      products = await Product.findById(id).lean();
       if (!products) {
         return NextResponse.json(
           { error: "Product not found" },
           { status: 404 }
         );
       }
+
+      // If grouped=true, process costs on server
+      if (grouped === "true" && products.cost) {
+        const categories = [
+          ...new Set(
+            products.cost.map((item: any) => item.category).filter(Boolean)
+          ),
+        ];
+        const groupedCost = categories.map((category) => ({
+          category,
+          items: products.cost
+            .filter((item: any) => item.category === category)
+            .sort(
+              (a: any, b: any) => parseFloat(a.price) - parseFloat(b.price)
+            ),
+        }));
+
+        const product = encryptData({ ...products, groupedCost, categories });
+
+        return NextResponse.json({ product }, { status: 200 });
+      }
     } else {
-      products = await Product.find({ isDeleted: false });
+      products = await Product.find({ isDeleted: false }).lean();
     }
 
     return NextResponse.json(products, { status: 200 });

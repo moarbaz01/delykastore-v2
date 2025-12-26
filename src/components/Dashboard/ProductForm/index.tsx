@@ -471,8 +471,9 @@ const ProductForm = ({ product }: { product?: Product }) => {
               >
                 <MenuItem value="">Select API Name</MenuItem>
                 <MenuItem value="Smile One Api">Smile One Api</MenuItem>
-                <MenuItem value="Garena Api">Garena Api</MenuItem>
+                {/* <MenuItem value="Garena Api">Garena Api</MenuItem> */}
                 <MenuItem value="TopUp Ghor Api"> Top-Up Ghor Api</MenuItem>
+                <MenuItem value="Bangla Api">Bangla Api</MenuItem>
               </Select>
               {(formData.apiName === "Smile One Api" ||
                 formData.game === "mobilelegends") && (
@@ -511,14 +512,20 @@ const ProductForm = ({ product }: { product?: Product }) => {
             }}
           >
             <MenuItem value="">Select Game</MenuItem>
-            <MenuItem value="mobilelegends">MLBB</MenuItem>
-            <MenuItem value="freefire">Free Fire</MenuItem>
-            <MenuItem value="pubg">PUBG Global</MenuItem>
-            <MenuItem value="honorofkings">Honor Of Kings</MenuItem>
-            <MenuItem value="magicchess">Magic Chess</MenuItem>
-            <MenuItem value="bloodstrike">Blood Strike</MenuItem>
-            <MenuItem value="genshinimpact">Genshin Impact</MenuItem>
-            <MenuItem value="Custom Game">Custom</MenuItem>
+            {formData.apiName === "Bangla Api" ? (
+              <MenuItem value="freefire">Free Fire</MenuItem>
+            ) : (
+              <>
+                <MenuItem value="mobilelegends">MLBB</MenuItem>
+
+                <MenuItem value="pubg">PUBG Global</MenuItem>
+                <MenuItem value="honorofkings">Honor Of Kings</MenuItem>
+                <MenuItem value="magicchess">Magic Chess</MenuItem>
+                <MenuItem value="bloodstrike">Blood Strike</MenuItem>
+                <MenuItem value="genshinimpact">Genshin Impact</MenuItem>
+                <MenuItem value="Custom Game">Custom</MenuItem>
+              </>
+            )}
           </Select>
 
           {/* Stock (Boolean) */}

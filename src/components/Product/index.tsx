@@ -1,6 +1,7 @@
 "use client";
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import SliderComponent from "../Home/Banner/Component";
 import PaymentForm from "./PaymentForm";
 import UserIdSection from "./UserIdSection";
@@ -12,11 +13,7 @@ import { useProductState } from "./hooks/useProductState";
 import { useCoupon } from "./hooks/useCoupon";
 import { useUserVerification } from "./hooks/useUserVerification";
 import { useOrder } from "./hooks/useOrder";
-import {
-  fetchCategories,
-  groupCostByCategory,
-  calculateTotal,
-} from "./utils/productUtils";
+import { calculateTotal } from "./utils/productUtils";
 
 declare const AbaPayway: any;
 
@@ -31,6 +28,8 @@ const Product = ({
   stock,
   cost,
   game,
+  groupedCost,
+  categories,
 }: {
   name: string;
   _id: string;
@@ -51,6 +50,8 @@ const Product = ({
     note?: string;
     category?: string;
   }[];
+  groupedCost?: any[];
+  categories?: string[];
 }) => {
   const state = useProductState(game, region);
   const {
@@ -98,7 +99,8 @@ const Product = ({
     setErrorMessage
   );
 
-  const { createOrder: createOrderUtil } = useOrder(setPaymentData);
+  const { createOrder: createOrderUtil, isLoading } = useOrder(setPaymentData);
+  const router = useRouter();
 
   const handleApplyCoupon = async () => {
     await applyCoupon({ couponCode, amountSelected, _id });
@@ -152,10 +154,7 @@ const Product = ({
     });
   };
 
-  const groupedCost = useMemo(
-    () => groupCostByCategory(costCategories, cost),
-    [cost, costCategories]
-  );
+  const [groupedCostState, setGroupedCostState] = useState(groupedCost || []);
 
   const total = useMemo(
     () => calculateTotal(amountSelected, appliedCoupon),
@@ -167,11 +166,13 @@ const Product = ({
       setAppliedCoupon(null);
       setCouponError("");
     }
-  }, [amountSelected]);
+  }, [amountSelected.id]);
 
   useEffect(() => {
-    fetchCategories(setCostCategories);
-  }, []);
+    if (categories) {
+      setCostCategories(categories);
+    }
+  }, [categories]);
 
   // Fallback
   if (isDeleted) {
@@ -183,25 +184,40 @@ const Product = ({
   }
   return (
     <>
-      <div className="grid grid-cols-1 lg:grid-cols-3 max-w-screen-xl mx-auto gap-6 py-6 sm:px-6 px-4">
+      <div
+        className={`grid max-w-screen-xl mx-auto gap-6 md:py-6 sm:px-4 px-4 items-start ${
+          slides.length === 0 && !banner
+            ? "grid-cols-1 justify-center"
+            : "grid-cols-1 lg:grid-cols-3"
+        }`}
+      >
         {/* Banner Section */}
-        <div className="-mt-6">
-          {slides.length > 0 && <SliderComponent slides={slides} />}
-          {banner && (
-            <div className="flex items-center gap-4 mt-4">
-              <Image
-                src={banner as string}
-                alt={banner as string}
-                width={400}
-                height={400}
-                className="rounded-lg w-full"
-              />
-            </div>
-          )}
-        </div>
 
+        {(slides.length > 0 || banner) && (
+          <div className=" flex flex-col gap-4 md:sticky md:mt-0 mt-4 md:top-20">
+            {slides.length > 0 && <SliderComponent slides={slides} />}
+
+            {banner && (
+              <div className="flex items-center gap-4 ">
+                <Image
+                  src={banner as string}
+                  alt={banner as string}
+                  width={400}
+                  height={400}
+                  className="rounded-lg w-full"
+                />
+              </div>
+            )}
+          </div>
+        )}
         {/* Checkout Section */}
-        <div className="lg:col-span-2 flex flex-col gap-4">
+        <div
+          className={`flex flex-col gap-4 ${
+            slides.length === 0 && !banner
+              ? "w-full max-w-3xl mx-auto md:mt-2 mt-4"
+              : "lg:col-span-2"
+          }`}
+        >
           <UserIdSection
             game={game}
             userId={userId}
@@ -215,7 +231,7 @@ const Product = ({
           />
 
           <PackageSection
-            groupedCost={groupedCost}
+            groupedCost={groupedCostState}
             amountSelected={amountSelected}
             setAmountSelected={setAmountSelected}
           />
@@ -244,6 +260,7 @@ const Product = ({
             game={game}
             playerAvailable={playerAvailable}
             createOrder={handleCreateOrder}
+            isLoading={isLoading}
           />
         </div>
       </div>

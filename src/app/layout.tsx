@@ -8,6 +8,7 @@ import { Toaster } from "react-hot-toast";
 import Provider from "@/components/Provider";
 import LogoButton from "@/components/ui/LogoButton";
 import PaywayScript from "@/components/PaywayScript";
+import BrowserInspectionProtection from "@/components/BrowserInspectionProtection";
 
 export const metadata: Metadata = {
   title: "Win Win Top-Up",
@@ -33,14 +34,18 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${koulen.variable} ${battambang.variable} font-sans antialiased `}>
+      <body
+        className={`${koulen.variable} ${battambang.variable} font-sans antialiased `}
+      >
         <Provider>
           <NextTopLoader color="#ff962d" />
           <Toaster />
-          <Navbar /> {/* Conditionally render Navbar */}
-          {children}
-          <Footer />
-          <LogoButton />
+          <BrowserInspectionProtection>
+            <Navbar /> {/* Conditionally render Navbar */}
+            {children}
+            <Footer />
+            <LogoButton />
+          </BrowserInspectionProtection>
         </Provider>
         <PaywayScript />
       </body>

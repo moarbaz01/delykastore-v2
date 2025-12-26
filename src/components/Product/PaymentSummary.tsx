@@ -10,6 +10,7 @@ interface PaymentSummaryProps {
   game: string;
   playerAvailable: boolean;
   createOrder: () => void;
+  isLoading?: boolean;
 }
 
 const PaymentSummary = ({
@@ -20,6 +21,7 @@ const PaymentSummary = ({
   game,
   playerAvailable,
   createOrder,
+  isLoading = false,
 }: PaymentSummaryProps) => {
   return (
     <div className="md:static z-[50] fixed bottom-0 left-0 w-full ">
@@ -60,7 +62,11 @@ const PaymentSummary = ({
           onClick={createOrder}
           className="bg-primary disabled:opacity-50 w-[100px] rounded-lg p-2 text-black font-bold"
         >
-          បង់ ឥឡូវ
+          {isLoading ? (
+            <div className="w-4 h-4 border-2 border-white mx-auto border-t-transparent rounded-full animate-spin"></div>
+          ) : (
+            "បង់ ឥឡូវ"
+          )}
         </button>
       </div>
     </div>

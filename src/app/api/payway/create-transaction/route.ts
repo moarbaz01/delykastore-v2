@@ -2,12 +2,21 @@ import { dbConnect } from "@/lib/database";
 import { Coupon } from "@/models/coupon.model";
 import { Order } from "@/models/order.model";
 import { Product } from "@/models/product.model";
+import { decryptData } from "@/utils/encryption";
 import { createHmac } from "crypto";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
     await dbConnect();
+    const { payload } = await req.json();
+    let orderParams;
+    try {
+      orderParams = decryptData(payload);
+    } catch (error) {
+      return NextResponse.json({ message: "Invalid Request" }, { status: 400 });
+    }
+
     const {
       // Product Data
       name,
@@ -21,7 +30,9 @@ export async function POST(req: Request) {
       game,
       couponCode,
       isCouponApplied,
-    } = await req.json();
+    } = orderParams;
+
+    console.log("Order Create--------", orderParams);
 
     const isValidProduct = await Product.findById(productId);
     if (!isValidProduct) {

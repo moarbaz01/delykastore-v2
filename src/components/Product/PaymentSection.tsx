@@ -8,11 +8,15 @@ interface PaymentSectionProps {
   setIsAgree: (value: boolean) => void;
 }
 
-const PaymentSection = ({ total, isAgree, setIsAgree }: PaymentSectionProps) => {
+const PaymentSection = ({
+  total,
+  isAgree,
+  setIsAgree,
+}: PaymentSectionProps) => {
   const router = useRouter();
 
   return (
-    <div className="p-4 md:mb-0 mb-16 bg-secondary border border-gray-600 relative rounded-lg">
+    <div className="p-4 md:mb-0 mb-24 bg-secondary border border-gray-600 relative rounded-lg">
       <Label text={"ទូទាត់ប្រាក់បានគ្រប់ធនាគារ"} number={4} />
       <div className="w-full rounded-lg p-4 bg-card-bg border-[#6b5d4f] flex items-center justify-between mt-4">
         <div className="flex items-center gap-4">
