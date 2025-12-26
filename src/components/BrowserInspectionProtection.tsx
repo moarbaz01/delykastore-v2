@@ -18,12 +18,12 @@ export default function DevToolsDeterrent({
 }) {
   const [blocked, setBlocked] = useState(false);
 
-  // ✅ Do nothing in development
-  if (process.env.NEXT_PUBLIC_NODE_ENV !== "production") {
-    return <>{children}</>;
-  }
-
   useEffect(() => {
+    // ✅ Do nothing in development
+    if (process.env.NEXT_PUBLIC_NODE_ENV !== "production") {
+      return;
+    }
+
     const threshold = 160;
 
     const detectDevTools = () => {
@@ -62,6 +62,11 @@ export default function DevToolsDeterrent({
 
     return () => clearInterval(interval);
   }, []);
+
+  // ✅ Return early after hooks
+  if (process.env.NEXT_PUBLIC_NODE_ENV !== "production") {
+    return <>{children}</>;
+  }
 
   return blocked ? <BlockScreen /> : <>{children}</>;
 }
