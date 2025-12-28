@@ -512,20 +512,14 @@ const ProductForm = ({ product }: { product?: Product }) => {
             }}
           >
             <MenuItem value="">Select Game</MenuItem>
-            {formData.apiName === "Bangla Api" ? (
-              <MenuItem value="freefire">Free Fire</MenuItem>
-            ) : (
-              <>
-                <MenuItem value="mobilelegends">MLBB</MenuItem>
-
-                <MenuItem value="pubg">PUBG Global</MenuItem>
-                <MenuItem value="honorofkings">Honor Of Kings</MenuItem>
-                <MenuItem value="magicchess">Magic Chess</MenuItem>
-                <MenuItem value="bloodstrike">Blood Strike</MenuItem>
-                <MenuItem value="genshinimpact">Genshin Impact</MenuItem>
-                <MenuItem value="Custom Game">Custom</MenuItem>
-              </>
-            )}
+            <MenuItem value="freefire">Free Fire</MenuItem>
+            <MenuItem value="mobilelegends">MLBB</MenuItem>
+            <MenuItem value="pubg">PUBG Global</MenuItem>
+            <MenuItem value="honorofkings">Honor Of Kings</MenuItem>
+            <MenuItem value="magicchess">Magic Chess</MenuItem>
+            <MenuItem value="bloodstrike">Blood Strike</MenuItem>
+            <MenuItem value="genshinimpact">Genshin Impact</MenuItem>
+            <MenuItem value="Custom Game">Custom</MenuItem>
           </Select>
 
           {/* Stock (Boolean) */}
