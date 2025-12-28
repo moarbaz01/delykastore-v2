@@ -89,76 +89,20 @@ export async function PUT(req: NextRequest) {
         { status: 400 }
       );
     }
-
     // Validate the input (partial update allowed)
     const validatedData = orderSchema.partial().parse(json);
-    console.log("validatedData", validatedData);
+
     // Update the order
     const updatedOrder = await Order.findByIdAndUpdate(id, validatedData, {
       new: true,
     }).populate("product");
 
-    console.log("updated order", updatedOrder);
-
     if (!updatedOrder) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
     }
 
-    if (validatedData?.status === "success") {
-      let orderResponse;
-      const game = updatedOrder?.gameCredentials?.game;
-
-      // If game is mobile legends
-      if (game === "mobilelegends") {
-        if (updatedOrder.region === "brazil") {
-          if (updatedOrder?.product?.apiName === "TopUp Ghor Api") {
-            orderResponse = await GhorTopUp(updatedOrder, "86289");
-          } else {
-            orderResponse = await gameOrderRequest(updatedOrder);
-          }
-        } else if (updatedOrder.region === "philippines") {
-          if (updatedOrder?.product?.apiName === "TopUp Ghor Api") {
-            orderResponse = await GhorTopUp(updatedOrder, "86286");
-          } else {
-            orderResponse = await ghorApiTopup(updatedOrder);
-          }
-        } else if (updatedOrder.region === "indonesia") {
-          orderResponse = await GhorTopUp(updatedOrder, "39365");
-        } else if (updatedOrder.region === "malaysia") {
-          orderResponse = await GhorTopUp(updatedOrder, "39347");
-        }
-      } else if (game === "freefire") {
-        // If game is free fire
-        if (updatedOrder?.product?.apiName === "TopUp Ghor Api") {
-          orderResponse = await GhorTopUp(updatedOrder, "582");
-        } else {
-          orderResponse = await freeFireTopup(updatedOrder);
-        }
-      } else if (game === "pubg") {
-        // If game is free fire
-        orderResponse = await GhorTopUp(updatedOrder, "654");
-      } else if (game === "honorofkings") {
-        // If game is free fire
-        orderResponse = await GhorTopUp(updatedOrder, "67607");
-      } else if (game === "magicchess") {
-        // If game is free fire
-        orderResponse = await GhorTopUp(updatedOrder, "232990");
-      } else if (game === "bloodstrike") {
-        orderResponse = await GhorTopUp(updatedOrder, "213941");
-      } else if (game === "genshinimpact") {
-        orderResponse = await GhorTopUp(updatedOrder, "33221");
-      }
-      console.log("Order Response", orderResponse);
-      if (orderResponse.status !== 200) {
-        updatedOrder.status = "failed";
-        await updatedOrder.save();
-
-        return NextResponse.json(
-          { message: "Order Failed", error: orderResponse?.error },
-          { status: 500 }
-        );
-      }
-    }
+    updatedOrder.status = validatedData.status;
+    await updatedOrder.save();
 
     return NextResponse.json(updatedOrder, { status: 200 });
   } catch (error) {
