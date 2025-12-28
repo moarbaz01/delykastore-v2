@@ -2,19 +2,11 @@ import { useState, useRef } from "react";
 
 export const useProductState = (game: string, region?: string) => {
   const [userId, setUserId] = useState(() =>
-    game === "mobilelegends"
-      ? region === "philippines"
-        ? localStorage.getItem("philipps-userId")
-        : localStorage.getItem("getotopup-userId") ?? ""
-      : ""
+    localStorage.getItem(`${game}${region}-userid`)
   );
 
   const [zoneId, setZoneId] = useState(() =>
-    game === "mobilelegends"
-      ? region === "philippines"
-        ? localStorage.getItem("philipps-zoneId")
-        : localStorage.getItem("getotopup-zoneId") ?? ""
-      : ""
+    localStorage.getItem(`${game}${region}-zoneid`)
   );
 
   const [amountSelected, setAmountSelected] = useState<{

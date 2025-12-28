@@ -38,7 +38,6 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-import { CgKey } from "react-icons/cg";
 
 interface AnalyticsData {
   orders: number | null;
@@ -85,17 +84,6 @@ const Analytics = () => {
         }
         setAnalyticsData({
           ...response.data,
-          monthlyIncome: 94204,
-          todaysIncome: 1245,
-          revenue: 1855573,
-          orders: 1265403,
-          orderStatusCounts: [
-            { _id: 'failed', count: 2000 }
-            ,
-            { _id: 'success', count: 63403 }
-            ,
-            { _id: 'pending', count: 4000 }
-          ]
         });
       } catch (error) {
         console.error("Error fetching analytics data:", error);
@@ -105,8 +93,7 @@ const Analytics = () => {
     fetchData();
   }, []);
 
-
-  console.log("order status", analyticsData.orderStatusCounts)
+  console.log("order status", analyticsData.orderStatusCounts);
 
   // Format order status data for the pie chart
   const formatOrderStatusData = (
@@ -354,8 +341,9 @@ const Analytics = () => {
                 <ListItem key={index} className="hover:bg-gray-700 rounded">
                   <ListItemText
                     primary={product.productDetails.name}
-                    secondary={`$${product.totalSales.toFixed(2)} • ${product.count
-                      } orders`}
+                    secondary={`$${product.totalSales.toFixed(2)} • ${
+                      product.count
+                    } orders`}
                     primaryTypographyProps={{ className: "text-gray-200" }}
                     secondaryTypographyProps={{ className: "text-gray-400" }}
                   />

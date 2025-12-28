@@ -100,7 +100,6 @@ const Product = ({
   );
 
   const { createOrder: createOrderUtil, isLoading } = useOrder(setPaymentData);
-  const router = useRouter();
 
   const handleApplyCoupon = async () => {
     await applyCoupon({ couponCode, amountSelected, _id });
@@ -111,6 +110,13 @@ const Product = ({
   ) => {
     e.preventDefault();
     await fetchCheckRole(userId, zoneId, game, region);
+    if (userId) {
+      localStorage.setItem(`${game}${region}-userid`, userId);
+    }
+
+    if (zoneId) {
+      localStorage.setItem(`${game}${region}-zoneid`, zoneId);
+    }
   };
 
   const handleRemoveCoupon = () => {

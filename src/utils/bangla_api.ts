@@ -26,8 +26,8 @@ export const makePurchase = async ({ playerid, pacakge, orderid }: Params) => {
     console.log("payload bangla", payload);
 
     const res = await axios.post(process.env.BANGLA_PURCHASE_URL, payload);
-    console.log("response bangla", res);
-    if (res.data === 1) {
+    console.log("response bangla", res.status);
+    if (res.status === 200) {
       return {
         status: 200,
         data: res.data,
