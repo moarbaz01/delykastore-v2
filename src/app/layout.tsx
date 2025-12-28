@@ -40,12 +40,12 @@ export default function RootLayout({
         <Provider>
           <NextTopLoader color="#ff962d" />
           <Toaster />
-          <BrowserInspectionProtection>
-            <Navbar /> {/* Conditionally render Navbar */}
-            {children}
-            <Footer />
-            <LogoButton />
-          </BrowserInspectionProtection>
+          {/* <BrowserInspectionProtection> */}
+          <Navbar /> {/* Conditionally render Navbar */}
+          {children}
+          <Footer />
+          <LogoButton />
+          {/* </BrowserInspectionProtection> */}
         </Provider>
         <PaywayScript />
       </body>
