@@ -39,7 +39,7 @@ const checkTransaction = async (transactionId) => {
     });
     return res.data;
   } catch (error) {
-    console.error("Error checking transaction:", error);
+    console.error("Error checking transaction:", error.response.data, error);
     return null; // return null so you can handle it in the POST route
   }
 };
