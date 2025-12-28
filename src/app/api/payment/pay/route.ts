@@ -3,7 +3,7 @@ import { Order } from "@/models/order.model";
 import { dbConnect } from "@/lib/database";
 import { gameOrderRequest } from "@/utils/smileone";
 import { Coupon } from "@/models/coupon.model";
-import { freeFireTopup, ghorApiTopup } from "@/utils/unipin";
+import { ghorApiTopup } from "@/utils/unipin";
 import { GhorTopUp } from "@/utils/topupghor";
 import { createHmac } from "crypto";
 import "@/models/product.model";
@@ -135,7 +135,7 @@ export async function POST(req: Request) {
           orderResponse = await makePurchase({
             playerid: order.gameCredentials.userId,
             orderid: order.transactionId,
-            pacakge: order.product,
+            pacakge: order.costId,
           });
         }
       } else if (game === "pubg") {
