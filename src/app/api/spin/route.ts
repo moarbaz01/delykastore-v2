@@ -170,7 +170,7 @@ export const GET = async (req: NextRequest) => {
     }
 
     return NextResponse.json({
-      spins: spinTransaction.spin,
+      spins: 1,
     });
   } catch (error) {
     console.error("Spin error:", error);
