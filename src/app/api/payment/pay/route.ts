@@ -9,6 +9,7 @@ import { createHmac } from "crypto";
 import "@/models/product.model";
 import axios from "axios";
 import { makePurchase } from "@/utils/bangla_api";
+import { SpinTransaction } from "@/models/spin.transaction.model";
 
 const isValidTransaction = (trans) => {
   return (
@@ -191,6 +192,16 @@ export async function POST(req: Request) {
       }
     }
     await order.save();
+
+    // Create spin transaction if costId is in spinCostIds and spinActive is true
+    if (order.costId && order.product?.spinActive && order.product?.spinCostIds?.includes(order.costId)) {
+      await SpinTransaction.create({
+        transactionId: order.transactionId,
+        productId: order.product._id,
+        spin: 1,
+        isUsed: false,
+      });
+    }
 
     return NextResponse.json(
       { message: "Order Placed", order },

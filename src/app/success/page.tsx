@@ -1,9 +1,8 @@
 "use client";
 import Loader from "@/components/Loader";
 import Link from "next/link";
-import { notFound, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import { Download } from "lucide-react"; // Import the download icon from Lucide
 import Image from "next/image";
 
 const MyComponent = () => {
@@ -13,6 +12,7 @@ const MyComponent = () => {
   const price = searchParams.get("price");
   const userId = searchParams.get("userId");
   const zoneId = searchParams.get("zoneId");
+  const productId = searchParams.get("productId");
 
   const handleDownloadReceipt = () => {
     const receiptContent = `
@@ -89,13 +89,20 @@ const MyComponent = () => {
             <button className="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-primary/80 transition duration-300">
               ថយក្រោយ
             </button>
-            <button
-              onClick={handleDownloadReceipt}
-              className="px-6 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition duration-300 flex items-center gap-2"
-            >
-              ទាញយក
-            </button>
           </Link>
+          <button
+            onClick={handleDownloadReceipt}
+            className="px-6 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition duration-300 flex items-center gap-2"
+          >
+            ទាញយក
+          </button>
+          {productId && transactionId && (
+            <Link href={`/spin?productid=${productId}&transactionid=${transactionId}`}>
+              <button className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-300">
+                បង្វិលឱកាស
+              </button>
+            </Link>
+          )}
         </div>
       </div>
     </div>

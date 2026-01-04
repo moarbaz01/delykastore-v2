@@ -8,6 +8,7 @@ import {
   FaShoppingCart,
   FaUsers,
   FaList,
+  FaHistory,
 } from "react-icons/fa";
 import { HiMenuAlt1 } from "react-icons/hi"; // Hamburger icon
 import {
@@ -58,6 +59,7 @@ const Sidebar = () => {
       icon: Wallet,
     },
     { href: "/dashboard/coupons", label: "Coupons", icon: DiscountOutlined },
+    { href: "/dashboard/spin-history", label: "Spin History", icon: FaHistory },
   ];
 
   return (

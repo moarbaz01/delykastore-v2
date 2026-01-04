@@ -1,5 +1,5 @@
-// dynamic component
 export const dynamic = "force-dynamic";
+// dynamic component
 
 import { dbConnect } from "@/lib/database";
 import { Order } from "@/models/order.model";

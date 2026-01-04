@@ -44,6 +44,14 @@ const productSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    spinActive: {
+      type: Boolean,
+      default: false,
+    },
+    spinCostIds: {
+      type: [String],
+      default: [],
+    },
     cost: [
       {
         id: {

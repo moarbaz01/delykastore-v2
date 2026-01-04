@@ -40,6 +40,8 @@ interface Product {
   category: string;
   cost: CostItem[];
   stock: boolean;
+  spinActive: boolean;
+  spinCostIds: string[];
 }
 
 const ProductForm = ({ product }: { product?: Product }) => {
@@ -67,6 +69,8 @@ const ProductForm = ({ product }: { product?: Product }) => {
     slides: product?.slides || [],
     banner: product?.banner || "",
     stock: product?.stock || false,
+    spinActive: product?.spinActive || false,
+    spinCostIds: product?.spinCostIds || [],
   });
 
   const [imagePreviews, setImagePreviews] = useState<{ [key: number]: string }>(
@@ -107,6 +111,15 @@ const ProductForm = ({ product }: { product?: Product }) => {
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, checked } = e.target;
     setFormData((prev) => ({ ...prev, [name]: checked }));
+  };
+
+  const handleSpinCostChange = (costId: string, checked: boolean) => {
+    setFormData((prev) => ({
+      ...prev,
+      spinCostIds: checked
+        ? [...prev.spinCostIds, costId]
+        : prev.spinCostIds.filter((id) => id !== costId),
+    }));
   };
 
   const handleSelectChange = (e: SelectChangeEvent<string>) => {
@@ -319,6 +332,8 @@ const ProductForm = ({ product }: { product?: Product }) => {
     data.append("isDeleted", JSON.stringify(formData.isDeleted));
     data.append("category", formData.category);
     data.append("stock", formData.stock.toString());
+    data.append("spinActive", formData.spinActive.toString());
+    data.append("spinCostIds", JSON.stringify(formData.spinCostIds));
 
     // Upload banner if it's a new file
     if (formData.banner && typeof formData.banner !== "string") {
@@ -533,8 +548,52 @@ const ProductForm = ({ product }: { product?: Product }) => {
               />
             }
             label="In Stock"
+            sx={{ color: "#D1D5DB", display: "block" }}
+          />
+
+          {/* Spin Active (Boolean) */}
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="spinActive"
+                checked={formData.spinActive}
+                onChange={handleCheckboxChange}
+                sx={{ color: "#E5E7EB" }}
+              />
+            }
+            label="Spin Active"
             sx={{ color: "#D1D5DB" }}
           />
+
+          {/* Spin Cost IDs Selector */}
+          {formData.spinActive && (
+            <div className="mb-4">
+              <label className="block mb-2 text-white">
+                Select Cost IDs for Spin
+              </label>
+              <div className="grid grid-cols-2 gap-2">
+                {formData.cost
+                  .filter((costItem) => costItem.id)
+                  .sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
+                  .map((costItem, index) => (
+                    <FormControlLabel
+                      key={index}
+                      control={
+                        <Checkbox
+                          checked={formData.spinCostIds.includes(costItem.id)}
+                          onChange={(e) =>
+                            handleSpinCostChange(costItem.id, e.target.checked)
+                          }
+                          sx={{ color: "#E5E7EB" }}
+                        />
+                      }
+                      label={`${costItem.amount} - $${costItem.price}`}
+                      sx={{ color: "#D1D5DB" }}
+                    />
+                  ))}
+              </div>
+            </div>
+          )}
 
           {/* Main Image Upload */}
           <div className="mb-4">

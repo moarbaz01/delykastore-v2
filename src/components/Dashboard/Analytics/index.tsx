@@ -82,6 +82,7 @@ const Analytics = () => {
           console.error("Failed to fetch analytics data");
           return;
         }
+
         setAnalyticsData({
           ...response.data,
         });
@@ -341,9 +342,8 @@ const Analytics = () => {
                 <ListItem key={index} className="hover:bg-gray-700 rounded">
                   <ListItemText
                     primary={product.productDetails.name}
-                    secondary={`$${product.totalSales.toFixed(2)} • ${
-                      product.count
-                    } orders`}
+                    secondary={`$${product.totalSales.toFixed(2)} • ${product.count
+                      } orders`}
                     primaryTypographyProps={{ className: "text-gray-200" }}
                     secondaryTypographyProps={{ className: "text-gray-400" }}
                   />

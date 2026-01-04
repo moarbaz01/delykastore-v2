@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { FaGift } from "react-icons/fa";
 
 const Products = ({ allProducts, productsList, ghorProductlist }) => {
   const router = useRouter();
@@ -53,6 +54,10 @@ const Products = ({ allProducts, productsList, ghorProductlist }) => {
       console.log(error);
       toast.error("Failed to delete product");
     }
+  };
+
+  const handleSpins = (id: string) => {
+    router.push(`/dashboard/products/spin/${id}`);
   };
 
   // Filter products based on search input
@@ -133,6 +138,12 @@ const Products = ({ allProducts, productsList, ghorProductlist }) => {
                     {product.category}
                   </TableCell>
                   <TableCell>
+                    <IconButton
+                      onClick={() => handleSpins(product._id)}
+                      sx={{ color: "#f6c204" }}
+                    >
+                      <FaGift />
+                    </IconButton>
                     <IconButton
                       onClick={() => handleEdit(product._id)}
                       sx={{ color: "#60A5FA" }}

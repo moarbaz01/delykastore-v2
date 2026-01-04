@@ -31,6 +31,8 @@ const productSchema = z.object({
   game: z.string(),
   isApi: z.boolean().optional(),
   stock: z.boolean().optional(),
+  spinActive: z.boolean().optional(),
+  spinCostIds: z.array(z.string()).optional(),
   image: z.any(),
 });
 
@@ -68,9 +70,11 @@ export async function POST(req: NextRequest) {
         rawData[key] = JSON.parse(value.toString());
       } else if (key === "slides") {
         rawData[key] = JSON.parse(value.toString());
+      } else if (key === "spinCostIds") {
+        rawData[key] = JSON.parse(value.toString());
       } else if (value instanceof File) {
         rawData[key] = value;
-      } else if (key === "isApi" || key === "stock") {
+      } else if (key === "isApi" || key === "stock" || key === "spinActive") {
         rawData[key] = value === "true";
       } else {
         rawData[key] = value;
@@ -214,9 +218,11 @@ export async function PUT(req: NextRequest) {
         rawData[key] = JSON.parse(value.toString());
       } else if (key === "slides") {
         rawData[key] = JSON.parse(value.toString());
+      } else if (key === "spinCostIds") {
+        rawData[key] = JSON.parse(value.toString());
       } else if (value instanceof File) {
         rawData[key] = value;
-      } else if (key === "isApi" || key === "stock") {
+      } else if (key === "isApi" || key === "stock" || key === "spinActive") {
         rawData[key] = value === "true";
       } else {
         rawData[key] = value;
