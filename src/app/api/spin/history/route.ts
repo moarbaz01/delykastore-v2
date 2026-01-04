@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
 
     // If the user is not authenticated, return Unauthorized
     if (!token) {
-      return NextResponse.json({ message: "Unauthorized" });
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const { searchParams } = new URL(req.url);
@@ -89,10 +89,10 @@ export async function GET(req: NextRequest) {
       page,
       limit,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Spin history error:", error);
     return NextResponse.json(
-      { error: "Failed to fetch spin history" },
+      { error: "Failed to fetch spin history", details: error.message },
       { status: 500 }
     );
   }
