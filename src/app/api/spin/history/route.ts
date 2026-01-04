@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/database";
 import { SpinTransaction } from "@/models/spin.transaction.model";
 import { Order } from "@/models/order.model";
+import "@/models/product.model";
 import { getToken } from "next-auth/jwt";
 
 export async function GET(req: NextRequest) {
@@ -63,9 +64,11 @@ export async function GET(req: NextRequest) {
     // Get order details for each transaction
     const enrichedTransactions = await Promise.all(
       spinTransactions.map(async (spin) => {
-        const order = await Order.findOne({ transactionId: spin.transactionId })
+        const order = (await Order.findOne({
+          transactionId: spin.transactionId,
+        })
           .select("user gameCredentials amount")
-          .lean() as any;
+          .lean()) as any;
 
         return {
           _id: spin._id,
