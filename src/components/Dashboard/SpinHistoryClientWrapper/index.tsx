@@ -32,7 +32,7 @@ const SpinHistoryClientWrapper = () => {
 
   useEffect(() => {
     fetchSpinHistory();
-  }, [searchParams]);
+  }, [searchParams.toString()]);
 
   return (
     <SpinHistory
