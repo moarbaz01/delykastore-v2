@@ -193,14 +193,25 @@ export async function POST(req: Request) {
     }
     await order.save();
 
+    console.log("first");
+
     // Create spin transaction if costId is in spinCostIds and spinActive is true
-    if (order.costId && order.product?.spinActive && order.product?.spinCostIds?.includes(order.costId)) {
-      await SpinTransaction.create({
+    if (
+      order.costId &&
+      order.product?.spinActive &&
+      order.product?.spinCostIds?.includes(order.costId)
+    ) {
+      const res = await SpinTransaction.create({
         transactionId: order.transactionId,
         productId: order.product._id,
+        userId: order.gameCredentials.userId,
+        zoneId: order.gameCredentials.zoneId,
+        costId: order.costId,
         spin: 1,
         isUsed: false,
       });
+
+      console.log("spin response", res);
     }
 
     return NextResponse.json(
