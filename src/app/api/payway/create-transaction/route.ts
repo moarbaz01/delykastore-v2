@@ -54,7 +54,7 @@ export async function POST(req: Request) {
       if (!coupon) {
         return NextResponse.json(
           { message: "Invalid Coupon Code" },
-          { status: 400 }
+          { status: 400 },
         );
       }
       couponDetails = {
@@ -119,6 +119,7 @@ export async function POST(req: Request) {
       message: "Successfully Top-Up",
       price: roundedAmount.toFixed(2),
       gameName: name,
+      productId: productId,
       pack: orderDetails,
       ...(zoneId && { zoneId: zoneId }),
       ...(userId && { userId: userId }),
@@ -172,13 +173,13 @@ export async function POST(req: Request) {
         ...params,
         hash,
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("Payment creation error:", error);
     return NextResponse.json(
       { error: "Error creating payment" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
