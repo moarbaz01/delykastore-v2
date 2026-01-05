@@ -56,7 +56,7 @@ export async function POST(req: Request) {
     if (status !== 0) {
       return NextResponse.json(
         { message: "Transaction not approved" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -71,7 +71,7 @@ export async function POST(req: Request) {
     if (order.transactionId !== tran_id) {
       return NextResponse.json(
         { message: "Invalid transaction ID" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -80,28 +80,28 @@ export async function POST(req: Request) {
     if (!checkValidTrans) {
       return NextResponse.json(
         { message: "Transaction not found" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!isValidTransaction(checkValidTrans)) {
       return NextResponse.json(
         { message: "Transaction not approved" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (checkValidTrans.data.apv !== apv) {
       return NextResponse.json(
         { message: "Transaction is not valid" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (order.status === "success") {
       return NextResponse.json(
         { message: "Order already placed" },
-        { status: 200 }
+        { status: 200 },
       );
     }
 
@@ -161,7 +161,7 @@ export async function POST(req: Request) {
 
         return NextResponse.json(
           { message: "Order Failed", error: orderResponse?.error },
-          { status: 500 }
+          { status: 500 },
         );
       }
     }
@@ -181,7 +181,7 @@ export async function POST(req: Request) {
       const updateResult = await Coupon.findOneAndUpdate(
         { coupon: order.couponCode },
         { $inc: { timesUsed: 1 } },
-        { new: true }
+        { new: true },
       );
 
       if (!updateResult) {
@@ -193,36 +193,39 @@ export async function POST(req: Request) {
     }
     await order.save();
 
-    console.log("first");
-
     // Create spin transaction if costId is in spinCostIds and spinActive is true
     if (
       order.costId &&
       order.product?.spinActive &&
       order.product?.spinCostIds?.includes(order.costId)
     ) {
-      const res = await SpinTransaction.create({
-        transactionId: order.transactionId,
-        productId: order.product._id,
-        userId: order.gameCredentials.userId,
-        zoneId: order.gameCredentials.zoneId,
-        costId: order.costId,
-        spin: 1,
-        isUsed: false,
-      });
+      try {
+        const res = await SpinTransaction.create({
+          transactionId: order.transactionId,
+          productId: order.product._id,
+          userId: order.gameCredentials.userId,
+          zoneId: order.gameCredentials.zoneId || null,
+          costId: order.costId,
+          spin: 1,
+          isUsed: false,
+        });
 
-      console.log("spin response", res);
+        console.log("spin response", res);
+      } catch (spinError) {
+        console.error("Failed to create spin transaction:", spinError);
+        // Don't fail the entire payment process for spin transaction errors
+      }
     }
 
     return NextResponse.json(
       { message: "Order Placed", order },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error: any) {
     console.error("Error in payment callback:", error);
     return NextResponse.json(
       { message: "Error processing payment", error: error?.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
