@@ -45,13 +45,7 @@ const SpinWheelContent: React.FC = () => {
       setPrizes(Array.isArray(res.data) ? res.data : []);
       checkSpin();
       setLoading(false);
-    } catch (error) {
-      if (
-        error.response?.data?.error === "Spin is not active for this product"
-      ) {
-        router.push("/");
-        return;
-      }
+    } catch {
       toast.error("Failed to fetch prizes");
     }
   };
@@ -67,10 +61,9 @@ const SpinWheelContent: React.FC = () => {
 
   const fetchSpinResult = async () => {
     if (isSpinning || remainingSpins <= 0) return;
-
     try {
       const res = await axios.post("/api/spin", { transactionId });
-      setSpinResult(res.data.prize); // backend decides
+      setSpinResult(res.data.prize);
     } catch {
       toast.error("Spin failed");
     }
@@ -80,55 +73,45 @@ const SpinWheelContent: React.FC = () => {
     fetchPrizes();
   }, []);
 
-  /* ---------------- SPIN WHEN RESULT ARRIVES ---------------- */
-
   useEffect(() => {
     if (spinResult && prizes.length) {
       spinWheel(spinResult);
     }
   }, [spinResult, prizes]);
 
-  /* ---------------- SPIN LOGIC (FIXED) ---------------- */
+  /* ---------------- SPIN LOGIC ---------------- */
 
   const segmentAngle = prizes.length ? 360 / prizes.length : 0;
 
   const spinWheel = (winningPrize: Prize) => {
-    if (isSpinning || remainingSpins <= 0 || !prizes.length) return;
+    if (isSpinning || remainingSpins <= 0) return;
 
-    const winningIndex = prizes.findIndex((p) => p.id === winningPrize.id);
-
-    if (winningIndex === -1) {
-      toast.error("Invalid prize");
-      return;
-    }
+    const winningIndex = prizes.findIndex(p => p.id === winningPrize.id);
+    if (winningIndex === -1) return;
 
     setIsSpinning(true);
     setShowResult(false);
 
     const fullSpins = 5;
-    const segmentAngle = 360 / prizes.length;
-    
-    // Calculate the exact angle needed to align winning segment center with pointer
-    const segmentCenterAngle = winningIndex * segmentAngle + segmentAngle / 2;
-    // Since SVG 0° is at 3 o'clock and pointer is at 12 o'clock (270°)
-    const targetRotation = rotation + 360 * fullSpins + (270 - segmentCenterAngle) - (rotation % 360);
+    const centerAngle = winningIndex * segmentAngle + segmentAngle / 2;
+    const targetRotation =
+      rotation + fullSpins * 360 + (270 - centerAngle) - (rotation % 360);
 
     setRotation(targetRotation);
-
-    setRemainingSpins((prev) => Math.max(prev - 1, 0));
+    setRemainingSpins(prev => Math.max(prev - 1, 0));
 
     setTimeout(() => {
       setIsSpinning(false);
       setCurrentPrize(winningPrize.name);
       setShowResult(true);
 
-      const timeString = new Date().toLocaleTimeString("en-US", {
+      const time = new Date().toLocaleTimeString("en-US", {
         hour: "2-digit",
         minute: "2-digit",
       });
 
-      setRecentSpins((prev) => [
-        { time: timeString, result: winningPrize.name },
+      setRecentSpins(prev => [
+        { time, result: winningPrize.name },
         ...prev.slice(0, 9),
       ]);
 
@@ -138,31 +121,21 @@ const SpinWheelContent: React.FC = () => {
 
   /* ---------------- SVG SEGMENTS ---------------- */
 
-  const createWheelSegment = (
-    prize: Prize,
-    index: number,
-    isMobile = false
-  ) => {
+  const createWheelSegment = (prize: Prize, index: number, mobile = false) => {
     const startAngle = index * segmentAngle;
     const endAngle = (index + 1) * segmentAngle;
+
+    const center = mobile ? 150 : 175;
+    const radius = mobile ? 140 : 165;
+    const textRadius = mobile ? 70 : 85;
+
     const startRad = (startAngle * Math.PI) / 180;
     const endRad = (endAngle * Math.PI) / 180;
-
-    const center = isMobile ? 150 : 175;
-    const radius = isMobile ? 140 : 165;
-    const textRadius = isMobile ? 70 : 85;
 
     const x1 = center + radius * Math.cos(startRad);
     const y1 = center + radius * Math.sin(startRad);
     const x2 = center + radius * Math.cos(endRad);
     const y2 = center + radius * Math.sin(endRad);
-
-    const pathData = `
-      M ${center} ${center}
-      L ${x1} ${y1}
-      A ${radius} ${radius} 0 0 1 ${x2} ${y2}
-      Z
-    `;
 
     const textAngle = startAngle + segmentAngle / 2;
     const textX = center + textRadius * Math.cos((textAngle * Math.PI) / 180);
@@ -171,7 +144,7 @@ const SpinWheelContent: React.FC = () => {
     return (
       <g key={prize.id}>
         <path
-          d={pathData}
+          d={`M ${center} ${center} L ${x1} ${y1} A ${radius} ${radius} 0 0 1 ${x2} ${y2} Z`}
           fill={prize.color}
           stroke="#252F45"
           strokeWidth="2"
@@ -182,7 +155,7 @@ const SpinWheelContent: React.FC = () => {
           textAnchor="middle"
           dominantBaseline="middle"
           transform={`rotate(${textAngle}, ${textX}, ${textY})`}
-          fontSize={isMobile ? 12 : 14}
+          fontSize={mobile ? 12 : 14}
           fontWeight="bold"
         >
           {prize.name}
@@ -191,214 +164,113 @@ const SpinWheelContent: React.FC = () => {
     );
   };
 
-  if (loading) {
-    return <Loader />;
-  }
+  if (loading) return <Loader />;
 
   return (
-    <div className="min-h-screen bg-gray-900 text-white p-4 overflow-x-hidden">
+    <div className="min-h-screen bg-gray-900 text-white p-4">
       <div className="max-w-6xl mx-auto">
+
         {/* Header */}
-        <div className="text-center mb-6 lg:mb-8">
-          <h1 className="text-2xl lg:text-4xl font-bold mb-2 text-primary">
-            Lucky Spin / បង្វិលឱកាសឈ្នះរង្វាន់
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-extrabold tracking-wide">
+            <span className="text-primary">Lucky</span>{" "}
+            <span className="text-white">Spin</span>
           </h1>
-          <div className="flex justify-center gap-2 lg:gap-4 mt-4 flex-wrap">
-            <button className="px-3 lg:px-4 py-2 bg-secondary hover:bg-secondary/80 rounded-lg transition-colors flex items-center gap-2 text-sm lg:text-base">
-              <FaTimes /> Back to Home
-            </button>
-            <button className="px-3 lg:px-4 py-2 bg-card-bg hover:bg-card-bg/80 rounded-lg transition-colors flex items-center gap-2 text-sm lg:text-base">
-              <FaGift /> Rules / ច្បាប់
-            </button>
-          </div>
+          <p className="text-gray-400 mt-2 text-sm">
+            Spin the wheel & unlock rewards
+          </p>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-4 lg:gap-6">
-          {/* Main Wheel Section */}
-          <div className="lg:col-span-2">
-            <div className="bg-secondary rounded-2xl p-4 lg:p-6 shadow-2xl border border-gray-700">
-              {/* Wheel Container */}
-              <div className="relative flex justify-center mb-4 lg:mb-6">
-                <div className="relative">
-                  {/* Pointer */}
-                  <div className="absolute -top-2 left-1/2 transform -translate-x-1/2 -translate-y-2 z-20">
-                    <div className="w-0 h-0 border-l-[12px] lg:border-l-[16px] border-l-transparent border-r-[12px] lg:border-r-[16px] border-r-transparent border-b-[24px] lg:border-b-[32px] border-b-primary"></div>
-                  </div>
+        <div className="grid lg:grid-cols-3 gap-6">
 
-                  {/* Mobile Wheel */}
-                  <div className="lg:hidden">
-                    <div
-                      ref={wheelRef}
-                      className="relative w-[300px] h-[300px] transition-transform duration-[4000ms] ease-out"
-                      style={{ transform: `rotate(${rotation}deg)` }}
-                    >
-                      <svg width="300" height="300" className="drop-shadow-lg">
-                        {prizes.map((prize, index) =>
-                          createWheelSegment(prize, index, true)
-                        )}
-                        <circle
-                          cx="150"
-                          cy="150"
-                          r="20"
-                          fill="#252F45"
-                          stroke="#ff962d"
-                          strokeWidth="3"
-                        />
-                      </svg>
-                    </div>
-                  </div>
+          {/* Wheel */}
+          <div className="lg:col-span-2 bg-secondary/80 backdrop-blur-md rounded-2xl p-6 shadow-[0_20px_60px_rgba(0,0,0,0.6)] border border-white/10">
+            <div className="relative flex justify-center mb-6">
 
-                  {/* Desktop Wheel */}
-                  <div className="hidden lg:block">
-                    <div
-                      ref={wheelRef}
-                      className="relative w-[350px] h-[350px] transition-transform duration-[4000ms] ease-out"
-                      style={{ transform: `rotate(${rotation}deg)` }}
-                    >
-                      <svg width="350" height="350" className="drop-shadow-lg">
-                        {prizes.map((prize, index) =>
-                          createWheelSegment(prize, index, false)
-                        )}
-                        <circle
-                          cx="175"
-                          cy="175"
-                          r="20"
-                          fill="#252F45"
-                          stroke="#ff962d"
-                          strokeWidth="4"
-                        />
-                      </svg>
-                    </div>
-                  </div>
-                </div>
+              {/* Pointer */}
+              <div className="absolute -top-4 left-1/2 -translate-x-1/2 z-20">
+                <div className="w-0 h-0 border-l-[16px] border-l-transparent border-r-[16px] border-r-transparent border-b-[32px] border-b-primary drop-shadow-lg" />
               </div>
 
-              {/* Spin Controls */}
-              <div className="text-center space-y-4">
-                <button
-                  onClick={fetchSpinResult}
-                  disabled={isSpinning || remainingSpins <= 0}
-                  className="px-8 py-4 bg-primary hover:bg-primary/80 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-xl font-bold text-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg"
-                >
-                  {isSpinning ? "Spinning..." : "SPIN / បង្វិល"}
-                </button>
-
-                <div className="space-y-2">
-                  <p className="text-lg">
-                    {isSpinning
-                      ? "Spinning the wheel..."
-                      : showResult
-                      ? `You won: ${currentPrize}!`
-                      : "Ready to spin!"}
-                  </p>
-                  <p className="text-sm text-gray-400">
-                    Remaining Spins: {remainingSpins}
-                  </p>
-                </div>
-
-                {/* <button
-                  onClick={resetSpins}
-                  className="px-4 py-2 bg-red-600 hover:bg-red-700 rounded-lg transition-colors flex items-center gap-2 mx-auto"
-                >
-                  <FaRedo /> Reset Spins
-                </button> */}
+              <div
+                ref={wheelRef}
+                className="transition-transform duration-[4000ms] ease-out"
+                style={{ transform: `rotate(${rotation}deg)` }}
+              >
+                <svg width="350" height="350" className="drop-shadow-xl">
+                  <circle
+                    cx="175"
+                    cy="175"
+                    r="160"
+                    fill="none"
+                    stroke="rgba(255,255,255,0.08)"
+                    strokeWidth="6"
+                  />
+                  {prizes.map((p, i) => createWheelSegment(p, i))}
+                  <circle cx="175" cy="175" r="26" fill="#111827" />
+                  <circle cx="175" cy="175" r="20" fill="#252F45" stroke="#ff962d" strokeWidth="3" />
+                  <text x="175" y="180" textAnchor="middle" fontSize="10" fill="#ff962d" fontWeight="bold">
+                    SPIN
+                  </text>
+                </svg>
               </div>
+            </div>
 
-              {/* Result Modal */}
-              {showResult && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
-                  <div className="bg-secondary rounded-2xl p-6 max-w-sm w-full text-center shadow-2xl border border-primary/20">
-                    <FaTrophy className="text-6xl text-primary mx-auto mb-4" />
-                    <h3 className="text-2xl font-bold mb-2">
-                      Congratulations!
-                    </h3>
-                    <p className="text-xl mb-4">You won: {currentPrize}</p>
-                    <button
-                      onClick={() => setShowResult(false)}
-                      className="px-6 py-2 bg-primary hover:bg-primary/80 rounded-lg transition-colors"
-                    >
-                      Close
-                    </button>
-                  </div>
-                </div>
-              )}
+            <div className="text-center space-y-3">
+              <button
+                onClick={fetchSpinResult}
+                disabled={isSpinning || remainingSpins <= 0}
+                className="px-8 py-4 bg-primary rounded-xl font-bold tracking-wide shadow-[0_10px_30px_rgba(255,150,45,0.35)] hover:shadow-[0_15px_40px_rgba(255,150,45,0.5)] transition active:scale-95 disabled:bg-gray-600"
+              >
+                {isSpinning ? "Good luck..." : "TRY YOUR LUCK"}
+              </button>
+
+              <p className="text-sm text-gray-400">
+                Remaining Spins: {remainingSpins}
+              </p>
             </div>
           </div>
 
-          {/* Prizes List */}
-          <div className="bg-secondary rounded-2xl p-6 shadow-xl border border-gray-700">
-            <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-              <FaGift /> Prizes / រង្វាន់
+          {/* Prizes */}
+          <div className="bg-secondary rounded-2xl p-6 border border-gray-700">
+            <h2 className="font-bold text-xl mb-4 flex items-center gap-2">
+              <FaGift /> Prizes
             </h2>
-            <div className="space-y-3  overflow-y-auto">
-              {prizes.map((prize) => (
-                <div
-                  key={prize.id}
-                  className="flex items-center justify-between p-3 bg-secondary/50 rounded-lg hover:bg-secondary/70 transition-colors"
-                >
-                  <div className="flex items-center gap-3">
-                    <div
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-sm"
-                      style={{ backgroundColor: prize.color }}
-                    ></div>
-                    <span className="text-sm font-medium">{prize.name}</span>
-                  </div>
-                  <span className="text-xs text-gray-400">
-                    Win Rate: {prize.winRate}%
-                  </span>
+            <div className="space-y-3">
+              {prizes.map(p => (
+                <div key={p.id} className="relative flex justify-between p-3 rounded-lg bg-secondary/50">
+                  <span className="absolute left-0 top-0 h-full w-1" style={{ backgroundColor: p.color }} />
+                  <span>{p.name}</span>
+                  <span className="text-xs text-gray-400">{p.winRate}%</span>
                 </div>
               ))}
             </div>
           </div>
+        </div>
 
-          {/* Side Panel */}
-          <div className="space-y-6">
-            {/* Recent Spins */}
-            <div className="bg-secondary rounded-2xl p-6 shadow-xl border border-gray-700">
-              <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold flex items-center gap-2">
-                  <FaHistory /> Recent Spins / ប្រវត្តិបង្វិល
-                </h2>
-                {recentSpins.length > 0 && (
-                  <button
-                    // onClick={clearHistory}
-                    className="px-3 py-1 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm transition-colors"
-                  >
-                    Clear
-                  </button>
-                )}
-              </div>
-
-              {recentSpins.length > 0 ? (
-                <div className="space-y-2">
-                  <div className="grid grid-cols-2 text-sm text-gray-400 pb-2 border-b border-gray-700">
-                    <span>Time</span>
-                    <span>Result</span>
-                  </div>
-                  {recentSpins.map((spin, index) => (
-                    <div key={index} className="grid grid-cols-2 text-sm py-1">
-                      <span className="text-gray-300">{spin.time}</span>
-                      <span className="text-primary">{spin.result}</span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-gray-400 text-center py-4">No spins yet</p>
-              )}
+        {/* Result Modal */}
+        {showResult && (
+          <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div className="bg-secondary rounded-2xl p-6 shadow-[0_0_60px_rgba(255,150,45,0.25)] animate-[scaleIn_0.25s_ease-out]">
+              <FaTrophy className="text-primary text-6xl mx-auto mb-4" />
+              <h3 className="text-2xl font-bold text-center">You Won!</h3>
+              <p className="text-center mt-2">{currentPrize}</p>
+              <button onClick={() => setShowResult(false)} className="mt-4 w-full bg-primary py-2 rounded-lg">
+                Close
+              </button>
             </div>
           </div>
-        </div>
+        )}
+
       </div>
     </div>
   );
 };
 
-const SpinWheel: React.FC = () => {
-  return (
-    <Suspense fallback={<Loader />}>
-      <SpinWheelContent />
-    </Suspense>
-  );
-};
+const SpinWheel = () => (
+  <Suspense fallback={<Loader />}>
+    <SpinWheelContent />
+  </Suspense>
+);
 
 export default SpinWheel;
