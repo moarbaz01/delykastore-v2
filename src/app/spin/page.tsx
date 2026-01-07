@@ -5,7 +5,7 @@ import axios from "axios";
 import { useRouter, useSearchParams } from "next/navigation";
 import React, { useState, useRef, useEffect, Suspense } from "react";
 import toast from "react-hot-toast";
-import { FaTrophy, FaGift, FaHistory, FaTimes } from "react-icons/fa";
+import { FaTrophy, FaGift } from "react-icons/fa";
 
 interface Prize {
   id: number;
