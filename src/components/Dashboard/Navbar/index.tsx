@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Drawer } from "@mui/material";
 import {
   FaBox,
+  FaHistory,
   FaList,
   FaShoppingCart,
   FaTachometerAlt,
@@ -43,6 +44,7 @@ const links = [
     label: "Balance",
     icon: Wallet,
   },
+  { href: "/dashboard/spin-history", label: "Spin History", icon: FaHistory },
   { href: "/dashboard/coupons", label: "Coupons", icon: DiscountOutlined },
 ];
 
