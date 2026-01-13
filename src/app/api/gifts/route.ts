@@ -81,7 +81,10 @@ export async function GET(req: Request) {
       const gift = await Gift.findById(id).populate("productId", "name").lean();
 
       if (!gift) {
-        return NextResponse.json({ error: "Gift not found" }, { status: 404 });
+        return NextResponse.json(
+          { error: "Gift not found", isActive: false },
+          { status: 404 },
+        );
       }
 
       return NextResponse.json(gift);

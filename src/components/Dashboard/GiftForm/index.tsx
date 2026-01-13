@@ -10,6 +10,8 @@ import {
     Button,
     IconButton,
     Typography,
+    Switch,
+    FormControlLabel,
 } from "@mui/material";
 import { Delete, Save, ArrowBack } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
@@ -172,6 +174,23 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
             return;
         }
 
+        if (!formData.bannerText) {
+            toast.error("Please enter banner text");
+            return;
+        }
+
+        if (formData.wageringLevels.length === 0) {
+            toast.error("Please add at least one wagering level");
+            return;
+        }
+
+
+        if (!formData.startDate || !formData.endDate) {
+            toast.error("Please select start and end dates");
+            return;
+        }
+
+
         // Check if at least one level has selected costs
         const hasSelectedCosts = Object.values(selectedCosts).some(costs => costs.length > 0);
 
@@ -236,7 +255,7 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
             </div>
 
             {/* Form */}
-            <div className="bg-gray-800 rounded-xl p-6 max-w-4xl">
+            <div className="bg-gray-800 rounded-xl p-4 max-w-4xl">
                 <form onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Product Selection */}
@@ -313,6 +332,34 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
                                 },
                             }}
                         />
+
+                        {/* Active Status Toggle */}
+                        <div className="mt-6">
+                            <FormControlLabel
+                                control={
+                                    <Switch
+                                        checked={formData.isActive}
+                                        onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
+                                        sx={{
+                                            '& .MuiSwitch-switchBase.Mui-checked': {
+                                                color: '#ff962d',
+                                            },
+                                            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+                                                backgroundColor: '#ff962d',
+                                            },
+                                        }}
+                                    />
+                                }
+                                label={
+                                    <Typography className="text-gray-300">
+                                        Active Status
+                                    </Typography>
+                                }
+                            />
+                            <Typography variant="caption" className="text-gray-400 block mt-1">
+                                Enable or disable this gift campaign
+                            </Typography>
+                        </div>
 
                         {/* Wagering Levels */}
                         <div className="mt-6">
@@ -487,19 +534,21 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
                                                         />
                                                     </div>
                                                 )}
-                                                <div className="flex-1 ml-2">
-                                                    <Typography variant="body2" className="text-gray-300">Amount: {cost.amount}</Typography>
-                                                </div>
-                                                <div className="flex-1">
-                                                    <Typography variant="body2" className="text-gray-300">Price: ${cost.price}</Typography>
-                                                </div>
-                                                {cost.category && (
-                                                    <div className="flex-shrink-0">
-                                                        <Typography variant="caption" className="text-gray-400 bg-gray-700 px-2 py-1 rounded text-xs">
-                                                            {cost.category}
-                                                        </Typography>
+                                                <div>
+                                                    <div className="flex-1 ml-2">
+                                                        <Typography variant="body2" className="text-gray-300">Amount: {cost.amount}</Typography>
                                                     </div>
-                                                )}
+                                                    <div className="flex-1">
+                                                        <Typography variant="body2" className="text-gray-300">Price: ${cost.price}</Typography>
+                                                    </div>
+                                                    {cost.category && (
+                                                        <div className="flex-shrink-0">
+                                                            <Typography variant="caption" className="text-gray-400 bg-gray-700 px-2 py-1 rounded text-xs">
+                                                                {cost.category}
+                                                            </Typography>
+                                                        </div>
+                                                    )}
+                                                </div>
                                             </div>
                                         ))}
                                     </>

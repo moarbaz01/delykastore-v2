@@ -177,6 +177,11 @@ export async function GET(req: Request) {
         const gift = (await Gift.findOne({
           productId: id,
           isActive: true,
+          startDate: { $lte: new Date() },
+          $or: [
+            { endDate: { $gte: new Date() } },
+            { endDate: { $exists: false } },
+          ],
         }).lean()) as any;
 
         let product;
