@@ -1,5 +1,6 @@
 export const dynamic = "force-dynamic";
 import { dbConnect } from "@/lib/database";
+import { Gift } from "@/models/gift.model";
 import { Product } from "@/models/product.model";
 import { cloudinaryDelete, cloudinaryUpload } from "@/utils/cloudinary";
 import { encryptData } from "@/utils/encryption";
@@ -24,7 +25,7 @@ const productSchema = z.object({
       category: z.string().optional(),
       note: z.string().optional(),
       image: z.any().optional(),
-    })
+    }),
   ),
   slides: z.array(z.string()).optional(),
   banner: z.any().optional(),
@@ -39,7 +40,7 @@ const productSchema = z.object({
 // Helper function to upload files to Cloudinary
 async function uploadFiles(
   files: (File | string)[],
-  folder: string
+  folder: string,
 ): Promise<string[]> {
   const uploadPromises = files.map(async (file) => {
     if (typeof file === "string") {
@@ -108,12 +109,12 @@ export async function POST(req: NextRequest) {
           if (costItem.image instanceof File) {
             const { url } = await cloudinaryUpload(
               costItem.image,
-              "/costImages"
+              "/costImages",
             );
             return { ...costItem, image: url };
           }
           return costItem;
-        })
+        }),
       ),
     ]);
 
@@ -133,7 +134,7 @@ export async function POST(req: NextRequest) {
     console.error("POST Error:", error);
     return NextResponse.json(
       { error: error.message || "Failed to create product" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }
@@ -153,7 +154,7 @@ export async function GET(req: Request) {
       if (!products) {
         return NextResponse.json(
           { error: "Product not found" },
-          { status: 404 }
+          { status: 404 },
         );
       }
 
@@ -161,7 +162,7 @@ export async function GET(req: Request) {
       if (grouped === "true" && products.cost) {
         const categories = [
           ...new Set(
-            products.cost.map((item: any) => item.category).filter(Boolean)
+            products.cost.map((item: any) => item.category).filter(Boolean),
           ),
         ];
         const groupedCost = categories.map((category) => ({
@@ -169,11 +170,49 @@ export async function GET(req: Request) {
           items: products.cost
             .filter((item: any) => item.category === category)
             .sort(
-              (a: any, b: any) => parseFloat(a.price) - parseFloat(b.price)
+              (a: any, b: any) => parseFloat(a.price) - parseFloat(b.price),
             ),
         }));
 
-        const product = encryptData({ ...products, groupedCost, categories });
+        const gift = (await Gift.findOne({
+          productId: id,
+          isActive: true,
+        }).lean()) as any;
+
+        let product;
+
+        if (gift) {
+          const newWageringLevels = gift.wageringLevels.map((level) => {
+            const cost = products.cost.filter((cost: any) =>
+              level.costIds.includes(cost.id),
+            );
+            return {
+              ...level,
+              cost,
+            };
+          });
+
+          // Create a new object with costs included in the expected format
+          const giftWithCosts = {
+            ...gift,
+            wagering: newWageringLevels, // Keep wagering for backward compatibility
+            costs: newWageringLevels, // This matches what GiftModal expects
+          };
+
+          product = encryptData({
+            ...products,
+            groupedCost,
+            categories,
+            gift: giftWithCosts,
+          });
+        } else {
+          product = encryptData({
+            ...products,
+            groupedCost,
+            categories,
+            gift: null,
+          });
+        }
 
         return NextResponse.json({ product }, { status: 200 });
       }
@@ -186,7 +225,7 @@ export async function GET(req: Request) {
     console.error("GET Error:", error);
     return NextResponse.json(
       { error: "Failed to retrieve products" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -208,7 +247,7 @@ export async function PUT(req: NextRequest) {
     if (!id) {
       return NextResponse.json(
         { error: "Product ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -267,7 +306,7 @@ export async function PUT(req: NextRequest) {
           if (costItem.image instanceof File) {
             const { url } = await cloudinaryUpload(
               costItem.image,
-              "/costImages"
+              "/costImages",
             );
             return { ...costItem, image: url };
           }
@@ -277,7 +316,7 @@ export async function PUT(req: NextRequest) {
             ...costItem,
             image: costItem.image || existingCostItem?.image || null,
           };
-        })
+        }),
       ),
     ]);
 
@@ -321,7 +360,7 @@ export async function PUT(req: NextRequest) {
     console.error("PUT Error:", error);
     return NextResponse.json(
       { error: error.message || "Failed to update product" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }
@@ -342,7 +381,7 @@ export async function DELETE(req: NextRequest) {
     if (!id || !mongoose.Types.ObjectId.isValid(id)) {
       return NextResponse.json(
         { error: "Valid product ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -457,13 +496,13 @@ export async function DELETE(req: NextRequest) {
             : null,
         ].filter(Boolean),
       },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("DELETE Error:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

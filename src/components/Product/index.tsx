@@ -1,7 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
 import SliderComponent from "../Home/Banner/Component";
 import PaymentForm from "./PaymentForm";
 import UserIdSection from "./UserIdSection";
@@ -14,12 +13,16 @@ import { useCoupon } from "./hooks/useCoupon";
 import { useUserVerification } from "./hooks/useUserVerification";
 import { useOrder } from "./hooks/useOrder";
 import { calculateTotal } from "./utils/productUtils";
+import GiftBox from "../ui/Gift";
+import GiftModal from "../ui/GiftModal";
+import axios from "axios";
 
 declare const AbaPayway: any;
 
 const Product = ({
   name,
   _id,
+  image,
   isDeleted,
   region,
   slides,
@@ -27,6 +30,7 @@ const Product = ({
   isApi,
   stock,
   cost,
+  gift,
   game,
   groupedCost,
   categories,
@@ -39,6 +43,17 @@ const Product = ({
   category: string;
   isApi: boolean;
   stock: true;
+  gift: {
+    isActive: boolean;
+    bannerText: string;
+    costs: any[];
+    features: any[];
+    wageringLevels: {
+      level: number;
+      wagering: number;
+      costIds: string[];
+    }[];
+  };
   slides: string[];
   banner: string;
   game: string;
@@ -54,6 +69,11 @@ const Product = ({
   categories?: string[];
 }) => {
   const state = useProductState(game, region);
+  const [showGiftModal, setShowGiftModal] = useState(false);
+  const [wagering, setWagering] = useState(0);
+
+  // Fetch gifts for this product
+
   const {
     userId,
     setUserId,
@@ -89,14 +109,17 @@ const Product = ({
   const { applyCoupon, removeCoupon: removeCouponUtil } = useCoupon(
     setIsCheckingCoupon,
     setCouponError,
-    setAppliedCoupon
+    setAppliedCoupon,
   );
+
+  const [claimedLevels, setClaimedLevels] = useState<number[]>([]);
+  const [levelsLoading, setLevelLoading] = useState(true);
 
   const { fetchCheckRole } = useUserVerification(
     setLoading,
     setPlayerAvailable,
     setMessage,
-    setErrorMessage
+    setErrorMessage,
   );
 
   const { createOrder: createOrderUtil, isLoading } = useOrder(setPaymentData);
@@ -106,7 +129,7 @@ const Product = ({
   };
 
   const handleSubmitCheckRole = async (
-    e: React.SyntheticEvent<HTMLButtonElement>
+    e: React.SyntheticEvent<HTMLButtonElement>,
   ) => {
     e.preventDefault();
     await fetchCheckRole(userId, zoneId, game, region);
@@ -134,6 +157,51 @@ const Product = ({
       }
     }
   }, [paymentData]);
+
+  // Fetch claimed levels when modal opens
+  useEffect(() => {
+    if (playerAvailable && userId) {
+      fetchClaimedLevels();
+
+    }
+  }, [playerAvailable, userId]);
+
+  const fetchClaimedLevels = async () => {
+    try {
+      setLevelLoading(true);
+      const response = await axios.get("/api/gifts/claimed-levels", {
+        params: {
+          userId,
+          productId: _id,
+        },
+      });
+
+      if (response.data.success) {
+        setClaimedLevels(response.data.claimedLevels || []);
+      }
+    } catch (error) {
+      console.error("Error fetching claimed levels:", error);
+      setClaimedLevels([]);
+    } finally {
+      setLevelLoading(false);
+    }
+  };
+
+  const fetchWageringData = async () => {
+    try {
+      if (!gift || !gift.isActive) return;
+      const res = await axios.get(`/api/gifts/wagering/${userId}`);
+      setWagering(res.data.totalWagered);
+    } catch (error) {
+      console.error("Error fetching wagering data:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (playerAvailable && userId) {
+      fetchWageringData();
+    }
+  }, [playerAvailable, userId]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -164,7 +232,7 @@ const Product = ({
 
   const total = useMemo(
     () => calculateTotal(amountSelected, appliedCoupon),
-    [amountSelected, appliedCoupon]
+    [amountSelected, appliedCoupon],
   );
 
   useEffect(() => {
@@ -191,12 +259,17 @@ const Product = ({
   return (
     <>
       <div
-        className={`grid max-w-screen-xl mx-auto gap-6 md:py-6 sm:px-4 px-4 items-start ${
-          slides.length === 0 && !banner
-            ? "grid-cols-1 justify-center"
-            : "grid-cols-1 lg:grid-cols-3"
-        }`}
+        className={`grid max-w-screen-xl relative mx-auto gap-6 md:py-6 sm:px-4 px-4 items-start ${slides.length === 0 && !banner
+          ? "grid-cols-1 justify-center"
+          : "grid-cols-1 lg:grid-cols-3"
+          }`}
       >
+        {gift && gift.isActive && (
+          <GiftBox
+            disabled={!playerAvailable}
+            onClick={() => setShowGiftModal(true)}
+          />
+        )}
         {/* Banner Section */}
 
         {(slides.length > 0 || banner) && (
@@ -218,12 +291,24 @@ const Product = ({
         )}
         {/* Checkout Section */}
         <div
-          className={`flex flex-col gap-4 ${
-            slides.length === 0 && !banner
-              ? "w-full max-w-3xl mx-auto md:mt-2 mt-4"
-              : "lg:col-span-2"
-          }`}
+          className={`flex flex-col gap-4 ${slides.length === 0 && !banner
+            ? "w-full max-w-3xl mx-auto md:mt-2 mt-4"
+            : "lg:col-span-2"
+            }`}
         >
+          {/* 
+          <div className="flex justify-center flex-col gap-2 items-center">
+            <Image
+              src={image as string}
+              alt="image"
+              width={100}
+              height={100}
+              className="rounded-full"
+            />
+            <p className="text-sm">{name}</p>
+
+          </div> */}
+
           <UserIdSection
             game={game}
             userId={userId}
@@ -272,6 +357,25 @@ const Product = ({
       </div>
 
       <PaymentForm paymentData={paymentData} formRef={formRef} />
+
+      {/* Gift Modal */}
+      {gift && !levelsLoading && (
+        <GiftModal
+          open={showGiftModal}
+          onClose={() => setShowGiftModal(false)}
+          data={{
+            bannerText: gift.bannerText || "Gift this product to a friend",
+            userWagering: 40,
+            wagering: gift?.wageringLevels,
+            productId: _id || "",
+            costs: gift?.costs,
+            features: gift?.features,
+            userId: userId || "",
+            zoneId: zoneId || "",
+            claimedLevels,
+          }}
+        />
+      )}
     </>
   );
 };

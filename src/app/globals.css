@@ -55,3 +55,17 @@ input:-webkit-autofill:focus {
   -webkit-box-shadow: 0 0 0px 1000px #1F2228 inset !important;
   -webkit-text-fill-color: white !important;
 }
+
+/* Custom animations for gift box */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-spin-slow {
+  animation: spin-slow 3s linear infinite;
+}

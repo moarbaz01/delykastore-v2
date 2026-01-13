@@ -9,6 +9,7 @@ import {
   FaUsers,
   FaList,
   FaHistory,
+  FaGift,
 } from "react-icons/fa";
 import { HiMenuAlt1 } from "react-icons/hi"; // Hamburger icon
 import {
@@ -59,6 +60,8 @@ const Sidebar = () => {
       icon: Wallet,
     },
     { href: "/dashboard/coupons", label: "Coupons", icon: DiscountOutlined },
+    { href: "/dashboard/gifts", label: "Gifts", icon: FaGift },
+    { href: "/dashboard/gift-transactions", label: "Gift Transactions", icon: FaHistory },
     { href: "/dashboard/spin-history", label: "Spin History", icon: FaHistory },
   ];
 
@@ -66,17 +69,15 @@ const Sidebar = () => {
     <div className={`relative ${isOpen ? "block" : "hidden"} md:block`}>
       {/* Sidebar background overlay */}
       <div
-        className={`fixed inset-0 bg-black opacity-50 z-10 md:hidden ${
-          isOpen ? "block" : "hidden"
-        }`}
+        className={`fixed inset-0 bg-black opacity-50 z-10 md:hidden ${isOpen ? "block" : "hidden"
+          }`}
         onClick={toggleSidebar}
       ></div>
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 z-20 w-64 h-full overflow-y-auto bg-gradient-to-br bg-gray-800 shadow-xl transition-transform duration-300 transform ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } md:translate-x-0`}
+        className={`fixed top-0 left-0 z-20 w-64 h-full overflow-y-auto bg-gradient-to-br bg-gray-800 shadow-xl transition-transform duration-300 transform ${isOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0`}
       >
         {/* Sidebar Header */}
         <div className="flex items-center justify-between p-6 bg-gray-800">
@@ -112,11 +113,10 @@ const Sidebar = () => {
                 <Link
                   prefetch
                   href={href}
-                  className={`flex items-center p-4 rounded-lg transition-colors ${
-                    pathname === href
-                      ? "bg-gray-700 text-primary"
-                      : "hover:bg-gray-700"
-                  }`}
+                  className={`flex items-center p-4 rounded-lg transition-colors ${pathname === href
+                    ? "bg-gray-700 text-primary"
+                    : "hover:bg-gray-700"
+                    }`}
                 >
                   <Icon className="mr-4 text-lg" />
                   <span className="text-lg">{label}</span>
