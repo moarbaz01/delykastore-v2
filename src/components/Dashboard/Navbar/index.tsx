@@ -4,6 +4,7 @@ import { useState } from "react";
 import { Drawer } from "@mui/material";
 import {
   FaBox,
+  FaGift,
   FaHistory,
   FaList,
   FaShoppingCart,
@@ -38,6 +39,16 @@ const links = [
     href: "/dashboard/categories",
     label: "Categories",
     icon: CategoryOutlined,
+  },
+  {
+    href: "/dashboard/gifts",
+    label: "Gifts",
+    icon: FaGift,
+  },
+  {
+    href: "/dashboard/gift-transactions",
+    label: "Gift Transactions",
+    icon: FaGift,
   },
   {
     href: "/dashboard/balance",
@@ -95,11 +106,10 @@ const Navbar = () => {
                   <li key={href} className="mt-2">
                     <Link
                       href={href}
-                      className={`flex items-center p-4 rounded-lg transition-colors ${
-                        pathname === href
-                          ? "bg-gray-700 text-primary"
-                          : "hover:bg-gray-700"
-                      }`}
+                      className={`flex items-center p-4 rounded-lg transition-colors ${pathname === href
+                        ? "bg-gray-700 text-primary"
+                        : "hover:bg-gray-700"
+                        }`}
                     >
                       <Icon className="mr-4 text-lg" />
                       <span className="text-lg">{label}</span>
