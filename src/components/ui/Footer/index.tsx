@@ -66,7 +66,7 @@ const Footer = () => {
           </div>
 
           <p className="text-sm">
-            Developed & Maintained by <a href="https://t.me/bluetechink" className="font-bold text-primary">Dev Website</a>
+            Developed & Maintained by <a href="https://t.me/bluetechink" className="font-bold text-primary">Bluetech.ink</a>
           </p>
 
           {/* Legal Links Section */}
