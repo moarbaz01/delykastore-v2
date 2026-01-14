@@ -17,7 +17,7 @@ const LogoButton = () => {
         height={100}
         alt="logo"
         className="h-full w-full rounded-full"
-        src="/images/support.png"
+        src="/images/support.jpg"
       />
     </a>
   );
