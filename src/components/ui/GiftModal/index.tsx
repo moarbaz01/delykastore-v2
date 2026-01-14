@@ -1,5 +1,6 @@
+import { cn } from "@/lib/utils";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import {
@@ -53,18 +54,34 @@ export default function GiftModal({
     const [selected, setSelected] = useState("weekly");
     const today = new Date();
     const [isLoading, setIsLoading] = useState(false);
-    // First day of current month
     const firstDayOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
-    const filteredWagering = data.wagering.filter(
+    const filteredWagering = (data.wagering || []).filter(
         (item) => !data.claimedLevels?.includes(item.level),
     );
-    const router = useRouter();
-    const firstWagering = filteredWagering[0]?.wagering || 0;
     const userWagering = data?.userWagering || 0;
-    const progressPercent =
-        firstWagering > 0 ? Math.min((userWagering / firstWagering) * 100, 100) : 0;
 
-    // Last day of current month
+    // Debug logging
+    console.log("GiftModal Data:", {
+        userWagering,
+        wagering: data.wagering,
+        costs: data.costs,
+        claimedLevels: data.claimedLevels,
+        filteredWagering
+    });
+
+    // Find the highest completed wagering level that can be claimed
+    const completedWagering = filteredWagering.filter(item => userWagering >= item.wagering);
+    const highestCompletedWagering = completedWagering.length > 0
+        ? Math.max(...completedWagering.map(item => item.wagering))
+        : 0;
+
+    // Use the highest completed level for button state, or next level if none completed
+    const nextWagering = highestCompletedWagering > 0
+        ? highestCompletedWagering
+        : filteredWagering.find(item => userWagering < item.wagering)?.wagering || filteredWagering[0]?.wagering || 0;
+
+    const progressPercent =
+        nextWagering > 0 ? Math.min((userWagering / nextWagering) * 100, 100) : 0;
     const lastDayOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
     const makeEntry = async () => {
@@ -124,8 +141,8 @@ export default function GiftModal({
     if (!open) return null;
 
     return (
-        <div className="fixed inset-0 z-50 bg-black/70 flex md:items-center items-end justify-center backdrop-blur-sm">
-            <div className="bg-secondary w-full max-w-md h-fit md:rounded-2xl rounded-t-3xl p-3 border border-primary/20 relative overflow-hidden">
+        <div className="fixed inset-0 z-50 bg-black/70 flex items-center  p-3 justify-center backdrop-blur-sm">
+            <div className="bg-secondary w-full max-w-md h-fit rounded-2xl p-3 border border-primary/20 relative overflow-hidden">
                 {/* Decorative background elements */}
                 <div className="absolute top-0 right-0 w-20 h-20  rounded-full blur-xl"></div>
                 <div className="absolute bottom-0 left-0 w-16 h-16  rounded-full blur-lg"></div>
@@ -156,22 +173,22 @@ export default function GiftModal({
 
                 {/* Lottery Ticket Progress */}
                 <div className="mb-3 relative">
-                    <div className="bg-card-bg rounded-lg p-2 border border-gray-600/50">
+                    <div className="bg-card-bg rounded-xl p-3 border border-gray-600/50">
                         <div className="flex items-center justify-between mb-1.5">
                             <div className="flex items-center gap-1.5">
                                 <FaTicketAlt className="text-primary text-xs" />
                                 <span className="text-xs font-semibold text-white">
-                                    ដំណើរការភ្នាល់
+                                    ដំណើរការចំណាយ
                                 </span>
                             </div>
                             <div className="flex items-center gap-2">
-                                {userWagering >= firstWagering ? (
+                                {userWagering >= nextWagering ? (
                                     <FaUnlock className="text-green-400" />
                                 ) : (
                                     <FaLock className="text-yellow-400" />
                                 )}
                                 <span className="text-xs font-bold text-white">
-                                    ${userWagering} / ${firstWagering}
+                                    ${userWagering} / ${nextWagering}
                                 </span>
                             </div>
                         </div>
@@ -203,46 +220,31 @@ export default function GiftModal({
                         </div>
 
                         {/* Level rewards */}
-                        <div className="mt-2 space-y-1">
+                        <div className="mt-2 flex gap-2">
                             {data?.wagering
-                                ?.filter(
-                                    (requirement) =>
-                                        !data.claimedLevels?.includes(requirement.level),
-                                )
-                                ?.map((requirement, index) => {
-                                    const isCompleted = userWagering >= requirement.wagering;
-                                    const currentRequirement = requirement;
+                                ?.filter(r => !data.claimedLevels?.includes(r.level))
+                                ?.map((r, i) => {
+                                    const done = userWagering >= r.wagering;
 
                                     return (
                                         <div
-                                            key={index}
-                                            className={`flex items-center justify-between p-1.5 rounded-md border ${isCompleted
-                                                ? "bg-primary/50 border-primary"
-                                                : "bg-yellow-400/10 border-yellow-400/30"
-                                                }`}
+                                            key={i}
+                                            className={cn(
+                                                "flex justify-between p-1.5 rounded-md border",
+                                                done
+                                                    ? "bg-primary/50 border-primary"
+                                                    : "bg-yellow-400/10 border-yellow-400/30"
+                                            )}
                                         >
-                                            <div className="flex items-center gap-1">
-                                                {isCompleted ? (
-                                                    <FaTrophy className="text-primary text-xs" />
-                                                ) : (
-                                                    <FaLock className="text-yellow-400 text-xs" />
-                                                )}
-                                                <span className="text-xs text-white font-medium">
-                                                    កម្រិត {requirement.level}
-                                                </span>
-                                            </div>
-                                            <span
-                                                className={`text-xs font-bold ${isCompleted ? "text-primary" : "text-yellow-400"
-                                                    }`}
-                                            >
-                                                {isCompleted
-                                                    ? `✓ $${currentRequirement.wagering}`
-                                                    : `🎯 $${currentRequirement.wagering}`}
+
+                                            <span className={cn("text-xs font-bold", done ? "text-white" : "text-yellow-400")}>
+                                                {done ? `✓ $${r.wagering}` : `$${r.wagering}`}
                                             </span>
                                         </div>
                                     );
                                 })}
                         </div>
+
                     </div>
                 </div>
 
@@ -256,23 +258,29 @@ export default function GiftModal({
                             ជ្រើសរើសរង្វាន់របស់អ្នក
                         </span>
                     </div>
-                    <div className="space-y-2">
+                    <div className="space-y-2 rounded-xl bg-card-bg p-4">
                         {data?.costs
                             ?.filter(
                                 ({ level }) => !data.claimedLevels?.includes(parseInt(level)),
                             )
                             ?.map(({ cost, level, wagering }) =>
-                                cost.map((c) => (
-                                    <PrizeOption
-                                        key={c.id}
-                                        amount={c.amount}
-                                        price={c.price}
-                                        level={level}
-                                        active={selected === c.id}
-                                        disabled={userWagering < wagering}
-                                        onClick={() => setSelected(c.id)}
-                                    />
-                                )),
+                                cost.map((c) => {
+                                    const canClaimPrize = userWagering >= wagering;
+                                    return (
+                                        <PrizeOption
+                                            key={c.id}
+                                            amount={c.amount}
+                                            price={c.price}
+                                            image={c.image}
+                                            level={level}
+                                            wagering={wagering}
+                                            active={selected === c.id}
+                                            disabled={userWagering < wagering}
+                                            canClaim={canClaimPrize}
+                                            onClick={() => setSelected(c.id)}
+                                        />
+                                    );
+                                }),
                             )}
                     </div>
                 </div>
@@ -312,17 +320,17 @@ export default function GiftModal({
                     </button>
                     <button
                         onClick={makeEntry}
-                        className={`flex-1 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-1 relative overflow-hidden text-sm ${userWagering >= firstWagering
+                        className={`flex-1 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-1 relative overflow-hidden text-sm ${userWagering >= nextWagering
                             ? "bg-primary text-white hover:from-primary/90 hover:to-accent/90"
                             : "bg-gray-700 text-gray-400 cursor-not-allowed"
                             }`}
-                        disabled={userWagering < firstWagering || isLoading}
+                        disabled={userWagering < nextWagering || isLoading}
                     >
-                        {userWagering >= firstWagering && (
+                        {userWagering >= nextWagering && (
                             <div className="absolute inset-0 bg-white/20 animate-pulse"></div>
                         )}
                         <span className="relative flex items-center gap-1">
-                            {userWagering >= firstWagering ? (
+                            {userWagering >= nextWagering ? (
                                 <>
                                     {isLoading ? (
                                         <div className="w-3 h-3 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -347,42 +355,65 @@ export default function GiftModal({
 
 function PrizeOption({
     amount,
-    level,
     price,
+    image,
     active,
     onClick,
+    wagering,
     disabled,
+    canClaim,
 }: {
     amount: string;
     price: string;
+    image?: string;
     level: string;
+    wagering: number;
     active: boolean;
     onClick: () => void;
     disabled?: boolean;
+    canClaim?: boolean;
 }) {
     return (
         <div
             onClick={disabled ? undefined : onClick}
-            className={`relative border-2 rounded-lg p-1.5 cursor-pointer transition-all duration-300 transform hover:scale-102 overflow-hidden ${active ? "border-primary bg-primary/80" : "border-primary bg-card-bg"
-                }
-                ${disabled ? "cursor-not-allowed opacity-50" : ""}`}
+            className={cn(
+                "relative rounded-xl p-2 bg-card-bg border border-primary cursor-pointer transition-all duration-300 transform overflow-hidden",
+                disabled ? "opacity-50 cursor-not-allowed" : "",
+                active
+                    ? disabled
+                        ? "opacity-50 cursor-not-allowed"
+                        : "bg-primary/80 text-white hover:from-primary/90 hover:to-accent/90"
+                    : "hover:bg-card-bg"
+            )}
+
         >
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between px-2">
                 <div className="flex items-center gap-1">
                     <div>
                         <span className="font-bold text-sm text-white block">{amount}</span>
                         <span className="font-bold text-sm text-white block">
-                            កម្រិត : {level}
+                            កម្រិត : ${wagering}
                         </span>
                     </div>
                 </div>
-                <div className="text-right">
-                    <span
-                        className={`font-bold text-sm ${active ? "text-white" : "text-gray-400"
-                            }`}
-                    >
-                        ${price}
-                    </span>
+
+                <div className="flex items-center  gap-1">
+                    <div className="">
+                        <Image src={image} alt="" width={50} height={50} />
+                    </div>
+                    <div className="flex flex-col items-end ">
+                        {canClaim && !disabled && (
+                            <div className="bg-green-500 absolute top-0 right-0 text-white text-xs font-bold px-2 py-0.5 rounded mb-1">
+                                ទាម្ទេញ
+                            </div>
+                        )}
+                        <span
+                            className={`font-bold text-sm ${active ? "text-white" : "text-gray-400"
+                                }`}
+                        >
+                            ${price}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>

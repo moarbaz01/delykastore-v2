@@ -65,8 +65,12 @@ const Footer = () => {
             </div>
           </div>
 
+          <p className="text-sm">
+            Developed & Maintained by <a href="https://t.me/bluetechink" className="font-bold text-primary">Dev Website</a>
+          </p>
+
           {/* Legal Links Section */}
-          <div className="flex flex-col items-center md:items-end text-sm">
+          <div className="flex flex-col items-center  justify-center md:items-end text-sm">
             <div className="space-x-3">
               <Link href="/privacy" className="hover:underline">
                 Privacy Policy
@@ -76,7 +80,7 @@ const Footer = () => {
                 Terms and Conditions
               </Link>
             </div>
-            <p className="mt-2">
+            <p className="mt-2 ">
               Copyright © {currentYear} - Win Win Topup. All Rights Reserved.
             </p>
           </div>

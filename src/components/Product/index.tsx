@@ -16,6 +16,7 @@ import { calculateTotal } from "./utils/productUtils";
 import GiftBox from "../ui/Gift";
 import GiftModal from "../ui/GiftModal";
 import axios from "axios";
+import { useUserWagering } from "@/hooks/useUserWagering";
 
 declare const AbaPayway: any;
 
@@ -190,7 +191,7 @@ const Product = ({
   const fetchWageringData = async () => {
     try {
       if (!gift || !gift.isActive) return;
-      const res = await axios.get(`/api/gifts/wagering/${userId}`);
+      const res = await axios.get(`/api/gifts/wagering?userId=${userId}&productId=${_id}`);
       setWagering(res.data.totalWagered);
     } catch (error) {
       console.error("Error fetching wagering data:", error);
@@ -230,6 +231,15 @@ const Product = ({
 
   const [groupedCostState, setGroupedCostState] = useState(groupedCost || []);
 
+  const handleOpenGiftModal = () => {
+    if (!gift || !gift.isActive) return;
+    if (!userId || !playerAvailable) {
+      setErrorMessage("Verify your account to claim this gift");
+      return;
+    }
+    setShowGiftModal(true);
+  };
+
   const total = useMemo(
     () => calculateTotal(amountSelected, appliedCoupon),
     [amountSelected, appliedCoupon],
@@ -266,8 +276,7 @@ const Product = ({
       >
         {gift && gift.isActive && (
           <GiftBox
-            disabled={!playerAvailable}
-            onClick={() => setShowGiftModal(true)}
+            onClick={handleOpenGiftModal}
           />
         )}
         {/* Banner Section */}
@@ -365,7 +374,7 @@ const Product = ({
           onClose={() => setShowGiftModal(false)}
           data={{
             bannerText: gift.bannerText || "Gift this product to a friend",
-            userWagering: 40,
+            userWagering: wagering || 0,
             wagering: gift?.wageringLevels,
             productId: _id || "",
             costs: gift?.costs,

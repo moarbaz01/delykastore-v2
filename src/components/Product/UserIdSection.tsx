@@ -66,17 +66,17 @@ const UserIdSection = ({
 
         {message &&
           (game === "magicchess" ? (
-            <p className="text-red-500 rounded-lg font-bold bg-card-bg text-lg p-2 my-1">
+            <p className="text-red-500 rounded-lg font-bold bg-card-bg text-md p-2 my-1">
               {message}
             </p>
           ) : (
-            <p className="text-primary rounded-lg bg-card-bg text-lg p-2 my-1">
+            <p className="text-primary rounded-lg bg-card-bg text-md p-2 my-1">
               USERNAME : {message}
             </p>
           ))}
 
         {errorMessage && (
-          <p className="text-red-400 rounded-lg bg-card-bg text-lg p-2 my-1">
+          <p className="text-red-400 rounded-lg bg-card-bg text-md p-2 my-1">
             {errorMessage}
           </p>
         )}
@@ -90,15 +90,15 @@ const UserIdSection = ({
           "honorofkings",
           "bloodstrike",
         ].includes(game) && (
-          <button
-            type="submit"
-            onClick={handleSubmitCheckRole}
-            disabled={loading}
-            className="bg-primary w-full rounded-lg p-2 text-black md:w-fit md:mx-auto shadow-md font-bold"
-          >
-            {loading ? "Loading..." : "ពិនិត្យ ឈ្មោះ"}
-          </button>
-        )}
+            <button
+              type="submit"
+              onClick={handleSubmitCheckRole}
+              disabled={loading}
+              className="bg-primary w-full rounded-lg p-2 text-black md:w-fit md:mx-auto shadow-md font-bold"
+            >
+              {loading ? "Loading..." : "ពិនិត្យ ឈ្មោះ"}
+            </button>
+          )}
       </form>
     </div>
   );

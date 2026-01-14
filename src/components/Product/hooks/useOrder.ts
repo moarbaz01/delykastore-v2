@@ -75,8 +75,8 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
         costId: amountSelected.id,
         orderDetails: amountSelected.amount,
         orderType: isApi ? "API Order" : "Custom Order",
-        userId,
-        zoneId,
+        userId: userId?.trim(),
+        zoneId: zoneId?.trim(),
         game,
         region,
         productId: _id,
@@ -93,7 +93,7 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
           { payload: encryptedPayload },
           {
             headers: { "Content-Type": "application/json" },
-          }
+          },
         );
 
         if (res.status === 200) {
@@ -105,7 +105,7 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
         setIsLoading(false);
       }
     },
-    [setPaymentData]
+    [setPaymentData],
   );
 
   return { createOrder, isLoading };

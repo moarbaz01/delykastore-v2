@@ -14,7 +14,7 @@ const GiftBox = ({
   return (
     <div
       onClick={disabled ? undefined : onClick}
-      className={`h-[80px] cursor-pointer z-[50] w-[80px] aspect-square rounded-full fixed bottom-28 md:bottom-10 right-2 
+      className={`h-[80px] cursor-pointer z-[50] w-[80px] aspect-square rounded-full fixed bottom-20 md:bottom-10 right-2 
                  hover:scale-110 transition-all duration-300 ease-in-out
                  hover:shadow-[0_0_30px_rgba(255,215,0,0.6)] ${disabled
           ? 'opacity-50 cursor-not-allowed grayscale'

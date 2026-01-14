@@ -1,5 +1,6 @@
 import Banner from "@/components/Home/Banner";
 import TrendingGames from "@/components/Home/TrendingGames";
+import WhyChooseUs from "@/components/Home/WhyChooseUs";
 
 export default function Home() {
   return (
@@ -8,6 +9,7 @@ export default function Home() {
         <Banner />
       </div>
       <TrendingGames />
+      <WhyChooseUs />
     </>
   );
 }
