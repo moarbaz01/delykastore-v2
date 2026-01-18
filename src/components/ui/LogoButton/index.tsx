@@ -1,6 +1,7 @@
 "use client";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import { FaTelegram } from "react-icons/fa";
 
 const LogoButton = () => {
   const pathname = usePathname();
@@ -10,15 +11,16 @@ const LogoButton = () => {
     <a
       href="https://www.facebook.com/share/16uiJM49XG/?mibextid=wwXIfr"
       target="_blank"
-      className="bg-card-bg h-[60px] cursor-pointer hover:opacity-80 transition z-[50] w-[60px] aspect-square rounded-full fixed bottom-20 md:bottom-10 right-4 "
+      className=" cursor-pointer px-4 py-2 bg-blue-500 flex items-center gap-2 hover:opacity-80 transition z-[50]  rounded-full fixed bottom-20 md:bottom-10 right-4 "
     >
-      <Image
+      {/* <Image
         width={100}
         height={100}
         alt="logo"
         className="h-full w-full rounded-full"
         src="/images/winwin-logo.png"
-      />
+      /> */}
+      <span>តបឆាតលឿនតាម</span> <FaTelegram />
     </a>
   );
 };

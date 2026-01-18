@@ -330,20 +330,14 @@ export async function PUT(req: NextRequest) {
     };
 
     // Handle image deletions
-    if (
-      existingProduct.image &&
-      validatedData.image !== existingProduct.image
-    ) {
+    if (validatedData.image instanceof File && existingProduct.image) {
       const publicId = extractPublicId(existingProduct.image);
       if (publicId) {
         await cloudinaryDelete(publicId);
       }
     }
 
-    if (
-      existingProduct.banner &&
-      validatedData.banner !== existingProduct.banner
-    ) {
+    if (validatedData.banner instanceof File && existingProduct.banner) {
       const publicId = extractPublicId(existingProduct.banner);
       if (publicId) {
         await cloudinaryDelete(publicId);
