@@ -9,7 +9,7 @@ const LogoButton = () => {
     return null;
   return (
     <a
-      href="https://www.facebook.com/share/16uiJM49XG/?mibextid=wwXIfr"
+      href="https://t.me/bluetechink"
       target="_blank"
       className=" cursor-pointer px-4 py-2 bg-blue-500 flex items-center gap-2 hover:opacity-80 transition z-[50]  rounded-full fixed bottom-20 md:bottom-10 right-4 "
     >
@@ -20,7 +20,8 @@ const LogoButton = () => {
         className="h-full w-full rounded-full"
         src="/images/winwin-logo.png"
       /> */}
-      <span>តបឆាតលឿនតាម</span> <FaTelegram />
+      <FaTelegram />
+      <span>តបឆាតលឿនតាម Telegram</span>
     </a>
   );
 };
