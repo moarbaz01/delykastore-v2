@@ -234,7 +234,7 @@ const Product = ({
   const handleOpenGiftModal = () => {
     if (!gift || !gift.isActive) return;
     if (!userId || !playerAvailable) {
-      setErrorMessage("Verify your account to claim this gift");
+      setErrorMessage("ចុចពិនិត្យឈ្មោះដើម្បីទទួលរង្វាន់");
       return;
     }
     setShowGiftModal(true);
