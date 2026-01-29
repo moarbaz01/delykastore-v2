@@ -16,7 +16,7 @@ const TrendingGames = async () => {
           <IoLogoGameControllerB className="text-2xl" />
           <span>GAME TOPUP</span>
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3  items-center justify-center lg:grid-cols-4 md:gap-6 gap-4 mt-4">
+        <div className="grid grid-cols-3 md:grid-cols-3  items-center justify-center lg:grid-cols-4 md:gap-6 gap-4 mt-4">
           {products.length > 0 ? (
             products.map((item) => (
               <GameComponent
