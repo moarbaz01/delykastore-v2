@@ -1,6 +1,14 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
 
-const spinRewardSchema = new Schema(
+export interface ISpinReward extends Document {
+  transactionId: string;
+  prize: string;
+  status: "pending" | "reject" | "success";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const spinRewardSchema = new Schema<ISpinReward>(
   {
     transactionId: {
       type: String,
@@ -15,7 +23,6 @@ const spinRewardSchema = new Schema(
       enum: ["pending", "reject", "success"],
       default: "pending",
     },
-
     createdAt: {
       type: Date,
       default: Date.now,
@@ -36,4 +43,5 @@ spinRewardSchema.pre("save", function (next) {
 });
 
 export const SpinReward =
-  mongoose.models.SpinReward || mongoose.model("SpinReward", spinRewardSchema);
+  (mongoose.models.SpinReward as Model<ISpinReward>) ||
+  mongoose.model<ISpinReward>("SpinReward", spinRewardSchema);

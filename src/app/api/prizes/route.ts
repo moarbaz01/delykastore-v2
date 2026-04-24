@@ -42,7 +42,7 @@ export async function GET(req: NextRequest) {
       .sort({ createdAt: 1 })
       .populate("productId", "_id name");
 
-    let mappedPrizes = prizes;
+    let mappedPrizes: any[] = prizes;
     if (prizes.length > 0) {
       mappedPrizes = prizes.map((prize: any) => ({
         id: prize.id,
