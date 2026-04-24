@@ -41,9 +41,9 @@ export async function POST(req: NextRequest) {
     // 5️⃣ Process result
     if (status === "success") {
       order.status = "success";
-      order.apiTransactionId = trx; // optional but recommended
     } else {
       order.status = "failed";
+      order.failureReason = `Bangla API webhook failed. Provider trx: ${trx}`;
     }
 
     await order.save();
