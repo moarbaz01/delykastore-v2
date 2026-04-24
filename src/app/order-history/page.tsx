@@ -26,7 +26,7 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 
 function OrderHistoryContent() {
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
   const [page, setPage] = useState(1);
@@ -109,7 +109,6 @@ function OrderHistoryContent() {
               >
                 <option value="all">All Status</option>
                 <option value="success">Success</option>
-                <option value="pending">Pending</option>
                 <option value="failed">Failed</option>
               </select>
             </div>

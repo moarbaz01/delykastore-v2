@@ -3,9 +3,9 @@ import GiftsClientWrapper from "@/components/Dashboard/GiftsClientWrapper";
 import Loader from "@/components/Loader";
 
 export default function GiftsPage() {
-    return (
-        <Suspense fallback={<Loader />}>
-            <GiftsClientWrapper />
-        </Suspense>
-    );
+  return (
+    <Suspense fallback={<Loader />}>
+      <GiftsClientWrapper />
+    </Suspense>
+  );
 }

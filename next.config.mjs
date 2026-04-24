@@ -21,7 +21,7 @@ const nextConfig = {
       },
     ],
   },
-  reactStrictMode: true, // Catches potential errors during development
+  reactStrictMode: false,
   swcMinify: true, // Faster builds and minified JavaScript
   compiler: {
     removeConsole: process.env.NODE_ENV === "production", // Removes console logs in production

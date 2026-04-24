@@ -8,15 +8,8 @@ import { fetchUser } from "@/utils/fetchUser";
 import { useEffect } from "react";
 import { setUser } from "@/redux/userSlice";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { useState } from "react";
 
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      refetchOnWindowFocus: false,
-    },
-  },
-});
 
 const StoreUser = () => {
   const dispatch = useDispatch();
@@ -34,6 +27,18 @@ const StoreUser = () => {
   return null;
 };
 const Provider = ({ children }: { children: React.ReactNode }) => {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: 1,
+            refetchOnWindowFocus: false,
+            staleTime: 30 * 1000, // 30 seconds — prevents double-fetch on mount
+          },
+        },
+      }),
+  );
   return (
     <SessionProvider>
       <ReduxProvider store={store}>
