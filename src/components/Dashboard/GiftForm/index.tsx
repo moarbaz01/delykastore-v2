@@ -262,7 +262,7 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Product Selection */}
                         <FormControl fullWidth margin="normal">
-                            <InputLabel>Product *</InputLabel>
+                            <InputLabel shrink>Product *</InputLabel>
                             <Select
                                 name="productId"
                                 value={formData.productId}

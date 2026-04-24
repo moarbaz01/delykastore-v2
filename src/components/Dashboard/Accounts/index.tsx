@@ -166,7 +166,7 @@ export default function AccountsClient() {
       {/* Filter Section */}
       <div className="mb-6 flex flex-wrap gap-4 items-center">
         <FormControl sx={{ minWidth: 200 }} size="small">
-          <InputLabel>
+          <InputLabel shrink>
             Product
           </InputLabel>
           <Select
@@ -192,7 +192,7 @@ export default function AccountsClient() {
           size="small"
           disabled={!selectedProduct || selectedProduct === "all"}
         >
-          <InputLabel>
+          <InputLabel shrink>
             Package
           </InputLabel>
           <Select

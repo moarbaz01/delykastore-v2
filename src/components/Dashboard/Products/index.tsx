@@ -95,7 +95,7 @@ const Products = ({ allProducts, productsList, ghorProductlist }) => {
           sx={{ flex: 2 }}
         />
         <FormControl sx={{ minWidth: 200, flex: 1 }}>
-          <InputLabel>Filter by Type</InputLabel>
+          <InputLabel shrink>Filter by Type</InputLabel>
           <Select
             value={typeFilter}
             label="Filter by Type"

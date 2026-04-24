@@ -203,6 +203,7 @@ const GiftTransactions: React.FC<GiftTransactionsProps> = ({
                             setMonthFilter(e.target.value)
                         }
                         label="Filter by Month"
+                        displayEmpty
                     >
                         <MenuItem value="">All</MenuItem>
                         {Array.from({ length: 12 }, (_, i) => (
@@ -241,6 +242,7 @@ const GiftTransactions: React.FC<GiftTransactionsProps> = ({
                             setStatusFilter(e.target.value)
                         }
                         label="Filter by Status"
+                        displayEmpty
                     >
                         <MenuItem value="">All</MenuItem>
                         <MenuItem value="success">Success</MenuItem>

@@ -1,5 +1,6 @@
 import { dbConnect } from "@/lib/database";
 import { Account } from "@/models/account.model";
+import "@/models/product.model"; // required for populate("productId") to work
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 

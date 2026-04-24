@@ -114,6 +114,7 @@ const OrderLogs: React.FC<OrderLogsProps> = ({ logs, total, isLoading }) => {
           <Select
             value={statusFilter}
             label="Filter by Status"
+            displayEmpty
             onChange={(e) => {
               setStatusFilter(e.target.value);
               updateFilters("status", e.target.value);

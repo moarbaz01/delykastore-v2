@@ -202,6 +202,7 @@ const Orders: React.FC<OrdersProps> = ({
           <InputLabel shrink>Filter by Month</InputLabel>
           <Select
             value={monthFilter}
+            displayEmpty
             onChange={(e: SelectChangeEvent<string>) =>
               setMonthFilter(e.target.value)
             }
@@ -254,6 +255,7 @@ const Orders: React.FC<OrdersProps> = ({
               setStatusFilter(e.target.value)
             }
             label="Filter by Status"
+            displayEmpty
           >
             <MenuItem value="">All</MenuItem>
             <MenuItem value="pending">Pending</MenuItem>
@@ -270,6 +272,7 @@ const Orders: React.FC<OrdersProps> = ({
               setGameFilter(e.target.value)
             }
             label="Filter by Game"
+            displayEmpty
           >
             <MenuItem value="">Select Game</MenuItem>
             <MenuItem value="mobilelegends-brazil">MLBB Brazil</MenuItem>
@@ -296,6 +299,7 @@ const Orders: React.FC<OrdersProps> = ({
               setOrderTypeFilter(e.target.value)
             }
             label="Filter by Order Type"
+            displayEmpty
           >
             <MenuItem value="">All</MenuItem>
             <MenuItem value="API Order">API Order</MenuItem>

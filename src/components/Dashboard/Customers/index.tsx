@@ -183,6 +183,7 @@ const Customers = ({ allCustomers }: { allCustomers: Customer[] }) => {
             value={roleFilter}
             onChange={handleRoleFilterChange}
             label="Filter by Role"
+            displayEmpty
           >
             <MenuItem value="">All</MenuItem>
             <MenuItem value="user">User</MenuItem>
@@ -195,6 +196,7 @@ const Customers = ({ allCustomers }: { allCustomers: Customer[] }) => {
             value={blockedFilter}
             onChange={handleBlockedFilterChange}
             label="Filter by Status"
+            displayEmpty
           >
             <MenuItem value="">All</MenuItem>
             <MenuItem value="active">Active</MenuItem>

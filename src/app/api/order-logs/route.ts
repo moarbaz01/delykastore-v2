@@ -1,5 +1,7 @@
 import { dbConnect } from "@/lib/database";
 import { OrderLog } from "@/models/orderlog.model";
+import "@/models/order.model"; // required for populate("orderId") to work
+import "@/models/product.model"; // orders reference products
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 

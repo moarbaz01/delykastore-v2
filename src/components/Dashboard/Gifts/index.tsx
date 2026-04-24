@@ -94,10 +94,11 @@ const Gifts: React.FC<GiftsProps> = ({
                     className="w-64"
                 />
                 <FormControl size="small" className="w-64">
-                    <InputLabel>Filter by Status</InputLabel>
+                    <InputLabel shrink>Filter by Status</InputLabel>
                     <Select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
+                        displayEmpty
                     >
                         <MenuItem value="">All</MenuItem>
                         <MenuItem value="active">Active</MenuItem>

@@ -150,13 +150,14 @@ const SpinHistory: React.FC<SpinHistoryProps> = ({
       {/* Filters */}
       <div className="mb-6 flex flex-wrap gap-4">
         <FormControl size="small" className="w-64">
-          <InputLabel>Filter by Month</InputLabel>
+          <InputLabel shrink>Filter by Month</InputLabel>
           <Select
             value={monthFilter}
             onChange={(e: SelectChangeEvent<string>) =>
               setMonthFilter(e.target.value)
             }
             label="Filter by Month"
+            displayEmpty
           >
             <MenuItem value="">All</MenuItem>
             {Array.from({ length: 12 }, (_, i) => (
@@ -178,13 +179,14 @@ const SpinHistory: React.FC<SpinHistoryProps> = ({
         />
 
         <FormControl size="small" className="w-64">
-          <InputLabel>Filter by Status</InputLabel>
+          <InputLabel shrink>Filter by Status</InputLabel>
           <Select
             value={statusFilter}
             onChange={(e: SelectChangeEvent<string>) =>
               setStatusFilter(e.target.value)
             }
             label="Filter by Status"
+            displayEmpty
           >
             <MenuItem value="">All</MenuItem>
             <MenuItem value="success">Success</MenuItem>
