@@ -1,6 +1,20 @@
-import { Schema, models, model } from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
 
-const giftTransactionSchema = new Schema({
+export interface IGiftTransaction extends Document {
+  userId: string;
+  zoneId?: string;
+  giftId: mongoose.Types.ObjectId;
+  cost: string;
+  level: string;
+  wagering: number;
+  userWagering: number;
+  productId: mongoose.Types.ObjectId;
+  status: "pending" | "failed" | "success";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const giftTransactionSchema = new Schema<IGiftTransaction>({
   userId: {
     type: String,
     required: true,
@@ -13,22 +27,18 @@ const giftTransactionSchema = new Schema({
     required: true,
     ref: "Gift",
   },
-
   cost: {
     type: String,
     required: true,
   },
-
   level: {
     type: String,
     required: true,
   },
-
   wagering: {
     type: Number,
     required: true,
   },
-
   userWagering: {
     type: Number,
     required: true,
@@ -43,7 +53,6 @@ const giftTransactionSchema = new Schema({
     enum: ["pending", "failed", "success"],
     default: "pending",
   },
-
   createdAt: {
     type: Date,
     default: Date.now,
@@ -60,4 +69,5 @@ giftTransactionSchema.pre("save", function (next) {
 });
 
 export const GiftTransaction =
-  models.GiftTransaction || model("GiftTransaction", giftTransactionSchema);
+  (mongoose.models.GiftTransaction as Model<IGiftTransaction>) ||
+  mongoose.model<IGiftTransaction>("GiftTransaction", giftTransactionSchema);
