@@ -83,7 +83,7 @@ const Navbar = () => {
     }
   }, [show]);
 
-  if (["dashboard", "not-found", "notfound"].includes(pathname.split("/")[1] || "")) {
+  if (["dashboard", "not-found", "notfound", "login", "signup", "forgot-password"].includes(pathname.split("/")[1] || "")) {
     return null;
   }
   return (

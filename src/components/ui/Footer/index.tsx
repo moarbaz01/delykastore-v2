@@ -8,7 +8,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
   const pathname = usePathname();
 
-  if (["dashboard", "not-found", "notfound"].includes(pathname.split("/")[1] || "")) {
+  if (["dashboard", "not-found", "notfound", "login", "signup", "forgot-password", "product"].includes(pathname.split("/")[1] || "")) {
     return null;
   }
   return (
