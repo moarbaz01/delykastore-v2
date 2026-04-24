@@ -1,6 +1,7 @@
 import axios from "axios";
 import { generateSign } from "./hash";
 import { type GameOrder } from "@/types/main";
+import { createOrderLog } from "./orderLogs";
 
 
 export const gameOrderRequest = async (order: GameOrder) => {
@@ -39,12 +40,33 @@ export const gameOrderRequest = async (order: GameOrder) => {
         );
 
         console.log("SmileOne Response", res.data);
+        
+        await createOrderLog({
+          transactionId: order.transactionId,
+          orderId: order._id,
+          provider: "SmileOne",
+          requestPayload: { apiUrl, params },
+          responsePayload: res.data,
+          status: res.data?.status === 200 ? "success" : "failed",
+        });
+
         return { status: res.data.status, data: res.data }; // Success
       } catch (error: any) {
         console.error(
           `Failed to create order for cost ID ${cost}:`,
           error.message
         );
+        
+        await createOrderLog({
+          transactionId: order.transactionId,
+          orderId: order._id,
+          provider: "SmileOne",
+          requestPayload: { apiUrl, params },
+          responsePayload: error.response?.data || error,
+          status: "failed",
+          errorMessage: error.response?.data?.message || error.message,
+        });
+
         return { status: 500, error: error.message, cost }; // Failure
       }
     })

@@ -1,6 +1,7 @@
 import axios from "axios";
 import { sendEmail } from "./nodemailer";
 import { type GameOrder } from "@/types/main";
+import { createOrderLog } from "./orderLogs";
 
 export const ghorApiTopup = async (order: GameOrder) => {
   // Extract Costids if array
@@ -27,10 +28,45 @@ export const ghorApiTopup = async (order: GameOrder) => {
         );
 
         const data = await res.data;
+        const payload = {
+          player_id: order?.gameCredentials?.userId,
+          zone_id: order?.gameCredentials?.zoneId,
+          product_id: cost.toString(),
+          region: "PH",
+          game: "mobile-legends",
+        };
+
+        await createOrderLog({
+          transactionId: order.transactionId,
+          orderId: order._id,
+          provider: "Unipin Api",
+          requestPayload: payload,
+          responsePayload: data,
+          status: data?.error ? "failed" : "success",
+        });
 
         return { status: 200, data, error: false };
       } catch (error) {
         console.error(`Failed to topup:`, error.message);
+
+        const payload = {
+          player_id: order?.gameCredentials?.userId,
+          zone_id: order?.gameCredentials?.zoneId,
+          product_id: cost.toString(),
+          region: "PH",
+          game: "mobile-legends",
+        };
+
+        await createOrderLog({
+          transactionId: order.transactionId,
+          orderId: order._id,
+          provider: "Unipin Api",
+          requestPayload: payload,
+          responsePayload: error.response?.data || error,
+          status: "failed",
+          errorMessage: error.response?.data?.message || error.message,
+        });
+
         return { status: 500, error: error?.message, data: null }; // Failure
       }
     })
@@ -68,8 +104,22 @@ export const freeFireTopup = async (order: GameOrder) => {
         );
 
         const data = await res.data;
+        const payload = {
+          player_id: order?.gameCredentials?.userId,
+          product_id: parseInt(cost),
+        };
 
         console.log("free_fire_topup_data", data);
+
+        await createOrderLog({
+          transactionId: order.transactionId,
+          orderId: order._id,
+          provider: "FreeFire Api",
+          requestPayload: payload,
+          responsePayload: data,
+          status: data?.error ? "failed" : "success",
+        });
+
         if (data?.error) {
           await sendEmail(
             "Kira Store",
@@ -90,6 +140,22 @@ Game: ${order?.gameCredentials?.game}
         return { status: 200, data, error: false };
       } catch (error) {
         console.error(`Failed to topup free fire:`, error?.message);
+
+        const payload = {
+          player_id: order?.gameCredentials?.userId,
+          product_id: parseInt(cost),
+        };
+
+        await createOrderLog({
+          transactionId: order.transactionId,
+          orderId: order._id,
+          provider: "FreeFire Api",
+          requestPayload: payload,
+          responsePayload: error.response?.data || error,
+          status: "failed",
+          errorMessage: error.response?.data?.message || error.message,
+        });
+
         return { status: 500, error: error?.message, data: null }; // Failure
       }
     })

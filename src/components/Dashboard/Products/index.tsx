@@ -10,6 +10,12 @@ import {
   TableRow,
   TextField,
   IconButton,
+  Tooltip,
+  Select,
+  MenuItem,
+  FormControl,
+  InputLabel,
+  Button,
 } from "@mui/material";
 import {
   Edit as EditIcon,
@@ -26,6 +32,7 @@ const Products = ({ allProducts, productsList, ghorProductlist }) => {
   const router = useRouter();
   const [products, setProducts] = useState(allProducts);
   const [search, setSearch] = useState("");
+  const [typeFilter, setTypeFilter] = useState("all");
 
   const handleSearch = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearch(e.target.value);
@@ -60,15 +67,16 @@ const Products = ({ allProducts, productsList, ghorProductlist }) => {
     router.push(`/dashboard/products/spin/${id}`);
   };
 
-  // Filter products based on search input
+  // Filter products based on search input and type filter
   const filteredProducts = products.filter(
     (product) =>
-      product.name.toLowerCase().includes(search.toLowerCase()) ||
-      product._id.includes(search)
+      (product.name.toLowerCase().includes(search.toLowerCase()) ||
+        product._id.includes(search)) &&
+      (typeFilter === "all" || product.type === typeFilter)
   );
 
   return (
-    <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen bg-gray-900">
+    <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-white mb-6">Products</h1>
         <p className="text-2xl font-bold text-white mb-6">
@@ -76,42 +84,51 @@ const Products = ({ allProducts, productsList, ghorProductlist }) => {
         </p>
       </div>
 
-      {/* Search Input */}
-      <div className="mb-6">
+      {/* Search and Filter */}
+      <div className="flex flex-col md:flex-row gap-4 mb-6">
         <TextField
           fullWidth
           label="Search by Name or ID"
           variant="outlined"
           value={search}
           onChange={handleSearch}
-          sx={{
-            color: "#E5E7EB",
-            backgroundColor: "#374151",
-            borderRadius: "10px",
-          }}
+          sx={{ flex: 2 }}
         />
+        <FormControl sx={{ minWidth: 200, flex: 1 }}>
+          <InputLabel>Filter by Type</InputLabel>
+          <Select
+            value={typeFilter}
+            label="Filter by Type"
+            onChange={(e) => setTypeFilter(e.target.value)}
+          >
+            <MenuItem value="all">All Types</MenuItem>
+            <MenuItem value="topup">Top-Up</MenuItem>
+            <MenuItem value="account">Premium Account</MenuItem>
+          </Select>
+        </FormControl>
       </div>
 
       <div className="mb-6">
-        <button
+        <Button
           onClick={() => router.push("/dashboard/products/product")}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          variant="contained"
+          startIcon={<Add />}
         >
-          Add New Product <Add />
-        </button>
+          Add New Product
+        </Button>
       </div>
 
       {/* Products Table */}
-      <TableContainer className="bg-gray-800 rounded-xl">
+      <TableContainer>
         <Table>
-          <TableHead className="bg-gray-600">
+          <TableHead>
             <TableRow>
-              <TableCell style={{ color: "#E5E7EB" }}>Image</TableCell>
-              <TableCell style={{ color: "#E5E7EB" }}>ID</TableCell>
-              <TableCell style={{ color: "#E5E7EB" }}>Name</TableCell>
-              <TableCell style={{ color: "#E5E7EB" }}>Description</TableCell>
-              <TableCell style={{ color: "#E5E7EB" }}>Category</TableCell>
-              <TableCell style={{ color: "#E5E7EB" }}>Actions</TableCell>
+              <TableCell>Image</TableCell>
+              <TableCell>ID</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Type</TableCell>
+              <TableCell>Description</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -127,32 +144,38 @@ const Products = ({ allProducts, productsList, ghorProductlist }) => {
                       height={50}
                     />
                   </TableCell>
-                  <TableCell sx={{ color: "#D1D5DB" }}>{product._id}</TableCell>
-                  <TableCell sx={{ color: "#D1D5DB" }}>
+                  <TableCell>{product._id}</TableCell>
+                  <TableCell>
                     {product.name}
                   </TableCell>
-                  <TableCell sx={{ color: "#D1D5DB" }}>
-                    {product.description}
+                  <TableCell sx={{ textTransform: "capitalize" }}>
+                    {product.type || "topup"}
                   </TableCell>
-                  <TableCell sx={{ color: "#D1D5DB" }}>
-                    {product.category}
+                  <TableCell>
+                    <Tooltip title={product.description} arrow>
+                      <span className="cursor-help">
+                        {product.description?.length > 30
+                          ? `${product.description.substring(0, 30)}...`
+                          : product.description}
+                      </span>
+                    </Tooltip>
                   </TableCell>
                   <TableCell>
                     <IconButton
                       onClick={() => handleSpins(product._id)}
-                      sx={{ color: "#f6c204" }}
+                      color="warning"
                     >
                       <FaGift />
                     </IconButton>
                     <IconButton
                       onClick={() => handleEdit(product._id)}
-                      sx={{ color: "#60A5FA" }}
+                      color="info"
                     >
                       <EditIcon />
                     </IconButton>
                     <IconButton
                       onClick={() => handleDelete(product._id)}
-                      sx={{ color: "#EF4444" }}
+                      color="error"
                     >
                       <DeleteIcon />
                     </IconButton>
@@ -161,7 +184,7 @@ const Products = ({ allProducts, productsList, ghorProductlist }) => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={6} align="center" sx={{ color: "#D1D5DB" }}>
+                <TableCell colSpan={6} align="center">
                   No products found.
                 </TableCell>
               </TableRow>

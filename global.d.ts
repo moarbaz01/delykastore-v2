@@ -7,24 +7,37 @@ declare module "next-auth" {
     user: {
       id: string;
       role: string;
-      name?: string | null; // Optional fields from DefaultSession
+      name?: string | null;
       email?: string | null;
       image?: string | null;
+      telegramId?: string | null;
+      authProvider?: string | null;
     };
   }
 
   interface User {
     id: string;
     role: string;
+    telegramId?: string;
+    authProvider?: string;
   }
 
   interface JWT {
     id: string;
     role: string;
+    telegramId?: string;
+    authProvider?: string;
   }
 }
 
-d
+declare module "next-auth/jwt" {
+  interface JWT {
+    id: string;
+    role: string;
+    telegramId?: string;
+    authProvider?: string;
+  }
+}
 
 declare module "@mui/material/styles" {
   interface Components {
@@ -35,3 +48,4 @@ declare module "@mui/material/styles" {
 }
 
 export {};
+

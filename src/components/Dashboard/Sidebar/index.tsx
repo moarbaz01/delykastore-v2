@@ -10,6 +10,7 @@ import {
   FaList,
   FaHistory,
   FaGift,
+  FaTerminal,
 } from "react-icons/fa";
 import { HiMenuAlt1 } from "react-icons/hi"; // Hamburger icon
 import {
@@ -31,38 +32,54 @@ const Sidebar = () => {
   };
 
   // Handle Logout
-  const handleLogout = () => {
+  const handleLogout = async () => {
     toast.success("Successfully Logout");
-    signOut();
-    router.push("/login");
+    await signOut({ callbackUrl: "/login", redirect: true });
   };
 
   // Sidebar links data
-  const links = [
-    { href: "/dashboard", label: "Dashboard", icon: FaTachometerAlt },
-    { href: "/dashboard/products", label: "Products", icon: FaBox },
-    { href: "/dashboard/orders", label: "Orders", icon: FaShoppingCart },
-    { href: "/dashboard/customers", label: "Customers", icon: FaUsers },
-    { href: "/dashboard/banner", label: "Sliders", icon: FaList },
+  const menuGroups = [
     {
-      href: "/dashboard/game-list",
-      label: "Api Game List",
-      icon: Gamepad,
+      title: "Management",
+      links: [
+        { href: "/dashboard", label: "Dashboard", icon: FaTachometerAlt },
+        { href: "/dashboard/products", label: "Products", icon: FaBox },
+        { href: "/dashboard/orders", label: "Orders", icon: FaShoppingCart },
+        { href: "/dashboard/order-logs", label: "API Logs", icon: FaTerminal },
+        { href: "/dashboard/customers", label: "Customers", icon: FaUsers },
+        { href: "/dashboard/banner", label: "Sliders", icon: FaList },
+        {
+          href: "/dashboard/categories",
+          label: "Categories",
+          icon: CategoryOutlined,
+        },
+        { href: "/dashboard/coupons", label: "Coupons", icon: DiscountOutlined },
+        { href: "/dashboard/accounts", label: "Accounts", icon: FaUsers },
+      ],
     },
     {
-      href: "/dashboard/categories",
-      label: "Categories",
-      icon: CategoryOutlined,
+      title: "Configs",
+      links: [
+        { href: "/dashboard/game-list", label: "Api Game List", icon: Gamepad },
+        { href: "/dashboard/balance", label: "Balance", icon: Wallet },
+      ],
     },
     {
-      href: "/dashboard/balance",
-      label: "Balance",
-      icon: Wallet,
+      title: "Gifts & Rewards",
+      links: [
+        { href: "/dashboard/gifts", label: "Gifts", icon: FaGift },
+        {
+          href: "/dashboard/gift-transactions",
+          label: "Gift Transactions",
+          icon: FaHistory,
+        },
+        {
+          href: "/dashboard/spin-history",
+          label: "Spin History",
+          icon: FaHistory,
+        },
+      ],
     },
-    { href: "/dashboard/coupons", label: "Coupons", icon: DiscountOutlined },
-    { href: "/dashboard/gifts", label: "Gifts", icon: FaGift },
-    { href: "/dashboard/gift-transactions", label: "Gift Transactions", icon: FaHistory },
-    { href: "/dashboard/spin-history", label: "Spin History", icon: FaHistory },
   ];
 
   return (
@@ -76,60 +93,76 @@ const Sidebar = () => {
 
       {/* Sidebar */}
       <div
-        className={`fixed top-0 left-0 z-20 w-64 h-full overflow-y-auto bg-gradient-to-br bg-gray-800 shadow-xl transition-transform duration-300 transform ${isOpen ? "translate-x-0" : "-translate-x-full"
-          } md:translate-x-0`}
+        className={`fixed top-0 left-0 z-20 w-64 h-full overflow-y-auto bg-secondary border-r border-darkBlue transition-transform duration-300 transform ${isOpen ? "translate-x-0" : "-translate-x-full"
+          } md:translate-x-0 flex flex-col custom-scrollbar`}
       >
         {/* Sidebar Header */}
-        <div className="flex items-center justify-between p-6 bg-gray-800">
+        <div className="flex items-center justify-between p-6">
           <div className="flex items-center space-x-3">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="">
+            <Link href="/" className="flex items-center gap-3">
+              <div className="w-10 h-10 shrink-0">
                 <Image
                   src="/images/logo.png"
-                  alt="Kiragame Store"
-                  width={60}
-                  height={60}
-                  className="  w-full h-full drop-shadow-[0px_0px_2px_red]  "
+                  alt="WinWin Store"
+                  width={40}
+                  height={40}
+                  className="w-full h-full object-contain"
                 />
               </div>
-              <h1 className="text-white font-extrabold text-xl drop-shadow-[0px_0px_4px_red]">
-                WinWin TOPUP
+              <h1 className="text-white font-black text-lg tracking-tight uppercase">
+                WinWin
               </h1>
             </Link>
           </div>
           <button
             onClick={toggleSidebar}
-            className="md:hidden text-white p-2 hover:bg-gray-700 rounded-full"
+            className="md:hidden text-gray-400 p-2 hover:bg-darkBlue hover:text-white rounded-lg transition-colors"
           >
             <span>&#10005;</span> {/* Close button */}
           </button>
         </div>
 
         {/* Navigation Links */}
-        <nav className="mt-4">
-          <ul>
-            {links.map(({ href, label, icon: Icon }) => (
-              <li key={href} className="mt-2">
-                <Link
-                  prefetch
-                  href={href}
-                  className={`flex items-center p-4 rounded-lg transition-colors ${pathname === href
-                    ? "bg-gray-700 text-primary"
-                    : "hover:bg-gray-700"
-                    }`}
-                >
-                  <Icon className="mr-4 text-lg" />
-                  <span className="text-lg">{label}</span>
-                </Link>
-              </li>
-            ))}
-            <li className="mt-2 cursor-pointer">
+        <nav className="mt-2 px-4 pb-6">
+          {menuGroups.map((group) => (
+            <div key={group.title} className="mb-6 last:mb-0">
+              <h3 className="px-4 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                {group.title}
+              </h3>
+              <ul className="space-y-1">
+                {group.links.map(({ href, label, icon: Icon }) => {
+                  const isActive = pathname === href;
+                  return (
+                    <li key={href}>
+                      <Link
+                        prefetch
+                        href={href}
+                        className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 text-sm font-semibold tracking-wide ${isActive
+                          ? "bg-darkBlue text-white shadow-sm"
+                          : "text-gray-300 hover:bg-darkBlue hover:text-white"
+                          }`}
+                      >
+                        <Icon
+                          className={`mr-3 ${isActive ? "text-primary" : "text-gray-400"
+                            } text-[18px] shrink-0`}
+                        />
+                        <span className="truncate">{label}</span>
+                      </Link>
+                    </li>
+                  );
+                })}
+              </ul>
+            </div>
+          ))}
+
+          <ul className="mt-6 pt-4 border-t border-darkBlue">
+            <li className="cursor-pointer">
               <div
                 onClick={handleLogout}
-                className={`flex items-center p-4 rounded-lg transition-colors hover:bg-gray-700`}
+                className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 text-sm font-semibold tracking-wide text-red-400 hover:bg-darkBlue hover:text-red-300`}
               >
-                <Logout className="mr-4 text-lg" />
-                <span className="text-lg">Logout</span>
+                <Logout className="mr-3 text-[18px] shrink-0 text-red-400" />
+                <span>Logout</span>
               </div>
             </li>
           </ul>

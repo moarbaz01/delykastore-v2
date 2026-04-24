@@ -1,4 +1,16 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Model } from "mongoose";
+
+export interface IPrize extends Document {
+  productId: mongoose.Types.ObjectId;
+  name: string;
+  color: string;
+  winRate: number;
+  weight: number;
+  limit: number;
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
 
 const PrizeSchema = new mongoose.Schema({
   productId: {
@@ -53,4 +65,8 @@ PrizeSchema.pre("save", function (next) {
   next();
 });
 
-export default mongoose.models.Prize || mongoose.model("Prize", PrizeSchema);
+export const Prize =
+  (mongoose.models.Prize as Model<IPrize>) ||
+  mongoose.model<IPrize>("Prize", PrizeSchema);
+
+export default Prize;

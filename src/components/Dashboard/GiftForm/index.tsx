@@ -12,12 +12,14 @@ import {
     Typography,
     Switch,
     FormControlLabel,
+    Paper,
 } from "@mui/material";
 import { Delete, Save, ArrowBack } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useProducts, useGift, useCreateGift, useUpdateGift, Product } from "@/hooks/useGifts";
 import { CreateGiftData, UpdateGiftData } from "@/types/main";
+import Image from "next/image";
 
 
 interface GiftFormProps {
@@ -236,7 +238,7 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
     };
 
     return (
-        <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen bg-gray-900">
+        <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen">
             {/* Header */}
             <div className="mb-6">
                 <div className="flex items-center justify-between mb-4">
@@ -255,12 +257,12 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
             </div>
 
             {/* Form */}
-            <div className="bg-gray-800 rounded-xl p-4 max-w-4xl">
+            <Paper className="p-6 max-w-4xl">
                 <form onSubmit={handleSubmit}>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         {/* Product Selection */}
                         <FormControl fullWidth margin="normal">
-                            <InputLabel className="text-gray-300">Product *</InputLabel>
+                            <InputLabel>Product *</InputLabel>
                             <Select
                                 name="productId"
                                 value={formData.productId}
@@ -268,26 +270,6 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
                                 label="Product *"
                                 required
                                 disabled={productsLoading}
-                                className="bg-gray-700 text-white"
-                                sx={{
-                                    '& .MuiOutlinedInput-root': {
-                                        '& fieldset': {
-                                            borderColor: '#4B5563',
-                                        },
-                                        '&:hover fieldset': {
-                                            borderColor: '#6B7280',
-                                        },
-                                        '&.Mui-focused fieldset': {
-                                            borderColor: '#ff962d',
-                                        },
-                                    },
-                                    '& .MuiInputLabel-root': {
-                                        color: '#9CA3AF',
-                                    },
-                                    '& .MuiSelect-select': {
-                                        color: 'white',
-                                    },
-                                }}
                             >
                                 {products.map((product) => (
                                     <MenuItem key={product._id} value={product._id}>
@@ -311,26 +293,6 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
                             name="bannerText"
                             value={formData.bannerText}
                             onChange={handleInputChange}
-                            className="bg-gray-700"
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    '& fieldset': {
-                                        borderColor: '#4B5563',
-                                    },
-                                    '&:hover fieldset': {
-                                        borderColor: '#6B7280',
-                                    },
-                                    '&.Mui-focused fieldset': {
-                                        borderColor: '#ff962d',
-                                    },
-                                },
-                                '& .MuiInputLabel-root': {
-                                    color: '#9CA3AF',
-                                },
-                                '& .MuiInputBase-input': {
-                                    color: 'white',
-                                },
-                            }}
                         />
 
                         {/* Active Status Toggle */}
@@ -340,14 +302,6 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
                                     <Switch
                                         checked={formData.isActive}
                                         onChange={(e) => setFormData(prev => ({ ...prev, isActive: e.target.checked }))}
-                                        sx={{
-                                            '& .MuiSwitch-switchBase.Mui-checked': {
-                                                color: '#ff962d',
-                                            },
-                                            '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
-                                                backgroundColor: '#ff962d',
-                                            },
-                                        }}
                                     />
                                 }
                                 label={
@@ -373,54 +327,16 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
                                         type="number"
                                         value={level.level}
                                         onChange={(e) => handleWageringLevelChange(index, 'level', Number(e.target.value))}
-                                        className="w-24 bg-gray-700"
                                         size="small"
-                                        sx={{
-                                            '& .MuiOutlinedInput-root': {
-                                                '& fieldset': {
-                                                    borderColor: '#4B5563',
-                                                },
-                                                '&:hover fieldset': {
-                                                    borderColor: '#6B7280',
-                                                },
-                                                '&.Mui-focused fieldset': {
-                                                    borderColor: '#ff962d',
-                                                },
-                                            },
-                                            '& .MuiInputLabel-root': {
-                                                color: '#9CA3AF',
-                                            },
-                                            '& .MuiInputBase-input': {
-                                                color: 'white',
-                                            },
-                                        }}
+                                        className="w-24"
                                     />
                                     <TextField
                                         label="Wagering Requirement"
                                         type="number"
                                         value={level.wagering}
                                         onChange={(e) => handleWageringLevelChange(index, 'wagering', Number(e.target.value))}
-                                        className="flex-1 bg-gray-700"
                                         size="small"
-                                        sx={{
-                                            '& .MuiOutlinedInput-root': {
-                                                '& fieldset': {
-                                                    borderColor: '#4B5563',
-                                                },
-                                                '&:hover fieldset': {
-                                                    borderColor: '#6B7280',
-                                                },
-                                                '&.Mui-focused fieldset': {
-                                                    borderColor: '#ff962d',
-                                                },
-                                            },
-                                            '& .MuiInputLabel-root': {
-                                                color: '#9CA3AF',
-                                            },
-                                            '& .MuiInputBase-input': {
-                                                color: 'white',
-                                            },
-                                        }}
+                                        className="flex-1"
                                     />
                                     {formData.wageringLevels.length > 1 && (
                                         <IconButton onClick={() => removeWageringLevel(index)} color="error" size="small">
@@ -448,26 +364,6 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
                             value={formData.startDate}
                             onChange={handleInputChange}
                             InputLabelProps={{ shrink: true }}
-                            className="bg-gray-700"
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    '& fieldset': {
-                                        borderColor: '#4B5563',
-                                    },
-                                    '&:hover fieldset': {
-                                        borderColor: '#6B7280',
-                                    },
-                                    '&.Mui-focused fieldset': {
-                                        borderColor: '#ff962d',
-                                    },
-                                },
-                                '& .MuiInputLabel-root': {
-                                    color: '#9CA3AF',
-                                },
-                                '& .MuiInputBase-input': {
-                                    color: 'white',
-                                },
-                            }}
                         />
                         <TextField
                             margin="normal"
@@ -477,26 +373,6 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
                             value={formData.endDate}
                             onChange={handleInputChange}
                             InputLabelProps={{ shrink: true }}
-                            className="bg-gray-700"
-                            sx={{
-                                '& .MuiOutlinedInput-root': {
-                                    '& fieldset': {
-                                        borderColor: '#4B5563',
-                                    },
-                                    '&:hover fieldset': {
-                                        borderColor: '#6B7280',
-                                    },
-                                    '&.Mui-focused fieldset': {
-                                        borderColor: '#ff962d',
-                                    },
-                                },
-                                '& .MuiInputLabel-root': {
-                                    color: '#9CA3AF',
-                                },
-                                '& .MuiInputBase-input': {
-                                    color: 'white',
-                                },
-                            }}
                         />
                     </div>
 
@@ -507,7 +383,7 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
                         </Typography>
 
                         {formData.wageringLevels.map((wageringLevel) => (
-                            <div key={wageringLevel.level} className="mb-6 p-4 bg-gray-700 rounded-lg">
+                            <div key={wageringLevel.level} className="mb-6 p-4 rounded-lg border border-darkBlue">
                                 <Typography variant="h6" className="text-white mb-3">
                                     Level {wageringLevel.level} - Wagering: {wageringLevel.wagering}
                                 </Typography>
@@ -518,18 +394,20 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
                                             Select costs for Level {wageringLevel.level}:
                                         </Typography>
                                         {selectedProduct.cost.map((cost, index) => (
-                                            <div key={cost.id} className="flex gap-3 mb-2 items-center p-2 bg-gray-600 rounded">
+                                            <div key={cost.id} className="flex gap-3 mb-2 items-center p-2 rounded border border-darkBlue bg-navy">
                                                 <input
                                                     type="checkbox"
                                                     checked={selectedCosts[wageringLevel.level]?.includes(cost.id) || false}
                                                     onChange={() => handleCostSelection(wageringLevel.level, cost.id)}
-                                                    className="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500"
+                                                    className="w-4 h-4"
                                                 />
                                                 {cost.image && (
                                                     <div className="w-12 h-12 flex-shrink-0 ml-2">
-                                                        <img
+                                                        <Image
                                                             src={cost.image}
                                                             alt={`Cost ${index + 1}`}
+                                                            width={50}
+                                                            height={50}
                                                             className="w-full h-full object-cover rounded"
                                                         />
                                                     </div>
@@ -543,7 +421,7 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
                                                     </div>
                                                     {cost.category && (
                                                         <div className="flex-shrink-0">
-                                                            <Typography variant="caption" className="text-gray-400 bg-gray-700 px-2 py-1 rounded text-xs">
+                                                            <Typography variant="caption" className="bg-darkBlue px-2 py-1 rounded text-xs">
                                                                 {cost.category}
                                                             </Typography>
                                                         </div>
@@ -573,53 +451,15 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
                                     label="Title"
                                     value={feature.title}
                                     onChange={(e) => handleFeatureChange(index, "title", e.target.value)}
-                                    className="flex-1 bg-gray-700"
                                     size="small"
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            '& fieldset': {
-                                                borderColor: '#4B5563',
-                                            },
-                                            '&:hover fieldset': {
-                                                borderColor: '#6B7280',
-                                            },
-                                            '&.Mui-focused fieldset': {
-                                                borderColor: '#ff962d',
-                                            },
-                                        },
-                                        '& .MuiInputLabel-root': {
-                                            color: '#9CA3AF',
-                                        },
-                                        '& .MuiInputBase-input': {
-                                            color: 'white',
-                                        },
-                                    }}
+                                    className="flex-1"
                                 />
                                 <TextField
                                     label="Value"
                                     value={feature.value}
                                     onChange={(e) => handleFeatureChange(index, "value", e.target.value)}
-                                    className="flex-1 bg-gray-700"
                                     size="small"
-                                    sx={{
-                                        '& .MuiOutlinedInput-root': {
-                                            '& fieldset': {
-                                                borderColor: '#4B5563',
-                                            },
-                                            '&:hover fieldset': {
-                                                borderColor: '#6B7280',
-                                            },
-                                            '&.Mui-focused fieldset': {
-                                                borderColor: '#ff962d',
-                                            },
-                                        },
-                                        '& .MuiInputLabel-root': {
-                                            color: '#9CA3AF',
-                                        },
-                                        '& .MuiInputBase-input': {
-                                            color: 'white',
-                                        },
-                                    }}
+                                    className="flex-1"
                                 />
                                 {formData.features.length > 1 && (
                                     <IconButton onClick={() => removeFeatureField(index)} color="error" size="small">
@@ -652,13 +492,6 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
                             variant="contained"
                             disabled={createGiftMutation.isPending || updateGiftMutation.isPending || !formData.productId || productsLoading}
                             startIcon={<Save />}
-                            className="bg-primary hover:bg-primary/90"
-                            sx={{
-                                backgroundColor: '#ff962d',
-                                '&:hover': {
-                                    backgroundColor: '#e6851f',
-                                },
-                            }}
                         >
                             {createGiftMutation.isPending || updateGiftMutation.isPending
                                 ? "Saving..."
@@ -667,7 +500,7 @@ const GiftForm: React.FC<GiftFormProps> = ({ mode, giftId }) => {
                         </Button>
                     </div>
                 </form>
-            </div>
+            </Paper>
         </div >
     );
 };

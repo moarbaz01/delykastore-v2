@@ -1,87 +1,47 @@
 "use client";
-import { useEffect, useState } from "react";
 import Products from "@/components/Dashboard/Products";
 import Loader from "@/components/Loader";
-import axios from "axios";
+import { useAllProducts } from "@/hooks/useAllProducts";
+import { useGhorProducts } from "@/hooks/useGhorProducts";
+import { useProductsList } from "@/hooks/useProductsList";
 
 const Page = () => {
-  const [allProducts, setAllProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const [productsList, setProductsList] = useState([]);
-  const [ghorProductsList, setGhorProductsList] = useState([]);
+  const {
+    data: allProducts,
+    isLoading: isLoadingAll,
+    error: errorAll,
+  } = useAllProducts();
+  const {
+    data: ghorProductsList,
+    isLoading: isLoadingGhor,
+    error: errorGhor,
+  } = useGhorProducts();
+  const {
+    data: productsList,
+    isLoading: isLoadingList,
+    error: errorList,
+  } = useProductsList();
 
-  // Fetch products data on the client side using useEffect
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/product`, {
-          headers: { "Content-Type": "application/json" },
-        });
-
-        if (!res.ok) {
-          throw new Error("Failed to fetch products");
-        }
-
-        const data = await res.json();
-        setAllProducts(data);
-      } catch (error) {
-        console.error(error);
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    // app/actions/mlbb-topup.ts
-
-    const getGhorProductList = async () => {
-      try {
-        const topupResponse = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/unipin/fetch-products`
-        );
-        const topupData = await topupResponse.json();
-        console.log(topupData.data[0]);
-        setGhorProductsList(topupData.data[0]);
-      } catch (error) {
-        console.error("Error fetching topup data:", error);
-        setGhorProductsList([]);
-      }
-    };
-
-    const fetchProductsList = async () => {
-      try {
-        const res = await axios(
-          `${process.env.NEXT_PUBLIC_API_URL}/productslist`
-        );
-        if (!res.data) {
-          throw new Error("Failed to fetch products list");
-        }
-        setProductsList(res.data.data);
-      } catch (error) {
-        console.error(error);
-        setProductsList([]);
-      }
-    };
-
-    fetchProductsList();
-    fetchProducts();
-    getGhorProductList();
-  }, []); // Empty dependency array to ensure it runs only once when the component mounts
+  const loading = isLoadingAll; // Only wait for the main products list
+  const error = errorAll;
 
   if (loading) {
     return <Loader />;
   }
 
   if (error || !allProducts) {
-    return <div>Error loading products</div>;
+    return (
+      <div className="flex items-center justify-center min-h-screen text-red-500">
+        Error loading products. Please try again later.
+      </div>
+    );
   }
 
   return (
     <Products
-      ghorProductlist={ghorProductsList}
+      ghorProductlist={ghorProductsList || []}
       allProducts={allProducts}
-      productsList={productsList}
+      productsList={productsList || []}
     />
   );
 };

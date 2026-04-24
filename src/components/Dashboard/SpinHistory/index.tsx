@@ -23,6 +23,7 @@ import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useUpdateSpinStatus } from "@/hooks/useSpinHistory";
 
 interface SpinRecord {
   _id: string;
@@ -83,21 +84,14 @@ const SpinHistory: React.FC<SpinHistoryProps> = ({
   );
   const [dateFilter, setDateFilter] = useState(searchParams.get("date") || "");
   const [search, setSearch] = useState(searchParams.get("search") || "");
-  const [updating, setUpdating] = useState<string | null>(null);
+  const updateMutation = useUpdateSpinStatus();
 
   const updateStatus = async (spinId: string, newStatus: string) => {
     try {
-      setUpdating(spinId);
-      await axios.put("/api/spin/update-status", {
-        spinId,
-        status: newStatus,
-      });
-      toast.success("Status updated successfully");
+      await updateMutation.mutateAsync({ spinId, status: newStatus });
       onStatusUpdate();
     } catch (error) {
-      toast.error("Failed to update status");
-    } finally {
-      setUpdating(null);
+      // toast is handled in mutation
     }
   };
 
@@ -145,7 +139,7 @@ const SpinHistory: React.FC<SpinHistoryProps> = ({
   };
 
   return (
-    <div className="md:ml-72 md:py-6 md:px-6 px-4">
+    <div className="md:ml-72 md:py-6 md:px-6 px-4 min-h-screen">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-white mb-6">Spin Reward History</h1>
         <p className="text-2xl font-bold text-white mb-6">
@@ -211,9 +205,9 @@ const SpinHistory: React.FC<SpinHistoryProps> = ({
       </div>
 
       {/* Table */}
-      <TableContainer className="bg-gray-800 rounded-xl">
+      <TableContainer>
         <Table>
-          <TableHead className="bg-gray-600">
+          <TableHead>
             <TableRow>
               <TableCell>Transaction ID</TableCell>
               <TableCell>Prize Won</TableCell>
@@ -230,7 +224,7 @@ const SpinHistory: React.FC<SpinHistoryProps> = ({
             {isLoading
               ? renderSkeletonRows(rowsPerPage)
               : allSpins?.map((spin) => (
-                  <TableRow key={spin._id}>
+                  <TableRow key={spin._id} hover>
                     <TableCell>{spin.transactionId}</TableCell>
                     <TableCell>
                       <span className={spin.prize === "Better Luck" ? "text-red-400" : "text-green-400"}>
@@ -262,28 +256,28 @@ const SpinHistory: React.FC<SpinHistoryProps> = ({
                           size="small"
                           variant="contained"
                           color="success"
-                          disabled={spin.status === "success" || updating === spin._id}
+                          disabled={spin.status === "success" || updateMutation.isPending}
                           onClick={() => updateStatus(spin._id, "success")}
                         >
-                          {updating === spin._id ? "..." : "Success"}
+                          {updateMutation.isPending && updateMutation.variables?.spinId === spin._id ? "..." : "Success"}
                         </Button>
                         <Button
                           size="small"
                           variant="contained"
                           color="warning"
-                          disabled={spin.status === "pending" || updating === spin._id}
+                          disabled={spin.status === "pending" || updateMutation.isPending}
                           onClick={() => updateStatus(spin._id, "pending")}
                         >
-                          {updating === spin._id ? "..." : "Pending"}
+                          {updateMutation.isPending && updateMutation.variables?.spinId === spin._id ? "..." : "Pending"}
                         </Button>
                         <Button
                           size="small"
                           variant="contained"
                           color="error"
-                          disabled={spin.status === "reject" || updating === spin._id}
+                          disabled={spin.status === "reject" || updateMutation.isPending}
                           onClick={() => updateStatus(spin._id, "reject")}
                         >
-                          {updating === spin._id ? "..." : "Reject"}
+                          {updateMutation.isPending && updateMutation.variables?.spinId === spin._id ? "..." : "Reject"}
                         </Button>
                       </div>
                     </TableCell>

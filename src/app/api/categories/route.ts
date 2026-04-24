@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ message: "Unauthorized" });
     }
 
-    const { name } = await req.json();
+    const { name, type } = await req.json();
 
     if (!name) {
       return NextResponse.json(
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-    const result = await CostCategory.create({ name });
+    const result = await CostCategory.create({ name, type: type || "topup" });
     return NextResponse.json(result, { status: 200 });
   } catch (err) {
     console.log(err);
@@ -75,12 +75,13 @@ export async function PUT(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
-    const { name } = await req.json();
+    const { name, type } = await req.json();
     if (mongoose.isValidObjectId(id)) {
       const result = await CostCategory.findByIdAndUpdate(
         id,
         {
           name,
+          type: type || "topup",
         },
         { new: true }
       );

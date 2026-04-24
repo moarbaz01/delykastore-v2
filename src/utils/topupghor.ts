@@ -1,6 +1,7 @@
 import { axiosWithProxy } from "@/lib/axiosWithProxy";
 import { type GameOrder } from "@/types/main";
 import { sendEmail } from "./nodemailer";
+import { createOrderLog } from "./orderLogs";
 
 export const GetTopUpGhorBalance = async () => {
   try {
@@ -8,7 +9,7 @@ export const GetTopUpGhorBalance = async () => {
       "https://topupghorbd.com/wp-json/v1/user/balance",
       {
         path: "user/balance",
-      } // Empty object as the request body (if required, update accordingly)
+      }, // Empty object as the request body (if required, update accordingly)
     );
 
     const data = res.data;
@@ -85,11 +86,21 @@ export const GhorTopUp = async (order: GameOrder, productId: string) => {
       try {
         const res = await axiosWithProxy.post(
           "https://topupghorbd.com/wp-json/v1/order/create_order",
-          params // Empty object as the request body (if required, update accordingly)
+          params, // Empty object as the request body (if required, update accordingly)
         );
 
         const data = res.data;
         console.log("Top Up Ghor Response", data);
+
+        await createOrderLog({
+          transactionId: order.transactionId,
+          orderId: order._id,
+          provider: "TopUpGhor Api",
+          requestPayload: params,
+          responsePayload: data,
+          status: data?.success === "false" ? "failed" : "success",
+        });
+
         if (data?.success === "false") {
           await sendEmail(
             "Kira Store",
@@ -103,7 +114,7 @@ export const GhorTopUp = async (order: GameOrder, productId: string) => {
             Game: ${game}
             Partner Order ID: ${uniqueId}
             </pre>
-            `
+            `,
           );
           return { status: 500, error: data.message, cost };
         }
@@ -111,11 +122,22 @@ export const GhorTopUp = async (order: GameOrder, productId: string) => {
       } catch (error: any) {
         console.error(
           `Failed to create order for cost ID ${cost}:`,
-          error.message
+          error.message,
         );
+
+        await createOrderLog({
+          transactionId: order.transactionId,
+          orderId: order._id,
+          provider: "TopUpGhor Api",
+          requestPayload: params,
+          responsePayload: error.response?.data || error,
+          status: "failed",
+          errorMessage: error.response?.data?.message || error.message,
+        });
+
         return { status: 500, error: error.message, cost }; // Failure
       }
-    })
+    }),
   );
 
   // Find a successful response or handle failures
@@ -136,7 +158,7 @@ export const getProductList = async () => {
     };
     const res = await axiosWithProxy.post(
       "https://topupghorbd.com/wp-json/v1/product/product_list",
-      params
+      params,
     );
 
     const data = res.data;
@@ -162,7 +184,7 @@ export const getProductDetails = async (productId: string) => {
     };
     const res = await axiosWithProxy.post(
       "https://topupghorbd.com/wp-json/v1/product/product_detail",
-      params
+      params,
     );
 
     const data = res.data;

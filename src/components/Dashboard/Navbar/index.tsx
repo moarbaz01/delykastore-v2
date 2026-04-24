@@ -13,7 +13,7 @@ import {
 } from "react-icons/fa";
 import Link from "next/link";
 import { RxCross2 } from "react-icons/rx";
-import { IoMenu } from "react-icons/io5";
+import { HiMenuAlt1 } from "react-icons/hi";
 import {
   CategoryOutlined,
   DiscountOutlined,
@@ -23,40 +23,51 @@ import {
 } from "@mui/icons-material";
 import { signOut } from "next-auth/react";
 import toast from "react-hot-toast";
+import Image from "next/image";
+import { FaTerminal } from "react-icons/fa";
 
-const links = [
-  { href: "/dashboard", label: "Dashboard", icon: FaTachometerAlt },
-  { href: "/dashboard/products", label: "Products", icon: FaBox },
-  { href: "/dashboard/orders", label: "Orders", icon: FaShoppingCart },
-  { href: "/dashboard/customers", label: "Customers", icon: FaUsers },
-  { href: "/dashboard/banner", label: "Sliders", icon: FaList },
+const menuGroups = [
   {
-    href: "/dashboard/game-list",
-    label: "Api Game List",
-    icon: Gamepad,
+    title: "Management",
+    links: [
+      { href: "/dashboard", label: "Dashboard", icon: FaTachometerAlt },
+      { href: "/dashboard/products", label: "Products", icon: FaBox },
+      { href: "/dashboard/orders", label: "Orders", icon: FaShoppingCart },
+      { href: "/dashboard/order-logs", label: "API Logs", icon: FaTerminal },
+      { href: "/dashboard/customers", label: "Customers", icon: FaUsers },
+      { href: "/dashboard/banner", label: "Sliders", icon: FaList },
+      {
+        href: "/dashboard/categories",
+        label: "Categories",
+        icon: CategoryOutlined,
+      },
+      { href: "/dashboard/coupons", label: "Coupons", icon: DiscountOutlined },
+      { href: "/dashboard/accounts", label: "Accounts", icon: FaUsers },
+    ],
   },
   {
-    href: "/dashboard/categories",
-    label: "Categories",
-    icon: CategoryOutlined,
+    title: "Configs",
+    links: [
+      { href: "/dashboard/game-list", label: "Api Game List", icon: Gamepad },
+      { href: "/dashboard/balance", label: "Balance", icon: Wallet },
+    ],
   },
   {
-    href: "/dashboard/gifts",
-    label: "Gifts",
-    icon: FaGift,
+    title: "Gifts & Rewards",
+    links: [
+      { href: "/dashboard/gifts", label: "Gifts", icon: FaGift },
+      {
+        href: "/dashboard/gift-transactions",
+        label: "Gift Transactions",
+        icon: FaHistory,
+      },
+      {
+        href: "/dashboard/spin-history",
+        label: "Spin History",
+        icon: FaHistory,
+      },
+    ],
   },
-  {
-    href: "/dashboard/gift-transactions",
-    label: "Gift Transactions",
-    icon: FaGift,
-  },
-  {
-    href: "/dashboard/balance",
-    label: "Balance",
-    icon: Wallet,
-  },
-  { href: "/dashboard/spin-history", label: "Spin History", icon: FaHistory },
-  { href: "/dashboard/coupons", label: "Coupons", icon: DiscountOutlined },
 ];
 
 const Navbar = () => {
@@ -76,53 +87,76 @@ const Navbar = () => {
   }
   return (
     <>
-      <div className="w-full py-4 md:px-6 px-4 fixed top-0 left-0 z-[999] md:hidden bg-gray-700">
+      <div className="w-full py-4 md:px-6 px-4 fixed top-0 left-0 z-[999] md:hidden bg-secondary border-b border-darkBlue">
         <div className="flex justify-between items-center">
-          <h1 className="text-white font-extrabold text-3xl drop-shadow-[0px_0px_4px_red]">
-            WinWin TOPUP
-          </h1>
+          <Link href="/dashboard" className="text-white font-black text-xl tracking-tight uppercase">
+            WinWin
+          </Link>
           <div onClick={() => setIsOpen(true)}>
-            <IoMenu className="text-3xl text-primary" />
+            <HiMenuAlt1 className="text-3xl text-primary" />
           </div>
         </div>
       </div>
 
       {isOpen && (
         <Drawer anchor="left" open={isOpen} onClose={() => setIsOpen(false)}>
-          <div className="w-[300px] h-full bg-gray-700">
-            <div className="flex justify-between items-center px-4 py-6">
-              <Link href="/dashboard" className="text-white font-bold text-xl">
-                <h1 className="text-white font-extrabold text-2xl drop-shadow-[0px_0px_4px_red]">
-                  WinWin TOPUP
+          <div className="w-[280px] h-full bg-secondary flex flex-col border-r border-darkBlue">
+            <div className="flex justify-between items-center px-4 py-6 border-b border-darkBlue">
+              <Link href="/dashboard" className="flex items-center gap-3">
+                <div className="w-10 h-10 shrink-0">
+                  <Image
+                    src="/images/logo.png"
+                    alt="WinWin Store"
+                    width={40}
+                    height={40}
+                    className="w-full h-full object-contain"
+                  />
+                </div>
+                <h1 className="text-white font-black text-lg tracking-tight uppercase">
+                  WinWin
                 </h1>
               </Link>
               <div onClick={() => setIsOpen(false)}>
                 <RxCross2 className="text-2xl" />
               </div>
             </div>
-            <nav className="mt-4">
-              <ul>
-                {links.map(({ href, label, icon: Icon }) => (
-                  <li key={href} className="mt-2">
-                    <Link
-                      href={href}
-                      className={`flex items-center p-4 rounded-lg transition-colors ${pathname === href
-                        ? "bg-gray-700 text-primary"
-                        : "hover:bg-gray-700"
-                        }`}
-                    >
-                      <Icon className="mr-4 text-lg" />
-                      <span className="text-lg">{label}</span>
-                    </Link>
-                  </li>
-                ))}
-                <li className="mt-2 cursor-pointer">
+            <nav className="mt-2 px-4 pb-6 overflow-y-auto custom-scrollbar">
+              {menuGroups.map((group) => (
+                <div key={group.title} className="mb-6 last:mb-0">
+                  <h3 className="px-4 mb-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                    {group.title}
+                  </h3>
+                  <ul className="space-y-1">
+                    {group.links.map(({ href, label, icon: Icon }) => {
+                      const isActive = pathname === href;
+                      return (
+                        <li key={href}>
+                          <Link
+                            href={href}
+                            onClick={() => setIsOpen(false)}
+                            className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 text-sm font-semibold tracking-wide ${
+                              isActive
+                                ? "bg-darkBlue text-white shadow-sm"
+                                : "text-gray-300 hover:bg-darkBlue hover:text-white"
+                            }`}
+                          >
+                            <Icon className={`mr-3 ${isActive ? "text-primary" : "text-gray-400"} text-[18px] shrink-0`} />
+                            <span className="truncate">{label}</span>
+                          </Link>
+                        </li>
+                      );
+                    })}
+                  </ul>
+                </div>
+              ))}
+              <ul className="mt-6 pt-4 border-t border-darkBlue">
+                <li className="cursor-pointer">
                   <div
                     onClick={handleLogout}
-                    className={`flex items-center p-4 rounded-lg transition-colors hover:bg-gray-700`}
+                    className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 text-sm font-semibold tracking-wide text-red-400 hover:bg-darkBlue hover:text-red-300`}
                   >
-                    <Logout className="mr-4 text-lg" />
-                    <span className="text-lg">Logout</span>
+                    <Logout className="mr-3 text-[18px] shrink-0 text-red-400" />
+                    <span>Logout</span>
                   </div>
                 </li>
               </ul>

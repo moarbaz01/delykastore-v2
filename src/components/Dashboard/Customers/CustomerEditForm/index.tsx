@@ -112,14 +112,11 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer }) => {
   };
 
   return (
-    <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen bg-gray-900">
+    <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen">
       <h1 className="text-2xl font-bold text-white mb-6">
         {customer ? "Edit Customer" : "Create Customer"}
       </h1>
-      <Paper
-        className="p-6"
-        style={{ backgroundColor: "#374151", color: "#D1D5DB" }}
-      >
+      <Paper className="p-6">
         <form>
           {/* Email (only for display if editing existing customer) */}
           {customer?.email && (
@@ -131,25 +128,15 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer }) => {
               InputProps={{
                 readOnly: true,
               }}
-              sx={{
-                "& .MuiInputBase-input": {
-                  color: "#E5E7EB",
-                },
-                "& .MuiInputLabel-root": {
-                  color: "#D1D5DB",
-                },
-              }}
             />
           )}
 
           {/* Role */}
           <FormControl fullWidth margin="normal">
-            <InputLabel style={{ color: "#D1D5DB" }}>Role</InputLabel>
             <Select
               name="role"
               value={formData.role}
               onChange={handleRoleChange}
-              sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
             >
               <MenuItem value="user">User</MenuItem>
               <MenuItem value="admin">Admin</MenuItem>
@@ -167,14 +154,6 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer }) => {
                 type="password"
                 value={formData.password}
                 onChange={handleInputChange}
-                sx={{
-                  "& .MuiInputBase-input": {
-                    color: "#E5E7EB",
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "#D1D5DB",
-                  },
-                }}
               />
               <TextField
                 margin="normal"
@@ -186,14 +165,6 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer }) => {
                 onChange={handleInputChange}
                 error={!!passwordError}
                 helperText={passwordError}
-                sx={{
-                  "& .MuiInputBase-input": {
-                    color: "#E5E7EB",
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "#D1D5DB",
-                  },
-                }}
               />
             </>
           )}
@@ -205,11 +176,9 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer }) => {
                 name="isDeleted"
                 checked={formData.isDeleted}
                 onChange={handleCheckboxChange}
-                sx={{ color: "#E5E7EB" }}
               />
             }
             label="Is Deleted"
-            sx={{ color: "#D1D5DB" }}
           />
 
           {/* Is Blocked */}
@@ -219,11 +188,9 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer }) => {
                 name="isBlocked"
                 checked={formData.isBlocked}
                 onChange={handleCheckboxChange}
-                sx={{ color: "#E5E7EB" }}
               />
             }
             label="Is Blocked"
-            sx={{ color: "#D1D5DB" }}
           />
 
           {/* Submit Button */}
@@ -233,10 +200,6 @@ const CustomerEditForm: React.FC<CustomerEditFormProps> = ({ customer }) => {
               color="primary"
               variant="contained"
               fullWidth
-              sx={{
-                backgroundColor: "#6366F1",
-                color: "#FFFFFF",
-              }}
             >
               Save Changes
             </Button>

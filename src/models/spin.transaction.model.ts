@@ -1,6 +1,20 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema, Document, Model } from "mongoose";
 
-const spinTransactionSchema = new Schema(
+export interface ISpinTransaction extends Document {
+  userId: string;
+  zoneId?: string;
+  productId: mongoose.Types.ObjectId;
+  costId: string;
+  transactionId: string;
+  prize?: string;
+  spin: number;
+  status: "pending" | "reject" | "success";
+  isUsed: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const spinTransactionSchema = new Schema<ISpinTransaction>(
   {
     userId: {
       type: String,
@@ -39,25 +53,12 @@ const spinTransactionSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-spinTransactionSchema.pre("save", function (next) {
-  this.updatedAt = new Date();
-  next();
-});
-
 export const SpinTransaction =
-  mongoose.models.SpinTransaction ||
-  mongoose.model("SpinTransaction", spinTransactionSchema);
+  (mongoose.models.SpinTransaction as Model<ISpinTransaction>) ||
+  mongoose.model<ISpinTransaction>("SpinTransaction", spinTransactionSchema);

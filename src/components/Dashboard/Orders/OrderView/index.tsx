@@ -1,232 +1,293 @@
 "use client";
 
-import React, { useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   Box,
   Typography,
   Select,
   MenuItem,
   Divider,
-  SelectChangeEvent,
   Button,
+  Paper,
+  Grid,
+  Chip,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
-import axios from "axios";
-import toast from "react-hot-toast";
+import {
+  CalendarToday,
+  Person,
+  Receipt,
+  Gamepad,
+  AttachMoney,
+  CheckCircle,
+  Error,
+  Pending,
+} from "@mui/icons-material";
+import { useUpdateOrderStatus } from "@/hooks/useOrders";
 
 interface Order {
   _id: string;
   createdAt: string;
-  product: { name: string };
-  status: string;
+  product?: { name: string };
+  user?: { email: string };
+  status: "pending" | "success" | "failed";
   orderType: string;
-  gameCredentials: {
-    zoneId: string;
-    userId: string;
-    game: string;
+  gameCredentials?: {
+    zoneId?: string;
+    userId?: string;
+    game?: string;
   };
-  failureReason: string;
+  failureReason?: string;
   amount: string;
-  orderDetails: string;
-  couponCode: string;
-  couponDetails: {
+  couponCode?: string;
+  couponDetails?: {
     code: string;
-    type: string;
+    type: "flat" | "percentage";
     discountValue: number;
-    maxDiscount: number;
-    minAmount: number;
   };
+  accountDetails?: {
+    email: string;
+    password?: string;
+    additionalInfo?: string;
+  };
+  expiresAt?: string;
 }
 
+const InfoRow = ({
+  label,
+  value,
+  icon: Icon,
+}: {
+  label: string;
+  value: React.ReactNode;
+  icon?: any;
+}) => (
+  <Box sx={{ mb: 2 }}>
+    <Box sx={{ display: "flex", itemsCenter: "center", gap: 1, mb: 0.5 }}>
+      {Icon && <Icon sx={{ fontSize: 16, color: "#94a3b8" }} />}
+      <Typography variant="caption" sx={{ color: "#94a3b8", fontWeight: 600 }}>
+        {label}
+      </Typography>
+    </Box>
+    <Typography variant="body1" sx={{ color: "white", fontWeight: 500 }}>
+      {value || "—"}
+    </Typography>
+  </Box>
+);
+
 const OrderView = ({ order }: { order: Order }) => {
-  const [status, setStatus] = useState(order.status);
-  const loadingRef = useRef(null);
-  const [isUpdating, setIsUpdating] = useState(false);
-  const handleStatusChange = (event: SelectChangeEvent) => {
-    setStatus(event.target.value);
+  const [selectedStatus, setSelectedStatus] = useState(order.status);
+  const updateMutation = useUpdateOrderStatus();
+
+  const handleUpdate = async () => {
+    await updateMutation.mutateAsync({
+      id: order._id,
+      status: selectedStatus,
+    });
   };
 
-  const handleStatusUpdate = async () => {
-    if (status === order.status) {
-      toast.error("Status is already up to date");
-      return;
-    }
-    try {
-      loadingRef.current = toast.loading("Updating status...");
-      setIsUpdating(true);
-      await axios.put(`/api/order?id=${order._id}`, {
-        status,
-      });
-      toast.success("Status updated successfully");
-    } catch (error) {
-      console.log("Error updating status:", error);
-      toast.error("Error updating status");
-    } finally {
-      toast.dismiss(loadingRef.current);
-      setIsUpdating(false);
-    }
+  const statusColors = {
+    pending: { bg: "rgba(234, 179, 8, 0.1)", text: "#eab308", icon: Pending },
+    success: { bg: "rgba(34, 197, 94, 0.1)", text: "#22c55e", icon: CheckCircle },
+    failed: { bg: "rgba(239, 68, 68, 0.1)", text: "#ef4444", icon: Error },
   };
+
+  const currentStatus = statusColors[order.status] || statusColors.pending;
 
   return (
-    <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen  ">
-      <Typography variant="h4" className="text-white mb-6">
-        Order Details
-      </Typography>
-
-      <Box
-        sx={{
-          flex: 1,
-          backgroundColor: "#2D3748",
-          padding: "16px",
-          borderRadius: "8px",
-          maxWidth: "600px",
-        }}
-      >
-        <Typography variant="h6" className="text-white mb-4">
-          Order Information
-        </Typography>
-        <Divider sx={{ backgroundColor: "#4A5568", marginBottom: "16px" }} />
-
-        {/* Simplified Order Details */}
-        <Box component="div" className="bg-gray-800 p-4">
-          <Box sx={{ marginBottom: "10px" }}>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              Order ID:
-            </Typography>
-            <Typography variant="body1">{order?._id}</Typography>
-          </Box>
-
-          <Box sx={{ marginBottom: "10px" }}>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              Product:
-            </Typography>
-            <Typography variant="body1">
-              {order?.product?.name || "Fack Order"}
-            </Typography>
-          </Box>
-
-          <Box sx={{ marginBottom: "10px" }}>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              Status:
-            </Typography>
-            <Typography variant="body1">{status}</Typography>
-          </Box>
-
-          {order?.failureReason && (
-            <Box sx={{ marginBottom: "10px" }}>
-              <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-                Failure Reason:
-              </Typography>
-              <Typography variant="body1">{order?.failureReason}</Typography>
-            </Box>
-          )}
-          <Box sx={{ marginBottom: "10px" }}>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              Price:
-            </Typography>
-            <Typography variant="body1">${order?.amount}</Typography>
-          </Box>
-
-          <Box sx={{ marginBottom: "10px" }}>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              Coupom Applied:
-            </Typography>
-            <Typography variant="body1">
-              {order?.couponCode ? order?.couponCode : "No coupom applied"}{" "}
-            </Typography>
-          </Box>
-
-          <Box sx={{ marginBottom: "10px" }}>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              Discount:
-            </Typography>
-            <Typography variant="body1">
-              {order?.couponDetails?.discountValue
-                ? `${order?.couponDetails?.type === "flat" ? "$" : ""}${
-                    order?.couponDetails?.discountValue
-                  }
-                  ${order?.couponDetails?.type === "percentage" ? "%" : ""} 
-                  `
-                : "No discount applied"}
-            </Typography>
-          </Box>
-
-          <Box sx={{ marginBottom: "10px" }}>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              Coupon Type:
-            </Typography>
-            <Typography variant="body1">
-              {order?.couponDetails?.type
-                ? `${order?.couponDetails?.type}`
-                : "No discount applied"}
-            </Typography>
-          </Box>
-
-          <Box sx={{ marginBottom: "10px" }}>
-            <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-              Date:
-            </Typography>
-            <Typography variant="body1">
-              {new Date(order?.createdAt).toLocaleDateString()}
-            </Typography>
-          </Box>
+    <div className="md:pl-72 md:py-8 md:px-8 px-4 min-h-screen">
+      <Box sx={{ mb: 4, display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <Box>
+          <Typography variant="h4" sx={{ color: "white", fontWeight: 800, mb: 1 }}>
+            Order Details
+          </Typography>
+          <Typography variant="body2" color="textSecondary">
+            ID: {order._id}
+          </Typography>
         </Box>
+        <Chip
+          icon={<currentStatus.icon sx={{ color: `${currentStatus.text} !important` }} />}
+          label={order.status.toUpperCase()}
+          sx={{
+            backgroundColor: currentStatus.bg,
+            color: currentStatus.text,
+            fontWeight: "bold",
+            borderRadius: "8px",
+            px: 1,
+          }}
+        />
       </Box>
 
-      {/* Status Update Section */}
-      <Box
-        component="div"
-        className="
-      bg-gray-800
-      flex-1
-      p-4
-      mt-6
-      rounded-md
-      flex flex-col gap-2
-      w-fit
-      "
-      >
-        <Typography
-          variant="h6"
-          sx={{ fontWeight: "bold", marginBottom: "16px" }}
-        >
-          Update Status
-        </Typography>
-        <Select
-          value={status}
-          disabled={order?.status === "success"}
-          onChange={handleStatusChange}
-          sx={{
-            backgroundColor: "#E2E8F0",
-            color: "#2D3748",
-            "&.Mui-disabled": {
-              backgroundColor: "rgba(0, 0, 0, 0.12)", // Light gray background when disabled
-              color: "rgba(0, 0, 0, 0.38)", // Dimmed text color
-              cursor: "not-allowed",
-            },
-            "& .MuiOutlinedInput-notchedOutline": {
-              borderColor: "rgba(0, 0, 0, 0.23)", // Border color when disabled
-            },
-          }}
-        >
-          <MenuItem value="pending">Pending</MenuItem>
-          <MenuItem value="success">Success</MenuItem>
-          <MenuItem value="failed">Failed</MenuItem>
-        </Select>
-        <Button
-          onClick={handleStatusUpdate}
-          disabled={isUpdating}
-          sx={{
-            marginTop: "16px",
-            backgroundColor: "#4A5568",
-            color: "white",
-            "&:hover": {
-              backgroundColor: "#2D3748",
-            },
-          }}
-        >
-          Update Status
-        </Button>
-      </Box>
+      <Grid container spacing={3}>
+        {/* Main Info */}
+        <Grid item xs={12} md={8}>
+          <Paper
+            sx={{
+              p: 3,
+            }}
+          >
+            <Typography variant="h6" sx={{ color: "white", mb: 3, fontWeight: "bold" }}>
+              General Information
+            </Typography>
+            <Grid container spacing={2}>
+              <Grid item xs={12} sm={6}>
+                <InfoRow label="Product" value={order.product?.name || "N/A"} icon={Receipt} />
+                <InfoRow label="User Email" value={order.user?.email || "N/A"} icon={Person} />
+                <InfoRow
+                  label="Date Ordered"
+                  value={new Date(order.createdAt).toLocaleString()}
+                  icon={CalendarToday}
+                />
+              </Grid>
+              <Grid item xs={12} sm={6}>
+                <InfoRow
+                  label="Total Amount"
+                  value={`$${order.amount}`}
+                  icon={AttachMoney}
+                />
+                <InfoRow label="Order Type" value={order.orderType.toUpperCase()} />
+                {order.couponCode && (
+                  <InfoRow
+                    label="Coupon Applied"
+                    value={
+                      <Box>
+                        <Typography variant="body1" sx={{ color: "#fbbf24", fontWeight: "bold" }}>
+                          {order.couponCode}
+                        </Typography>
+                        {order.couponDetails && (
+                          <Typography variant="caption" sx={{ color: "#94a3b8" }}>
+                            {order.couponDetails.type === "percentage"
+                              ? `${order.couponDetails.discountValue}% Off`
+                              : `$${order.couponDetails.discountValue} Off`}
+                          </Typography>
+                        )}
+                      </Box>
+                    }
+                  />
+                )}
+              </Grid>
+            </Grid>
+
+            {order.failureReason && (
+              <Box sx={{ mt: 2, p: 2, backgroundColor: "rgba(239, 68, 68, 0.05)", borderRadius: "8px", border: "1px solid rgba(239, 68, 68, 0.1)" }}>
+                <Typography variant="caption" sx={{ color: "#ef4444", fontWeight: "bold" }}>
+                  Failure Reason
+                </Typography>
+                <Typography variant="body1" sx={{ color: "#fca5a5" }}>
+                  {order.failureReason}
+                </Typography>
+              </Box>
+            )}
+          </Paper>
+
+          {/* Game Credentials */}
+          {order.gameCredentials && (
+            <Paper
+              sx={{
+                p: 3,
+                mt: 3,
+              }}
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}>
+                <Gamepad sx={{ color: "#60a5fa" }} />
+                <Typography variant="h6" sx={{ color: "white", fontWeight: "bold" }}>
+                  Game Credentials
+                </Typography>
+              </Box>
+              <Grid container spacing={2}>
+                <Grid item xs={4}>
+                  <InfoRow label="Game" value={order.gameCredentials.game} />
+                </Grid>
+                <Grid item xs={4}>
+                  <InfoRow label="User ID" value={order.gameCredentials.userId} />
+                </Grid>
+                <Grid item xs={4}>
+                  <InfoRow label="Zone ID" value={order.gameCredentials.zoneId} />
+                </Grid>
+              </Grid>
+            </Paper>
+          )}
+
+          {/* Account Details */}
+          {order.accountDetails && (
+            <Paper
+              sx={{
+                p: 3,
+                mt: 3,
+              }}
+            >
+              <Typography variant="h6" sx={{ color: "#60a5fa", mb: 3, fontWeight: "bold" }}>
+                Fulfillment Details (Premium Account)
+              </Typography>
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <InfoRow label="Email / Username" value={order.accountDetails.email} />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <InfoRow label="Password" value={order.accountDetails.password} />
+                </Grid>
+                {order.accountDetails.additionalInfo && (
+                  <Grid item xs={12}>
+                    <InfoRow label="Additional Info" value={order.accountDetails.additionalInfo} />
+                  </Grid>
+                )}
+                {order.expiresAt && (
+                  <Grid item xs={12}>
+                    <Box sx={{ p: 2, backgroundColor: "rgba(239, 68, 68, 0.05)", borderRadius: "8px" }}>
+                      <Typography variant="caption" sx={{ color: "#ef4444" }}>Expires On</Typography>
+                      <Typography variant="body1" sx={{ color: "#fca5a5", fontWeight: "bold" }}>
+                        {new Date(order.expiresAt).toLocaleString()}
+                      </Typography>
+                    </Box>
+                  </Grid>
+                )}
+              </Grid>
+            </Paper>
+          )}
+        </Grid>
+
+        {/* Sidebar / Actions */}
+        <Grid item xs={12} md={4}>
+          <Paper
+            sx={{
+              p: 3,
+              position: "sticky",
+              top: 24,
+            }}
+          >
+            <Typography variant="h6" sx={{ color: "white", mb: 3, fontWeight: "bold" }}>
+              Management
+            </Typography>
+            <FormControl fullWidth size="small" sx={{ mb: 3 }}>
+              <InputLabel>Update Status</InputLabel>
+              <Select
+                value={selectedStatus}
+                label="Update Status"
+                onChange={(e) => setSelectedStatus(e.target.value as any)}
+                disabled={order.status === "success"}
+              >
+                <MenuItem value="pending">Pending</MenuItem>
+                <MenuItem value="success">Success</MenuItem>
+                <MenuItem value="failed">Failed</MenuItem>
+              </Select>
+            </FormControl>
+            <Button
+              fullWidth
+              variant="contained"
+              onClick={handleUpdate}
+              disabled={updateMutation.isPending || selectedStatus === order.status}
+            >
+              {updateMutation.isPending ? "Updating..." : "Save Changes"}
+            </Button>
+            {order.status === "success" && (
+              <Typography variant="caption" sx={{ color: "#94a3b8", display: "block", mt: 2, textAlign: "center" }}>
+                Successful orders cannot be changed.
+              </Typography>
+            )}
+          </Paper>
+        </Grid>
+      </Grid>
     </div>
   );
 };

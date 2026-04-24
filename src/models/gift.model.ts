@@ -1,6 +1,25 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
 
-const giftSchema = new Schema(
+export interface IGift extends Document {
+  productId: mongoose.Types.ObjectId;
+  bannerText?: string;
+  startDate?: Date;
+  endDate?: Date;
+  wageringLevels: {
+    level: number;
+    wagering: number;
+    costIds: string[];
+  }[];
+  features: {
+    title: string;
+    value: string;
+  }[];
+  isActive: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const giftSchema = new Schema<IGift>(
   {
     productId: {
       type: Schema.Types.ObjectId,
@@ -10,14 +29,12 @@ const giftSchema = new Schema(
     bannerText: {
       type: String,
     },
-
     startDate: {
       type: Date,
     },
     endDate: {
       type: Date,
     },
-
     wageringLevels: [
       {
         level: Number,
@@ -25,7 +42,6 @@ const giftSchema = new Schema(
         costIds: [String],
       },
     ],
-
     features: [
       {
         title: String,
@@ -42,9 +58,6 @@ const giftSchema = new Schema(
   },
 );
 
-giftSchema.pre("save", function (next) {
-  this.updatedAt = new Date();
-  next();
-});
-
-export const Gift = mongoose.models.Gift || mongoose.model("Gift", giftSchema);
+export const Gift =
+  (mongoose.models.Gift as Model<IGift>) ||
+  mongoose.model<IGift>("Gift", giftSchema);

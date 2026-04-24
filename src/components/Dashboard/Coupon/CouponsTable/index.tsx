@@ -98,7 +98,7 @@ export const CouponsTable: React.FC<CouponsTableProps> = ({
   };
 
   return (
-    <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen bg-gray-900">
+    <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen">
       <Box
         display="flex"
         justifyContent="space-between"
@@ -115,13 +115,9 @@ export const CouponsTable: React.FC<CouponsTableProps> = ({
           New Coupon
         </Button>
       </Box>
-      <TableContainer
-        sx={{ backgroundColor: " #1f2937" }}
-        className="rounded-xl"
-        component={Paper}
-      >
+      <TableContainer>
         <Table>
-          <TableHead className="bg-gray-600">
+          <TableHead>
             <TableRow>
               <TableCell>Code</TableCell>
               <TableCell>Discount</TableCell>
@@ -140,7 +136,7 @@ export const CouponsTable: React.FC<CouponsTableProps> = ({
             {coupons
               .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
               .map((coupon) => (
-                <TableRow key={coupon._id}>
+                <TableRow key={coupon._id} hover>
                   <TableCell>{coupon.coupon}</TableCell>
                   <TableCell>
                     {coupon.type === "flat"

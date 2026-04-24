@@ -1,14 +1,32 @@
+"use client";
+
 import Categories from "@/components/Dashboard/Categories";
-import { dbConnect } from "@/lib/database";
-import { CostCategory } from "@/models/costcategory.model";
-import { unstable_noStore } from "next/cache";
+import axios from "axios";
+import { CircularProgress, Box } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 
-export default async function CategoriesPage() {
-  unstable_noStore();
-  await dbConnect();
-  const categories = await CostCategory.find().lean();
+export default function CategoriesPage() {
+  const { data: categories = [], isLoading } = useQuery({
+    queryKey: ["categories"],
+    queryFn: async () => {
+      const response = await axios.get("/api/categories");
+      return response.data;
+    },
+  });
 
-  return (
-    <Categories categories={JSON.parse(JSON.stringify(categories)) || []} />
-  );
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+        className="md:pl-72 bg-gray-900"
+      >
+        <CircularProgress />
+      </Box>
+    );
+  }
+
+  return <Categories categories={categories} />;
 }

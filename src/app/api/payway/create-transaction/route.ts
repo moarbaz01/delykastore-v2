@@ -2,13 +2,19 @@ import { dbConnect } from "@/lib/database";
 import { Coupon } from "@/models/coupon.model";
 import { Order } from "@/models/order.model";
 import { Product } from "@/models/product.model";
+import { Account } from "@/models/account.model";
 import { decryptData } from "@/utils/encryption";
 import { createHmac } from "crypto";
 import { NextResponse } from "next/server";
+import { getToken } from "next-auth/jwt";
 
 export async function POST(req: Request) {
   try {
     await dbConnect();
+    const token = await getToken({
+      req: req as any,
+      secret: process.env.NEXTAUTH_SECRET,
+    });
     const { payload } = await req.json();
     let orderParams;
     try {
@@ -30,14 +36,24 @@ export async function POST(req: Request) {
       game,
       couponCode,
       isCouponApplied,
+      user,
     } = orderParams;
-
-    console.log("Order Create--------", orderParams);
 
     const isValidProduct = await Product.findById(productId);
     if (!isValidProduct) {
       return NextResponse.json({ message: "Invalid Product" }, { status: 400 });
     }
+
+    if (isValidProduct.type === "account" && !token) {
+      return NextResponse.json(
+        { message: "Please login to buy account products" },
+        { status: 401 },
+      );
+    }
+
+    // For account orders, always use the server-side token ID as the user.
+    // Never trust the user ID from the client payload.
+    const resolvedUser = isValidProduct.type === "account" ? token?.id : user;
 
     const isValidCost = isValidProduct?.cost?.find((cost) => {
       return cost.id === costId;
@@ -62,26 +78,23 @@ export async function POST(req: Request) {
         type: coupon.type,
         discountValue: coupon.discount,
       };
-
-      console.log("Coupon Details", couponDetails);
     }
 
     const req_time = Math.floor(Date.now() / 1000).toString();
     const tran_id = "TXN" + req_time; // Unique transaction ID
 
-    let afterDiscountAmount = isValidCost.price;
+    const basePrice = parseFloat(isValidCost.price);
+    let afterDiscountAmount = basePrice;
+
     if (isCouponApplied && couponDetails) {
       if (couponDetails.type === "percentage") {
-        const discountAmount =
-          (isValidCost.price * couponDetails.discountValue) / 100;
-        afterDiscountAmount = isValidCost.price - discountAmount;
+        const discountAmount = (basePrice * couponDetails.discountValue) / 100;
+        afterDiscountAmount = basePrice - discountAmount;
       } else if (couponDetails.type === "flat") {
         const discountAmount = couponDetails.discountValue;
-        afterDiscountAmount = isValidCost.price - discountAmount;
+        afterDiscountAmount = basePrice - discountAmount;
       }
     }
-
-    console.log("After discount", afterDiscountAmount);
 
     const order = new Order({
       orderDetails,
@@ -97,7 +110,34 @@ export async function POST(req: Request) {
       couponCode,
       isCouponApplied,
       couponDetails,
+      user: resolvedUser,
     });
+
+    // Reserve Account if product type is account
+    if (isValidProduct.type === "account") {
+      // ── Stock check BEFORE creating order or charging user ──
+      const availableAccount = await Account.findOne({
+        productId: productId,
+        costId: costId,
+        isActive: true,
+        $or: [{ isReserved: false }, { reservedExpiry: { $lt: new Date() } }],
+      });
+
+      if (!availableAccount) {
+        return NextResponse.json(
+          { message: "This package is currently out of stock" },
+          { status: 400 },
+        );
+      }
+
+      // Reserve the account for 15 minutes
+      availableAccount.isReserved = true;
+      availableAccount.reservedExpiry = new Date(Date.now() + 15 * 60 * 1000);
+      await availableAccount.save();
+
+      order.account = availableAccount._id;
+    }
+
     await order.save();
 
     // Ensure required environment variables are set
@@ -106,8 +146,7 @@ export async function POST(req: Request) {
 
     // Generate request timestamp
 
-    const roundedAmount =
-      Math.round(parseFloat(afterDiscountAmount) * 100) / 100;
+    const roundedAmount = Math.round(afterDiscountAmount * 100) / 100;
 
     const return_url = `${process.env
       .NEXT_PUBLIC_API_URL!}/payment/pay?orderId=${order._id.toString()}`;
@@ -116,16 +155,17 @@ export async function POST(req: Request) {
       process.env.NEXT_PUBLIC_BASE_URL
     }/success?${new URLSearchParams({
       transactionId: tran_id,
-      message: "Successfully Top-Up",
+      message: "Successfully Purchased",
       price: roundedAmount.toFixed(2),
       gameName: name,
       productId: productId,
       pack: orderDetails,
-      ...(zoneId && { zoneId: zoneId }),
-      ...(userId && { userId: userId }),
-    }).toString()}`; // Trim trailing spaces
+      // Only include game-specific fields for non-account orders
+      ...(isValidProduct.type !== "account" && zoneId && { zoneId }),
+      ...(isValidProduct.type !== "account" && userId && { userId }),
+    }).toString()}`;
     const cancel_url = `${process.env
-      .NEXT_PUBLIC_BASE_URL!}/failed?message=Top-Up+Failed`;
+      .NEXT_PUBLIC_BASE_URL!}/failed?message=Purchase+Failed`;
 
     // Define all parameters in the correct order
     const params = {
@@ -155,8 +195,6 @@ export async function POST(req: Request) {
       additional_params: "",
       google_pay_token: "",
     };
-
-    console.log("Params", params);
 
     // Create the hash string in the correct order
     const hashString = Object.values(params).join("");

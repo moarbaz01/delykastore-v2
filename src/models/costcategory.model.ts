@@ -1,11 +1,23 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
 
-const costCategorySchema = new mongoose.Schema(
+export interface ICostCategory extends Document {
+  name: string;
+  type: "topup" | "account";
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const costCategorySchema = new Schema<ICostCategory>(
   {
     name: {
       type: String,
       required: true,
       unique: true,
+    },
+    type: {
+      type: String,
+      enum: ["topup", "account"],
+      default: "topup",
     },
   },
   {
@@ -14,5 +26,5 @@ const costCategorySchema = new mongoose.Schema(
 );
 
 export const CostCategory =
-  mongoose.models.CostCategory ||
-  mongoose.model("CostCategory", costCategorySchema);
+  (mongoose.models.CostCategory as Model<ICostCategory>) ||
+  mongoose.model<ICostCategory>("CostCategory", costCategorySchema);

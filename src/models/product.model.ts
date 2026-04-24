@@ -1,6 +1,34 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
 
-const productSchema = new mongoose.Schema(
+export interface IProduct extends Document {
+  name: string;
+  description: string;
+  type: "topup" | "account";
+  game: string;
+  slides: string[];
+  banner?: string;
+  region?: string;
+  isDeleted: boolean;
+  apiName?: string;
+  isApi: boolean;
+  stock: boolean;
+  spinActive: boolean;
+  spinCostIds: string[];
+  cost: {
+    id: string;
+    price: string;
+    amount?: string;
+    durationDays?: number;
+    note?: string;
+    image?: string;
+    category: string;
+  }[];
+  image: string;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const productSchema = new Schema<IProduct>(
   {
     name: {
       type: String,
@@ -10,9 +38,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    category: {
+    type: {
       type: String,
-      required: true,
+      enum: ["topup", "account"],
+      default: "topup",
     },
     game: {
       type: String,
@@ -59,12 +88,14 @@ const productSchema = new mongoose.Schema(
           required: true,
         },
         price: {
-          type: String, // Ensure this is defined as String
+          type: String,
           required: true,
         },
         amount: {
-          type: String, // Ensure this is defined as String
-          required: true,
+          type: String,
+        },
+        durationDays: {
+          type: Number,
         },
         note: {
           type: String,
@@ -83,8 +114,12 @@ const productSchema = new mongoose.Schema(
       required: true,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
-export const Product =
-  mongoose.models.Product || mongoose.model("Product", productSchema);
+// Delete the model if it exists to avoid caching issues with old schema
+if (mongoose.models && mongoose.models.Product) {
+  delete (mongoose.models as any).Product;
+}
+
+export const Product = mongoose.model<IProduct>("Product", productSchema);

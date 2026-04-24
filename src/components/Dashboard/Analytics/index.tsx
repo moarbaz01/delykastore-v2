@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React from "react";
 import {
   FaShoppingCart,
   FaBox,
@@ -20,7 +20,6 @@ import {
   ListItem,
   ListItemText,
 } from "@mui/material";
-import axios from "axios";
 import {
   BarChart,
   Bar,
@@ -38,30 +37,12 @@ import {
   Tooltip,
   Legend,
 } from "recharts";
-
-interface AnalyticsData {
-  orders: number | null;
-  products: number | null;
-  customers: number | null;
-  revenue: number | null;
-  todaysIncome: number | null;
-  monthlyIncome: number | null;
-  weeklySales: Array<{ _id: string; total: number; count: number }>;
-  monthlySales: Array<{ _id: string; total: number; count: number }>;
-  orderStatusCounts: Array<{ _id: string; count: number }> | null;
-  topProducts: Array<{
-    _id: string;
-    totalSales: number;
-    count: number;
-    productDetails: {
-      name: string;
-      price: string;
-    };
-  }>;
-}
+import { useAnalytics } from "@/hooks/useAnalytics";
 
 const Analytics = () => {
-  const [analyticsData, setAnalyticsData] = useState<AnalyticsData>({
+  const { data, isLoading, error } = useAnalytics();
+
+  const analyticsData = data || {
     orders: null,
     products: null,
     customers: null,
@@ -72,27 +53,7 @@ const Analytics = () => {
     monthlySales: [],
     topProducts: [],
     orderStatusCounts: null,
-  });
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`/api/analytics`);
-        if (response.status !== 200) {
-          console.error("Failed to fetch analytics data");
-          return;
-        }
-
-        setAnalyticsData({
-          ...response.data,
-        });
-      } catch (error) {
-        console.error("Error fetching analytics data:", error);
-      }
-    };
-
-    fetchData();
-  }, []);
+  };
 
   console.log("order status", analyticsData.orderStatusCounts);
 
@@ -143,7 +104,7 @@ const Analytics = () => {
   };
 
   return (
-    <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen bg-gray-900 text-white">
+    <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen text-white">
       <h1 className="text-2xl font-bold text-gray-100 mb-6">
         Analytics Dashboard
       </h1>
@@ -197,7 +158,7 @@ const Analytics = () => {
 
       {/* Order Status Distribution Section */}
       <div className="mt-6">
-        <Card sx={{ backgroundColor: " #1f2937" }} className=" p-4 rounded-lg">
+        <Card className="p-4 rounded-lg">
           <CardContent>
             <Typography
               variant="h6"
@@ -252,7 +213,7 @@ const Analytics = () => {
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
-        <Card sx={{ backgroundColor: " #1f2937" }} className=" p-4 rounded-lg">
+        <Card className="p-4 rounded-lg">
           <CardContent>
             <Typography
               variant="h6"
@@ -293,7 +254,7 @@ const Analytics = () => {
           </CardContent>
         </Card>
 
-        <Card sx={{ backgroundColor: " #1f2937" }} className=" p-4 rounded-lg">
+        <Card className="p-4 rounded-lg">
           <CardContent>
             <Typography
               variant="h6"
@@ -329,7 +290,7 @@ const Analytics = () => {
 
       {/* Top Products Section */}
       <div className="mt-6">
-        <Card sx={{ backgroundColor: " #1f2937" }} className=" p-4 rounded-lg">
+        <Card className="p-4 rounded-lg">
           <CardContent>
             <Typography
               variant="h6"
@@ -339,7 +300,7 @@ const Analytics = () => {
             </Typography>
             <List className="divide-y divide-gray-700">
               {analyticsData.topProducts.map((product, index) => (
-                <ListItem key={index} className="hover:bg-gray-700 rounded">
+                <ListItem key={index} className="hover:bg-darkBlue rounded transition-colors">
                   <ListItemText
                     primary={product.productDetails.name}
                     secondary={`$${product.totalSales.toFixed(2)} • ${product.count
@@ -379,7 +340,7 @@ const MetricCard = ({
   color: string;
   isCurrency?: boolean;
 }) => (
-  <Card sx={{ backgroundColor: " #1f2937" }} className=" p-4 rounded-lg">
+  <Card className="p-4 rounded-lg">
     <CardContent className="flex items-center space-x-4">
       <div className={`${color} p-3 rounded-full text-white`}>{icon}</div>
       <div>

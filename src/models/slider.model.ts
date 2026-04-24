@@ -1,6 +1,14 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
 
-const sliderSchema = new mongoose.Schema(
+export interface ISlider extends Document {
+  title: string;
+  description: string;
+  images: { url: string }[];
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const sliderSchema = new Schema<ISlider>(
   {
     title: {
       type: String,
@@ -20,4 +28,5 @@ const sliderSchema = new mongoose.Schema(
 );
 
 export const Slider =
-  mongoose.models.Slider || mongoose.model("Slider", sliderSchema);
+  (mongoose.models.Slider as Model<ISlider>) ||
+  mongoose.model<ISlider>("Slider", sliderSchema);

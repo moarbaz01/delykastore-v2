@@ -3,7 +3,7 @@ import Link from "next/link";
 
 const NotFound = () => {
   return (
-    <div className="flex items-center justify-center fixed top-0 left-0 h-full w-full z-[999] bg-black ">
+    <div className="flex items-center justify-center fixed top-0 left-0 h-full w-full z-[999] ">
       <div className="text-center text-white p-8">
         <h1 className="text-6xl font-extrabold text-primary mb-4">404</h1>
         <h2 className="text-2xl mb-4">អូ! រកមិនឃើញទំព័រ</h2>

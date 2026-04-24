@@ -45,13 +45,13 @@ export async function GET(req: NextRequest) {
     let orders;
     if (id) {
       // Fetch a single order by ID
-      orders = await Order.findById(id).populate("product");
+      orders = await Order.findById(id).populate("product").populate("user", "email");
       if (!orders) {
         return NextResponse.json({ error: "Order not found" }, { status: 404 });
       }
     } else {
       // Fetch all orders
-      orders = await Order.find().populate("product");
+      orders = await Order.find().populate("product").populate("user", "email");
     }
 
     return NextResponse.json(orders, { status: 200 });
@@ -95,7 +95,7 @@ export async function PUT(req: NextRequest) {
     // Update the order
     const updatedOrder = await Order.findByIdAndUpdate(id, validatedData, {
       new: true,
-    }).populate("product");
+    }).populate("product").populate("user", "email");
 
     if (!updatedOrder) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });

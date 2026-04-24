@@ -1,19 +1,45 @@
+"use client";
+
 import Balance from "@/components/Dashboard/Balance";
-import { getSmileOneBalance } from "@/utils/smileone";
-import { GetTopUpGhorBalance } from "@/utils/topupghor";
-import { unstable_noStore } from "next/cache";
+import axios from "axios";
+import { CircularProgress, Box } from "@mui/material";
+import { useQuery } from "@tanstack/react-query";
 
-export default async function BalancePage() {
-  unstable_noStore();
-  try {
-    const smileOneBalance = await getSmileOneBalance();
-    const ghorBalance = await GetTopUpGhorBalance();
+export default function BalancePage() {
+  const { data, isLoading, isError } = useQuery({
+    queryKey: ["balance"],
+    queryFn: async () => {
+      const response = await axios.get("/api/balance");
+      return response.data;
+    },
+  });
 
+  if (isLoading) {
     return (
-      <Balance smileOneBalance={smileOneBalance} ghorBalance={ghorBalance} />
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+        className="md:pl-72 bg-gray-900"
+      >
+        <CircularProgress />
+      </Box>
     );
-  } catch (error) {
-    console.error("Error fetching balance:", error);
-    return <div className="md:pl-72 px-4">Error fetching balance</div>;
   }
+
+  if (isError) {
+    return (
+      <div className="md:pl-72 px-4 bg-gray-900 min-h-screen flex items-center justify-center text-white">
+        Error fetching balance
+      </div>
+    );
+  }
+
+  return (
+    <Balance
+      smileOneBalance={data?.smileOneBalance}
+      ghorBalance={data?.ghorBalance}
+    />
+  );
 }

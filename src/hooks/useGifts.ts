@@ -28,6 +28,18 @@ export const useProducts = () => {
   });
 };
 
+// Fetch all gifts
+export const useGifts = () => {
+  return useQuery({
+    queryKey: ["gifts"],
+    queryFn: async () => {
+      const res = await axios.get("/api/gifts");
+      return res.data as Gift[];
+    },
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
 // Fetch gift by ID
 export const useGift = (giftId?: string) => {
   return useQuery({
@@ -84,6 +96,26 @@ export const useUpdateGift = () => {
     onError: (error) => {
       toast.error("Failed to update gift");
       console.error("Failed to update gift:", error);
+    },
+  });
+};
+
+// Delete gift mutation
+export const useDeleteGift = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (giftId: string) => {
+      const res = await axios.delete(`/api/gifts?id=${giftId}`);
+      return res.data;
+    },
+    onSuccess: () => {
+      toast.success("Gift deleted successfully");
+      queryClient.invalidateQueries({ queryKey: ["gifts"] });
+    },
+    onError: (error) => {
+      toast.error("Failed to delete gift");
+      console.error("Failed to delete gift:", error);
     },
   });
 };

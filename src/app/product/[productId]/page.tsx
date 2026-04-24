@@ -5,29 +5,34 @@ import ProductSkeleton from "@/components/Product/ProductSkeleton";
 
 export default function Page({ params }: { params: { productId: string } }) {
   const { data: product, isLoading, error } = useProduct(params.productId);
-  console.log("product", product);
+
   if (isLoading) {
-    // return <Loader />;
     return <ProductSkeleton />;
   }
 
   if (error) {
     return (
-      <div>
-        <h1>កំហុស</h1>
-        <p>{error.message}</p>
+      <div className="min-h-[50vh] flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-red-500 mb-2">Error</h1>
+          <p className="text-gray-400">{error.message}</p>
+        </div>
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div>
-        <h1>រកមិនឃើញផលិតផល</h1>
-        <p>យើងរកមិនឃើញផលិតផលដែលអ្នកកំពុងស្វែងរក។ សូមពិនិត្យ ID។</p>
+      <div className="min-h-[50vh] flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold mb-2">Product Not Found</h1>
+          <p className="text-gray-400">We couldn&apos;t find the product you&apos;re looking for.</p>
+        </div>
       </div>
     );
   }
 
   return <Product {...product} />;
 }
+
+

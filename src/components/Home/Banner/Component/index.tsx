@@ -37,7 +37,6 @@ const SliderComponent = ({
                 <Image
                   src={image.url}
                   alt="Zoland Store Banner 1"
-                  layout="responsive"
                   priority={true}
                   width={1600} // Adjust for large screen resolution
                   height={600} // Adjust height proportionally
@@ -51,7 +50,6 @@ const SliderComponent = ({
                 <Image
                   src={image}
                   alt="Zoland Store Banner 1"
-                  layout="responsive"
                   priority={true}
                   width={1600} // Adjust for large screen resolution
                   height={600} // Adjust height proportionally

@@ -7,7 +7,10 @@ import { IoLogoGameControllerB } from "react-icons/io";
 const TrendingGames = async () => {
   unstable_noStore();
   await dbConnect();
-  const products = await Product.find().lean();
+  const products = await Product.find({
+    $or: [{ type: "topup" }, { type: { $exists: false } }],
+    isDeleted: false,
+  }).lean();
 
   return (
     <div className=" mx-4 md:mx-auto max-w-7xl mt-8 mb-6">
@@ -25,6 +28,7 @@ const TrendingGames = async () => {
                 name={item.name}
                 image={item.image}
                 stock={item.stock}
+                type={item.type as "topup"}
               />
             ))
           ) : (

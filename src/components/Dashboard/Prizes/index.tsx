@@ -165,7 +165,7 @@ const Prizes = ({ allPrizes, id }: { allPrizes: Prize[]; id: string }) => {
   };
 
   return (
-    <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen bg-gray-900">
+    <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold text-white mb-6">Prizes</h1>
         <p className="text-2xl font-bold text-white mb-6">
@@ -181,11 +181,6 @@ const Prizes = ({ allPrizes, id }: { allPrizes: Prize[]; id: string }) => {
           variant="outlined"
           value={search}
           onChange={handleSearch}
-          sx={{
-            color: "#E5E7EB",
-            backgroundColor: "#374151",
-            borderRadius: "10px",
-          }}
         />
       </div>
 
@@ -194,37 +189,31 @@ const Prizes = ({ allPrizes, id }: { allPrizes: Prize[]; id: string }) => {
           variant="contained"
           startIcon={<Add />}
           onClick={handleAddNew}
-          sx={{
-            backgroundColor: "#3B82F6",
-            "&:hover": {
-              backgroundColor: "#2563EB",
-            },
-          }}
         >
           Add New Prize
         </Button>
       </div>
 
       {/* Prizes Table */}
-      <TableContainer className="bg-gray-800 rounded-xl">
+      <TableContainer>
         <Table>
-          <TableHead className="bg-gray-600">
+          <TableHead>
             <TableRow>
-              <TableCell style={{ color: "#E5E7EB" }}>Name</TableCell>
-              <TableCell style={{ color: "#E5E7EB" }}>Color</TableCell>
-              <TableCell style={{ color: "#E5E7EB" }}>Win Rate</TableCell>
-              <TableCell style={{ color: "#E5E7EB" }}>Weight</TableCell>
-              <TableCell style={{ color: "#E5E7EB" }}>Limit</TableCell>
-              <TableCell style={{ color: "#E5E7EB" }}>Status</TableCell>
-              <TableCell style={{ color: "#E5E7EB" }}>Created</TableCell>
-              <TableCell style={{ color: "#E5E7EB" }}>Actions</TableCell>
+              <TableCell>Name</TableCell>
+              <TableCell>Color</TableCell>
+              <TableCell>Win Rate</TableCell>
+              <TableCell>Weight</TableCell>
+              <TableCell>Limit</TableCell>
+              <TableCell>Status</TableCell>
+              <TableCell>Created</TableCell>
+              <TableCell>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {filteredPrizes.length > 0 ? (
               filteredPrizes.map((prize) => (
-                <TableRow key={prize._id}>
-                  <TableCell sx={{ color: "#D1D5DB" }}>{prize.name}</TableCell>
+                <TableRow key={prize._id} hover>
+                  <TableCell>{prize.name}</TableCell>
                   <TableCell>
                     <Box className="flex items-center gap-2">
                       <Box
@@ -236,13 +225,13 @@ const Prizes = ({ allPrizes, id }: { allPrizes: Prize[]; id: string }) => {
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell sx={{ color: "#D1D5DB" }}>
+                  <TableCell>
                     {prize.winRate}%
                   </TableCell>
-                  <TableCell sx={{ color: "#D1D5DB" }}>
+                  <TableCell>
                     {prize.weight}
                   </TableCell>
-                  <TableCell sx={{ color: "#D1D5DB" }}>{prize.limit}</TableCell>
+                  <TableCell>{prize.limit}</TableCell>
                   <TableCell>
                     <Chip
                       label={prize.isActive ? "Active" : "Inactive"}
@@ -250,7 +239,7 @@ const Prizes = ({ allPrizes, id }: { allPrizes: Prize[]; id: string }) => {
                       size="small"
                     />
                   </TableCell>
-                  <TableCell sx={{ color: "#D1D5DB" }}>
+                  <TableCell>
                     {new Date(prize.createdAt).toLocaleDateString()}
                   </TableCell>
                   <TableCell>
@@ -271,8 +260,8 @@ const Prizes = ({ allPrizes, id }: { allPrizes: Prize[]; id: string }) => {
               ))
             ) : (
               <TableRow>
-                <TableCell colSpan={8} className="text-center py-8">
-                  <Typography sx={{ color: "#9CA3AF" }}>
+                <TableCell colSpan={8} align="center">
+                  <Typography>
                     No prizes found
                   </Typography>
                 </TableCell>
@@ -289,17 +278,17 @@ const Prizes = ({ allPrizes, id }: { allPrizes: Prize[]; id: string }) => {
         maxWidth="sm"
         fullWidth
       >
-        <DialogTitle className="bg-gray-800">
+        <DialogTitle>
           {editingPrize ? "Edit Prize" : "Add New Prize"}
           <IconButton
             onClick={handleCloseDialog}
-            sx={{ position: "absolute", right: 8, top: 8, color: "#9CA3AF" }}
+            sx={{ position: "absolute", right: 8, top: 8 }}
           >
             <Close />
           </IconButton>
         </DialogTitle>
         <form onSubmit={handleSubmit}>
-          <DialogContent className="bg-gray-800">
+          <DialogContent>
             <Box className="space-y-4 pt-4">
               <TextField
                 fullWidth
@@ -309,25 +298,6 @@ const Prizes = ({ allPrizes, id }: { allPrizes: Prize[]; id: string }) => {
                   setFormData({ ...formData, name: e.target.value })
                 }
                 required
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "#4B5563",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#6B7280",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#3B82F6",
-                    },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "#9CA3AF",
-                  },
-                  "& .MuiInputBase-input": {
-                    color: "#E5E7EB",
-                  },
-                }}
               />
 
               <Box>
@@ -345,11 +315,6 @@ const Prizes = ({ allPrizes, id }: { allPrizes: Prize[]; id: string }) => {
                     setFormData({ ...formData, color: e.target.value })
                   }
                   required
-                  sx={{
-                    "& .MuiOutlinedInput-root": {
-                      height: "48px",
-                    },
-                  }}
                 />
               </Box>
 
@@ -366,25 +331,6 @@ const Prizes = ({ allPrizes, id }: { allPrizes: Prize[]; id: string }) => {
                 }
                 required
                 inputProps={{ min: 0, max: 100 }}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "#4B5563",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#6B7280",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#3B82F6",
-                    },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "#9CA3AF",
-                  },
-                  "& .MuiInputBase-input": {
-                    color: "#E5E7EB",
-                  },
-                }}
               />
 
               <TextField
@@ -400,25 +346,6 @@ const Prizes = ({ allPrizes, id }: { allPrizes: Prize[]; id: string }) => {
                 }
                 required
                 inputProps={{ min: 0, max: 100 }}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "#4B5563",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#6B7280",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#3B82F6",
-                    },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "#9CA3AF",
-                  },
-                  "& .MuiInputBase-input": {
-                    color: "#E5E7EB",
-                  },
-                }}
               />
 
               <TextField
@@ -434,41 +361,16 @@ const Prizes = ({ allPrizes, id }: { allPrizes: Prize[]; id: string }) => {
                 }
                 required
                 inputProps={{ min: 0 }}
-                sx={{
-                  "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                      borderColor: "#4B5563",
-                    },
-                    "&:hover fieldset": {
-                      borderColor: "#6B7280",
-                    },
-                    "&.Mui-focused fieldset": {
-                      borderColor: "#3B82F6",
-                    },
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "#9CA3AF",
-                  },
-                  "& .MuiInputBase-input": {
-                    color: "#E5E7EB",
-                  },
-                }}
               />
             </Box>
           </DialogContent>
-          <DialogActions className="bg-gray-800 p-4">
-            <Button onClick={handleCloseDialog} sx={{ color: "#9CA3AF" }}>
+          <DialogActions>
+            <Button onClick={handleCloseDialog}>
               Cancel
             </Button>
             <Button
               type="submit"
               variant="contained"
-              sx={{
-                backgroundColor: "#3B82F6",
-                "&:hover": {
-                  backgroundColor: "#2563EB",
-                },
-              }}
             >
               {editingPrize ? "Update" : "Create"}
             </Button>

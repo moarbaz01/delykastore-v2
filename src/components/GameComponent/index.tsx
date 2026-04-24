@@ -1,17 +1,18 @@
 import Image, { StaticImageData } from "next/image";
 import Link from "next/link";
-import { BackgroundGradient } from "../ui/BackgroundGradient";
 
 const GameComponent = ({
   _id,
   name,
   image,
   stock,
+  type
 }: {
   _id: string;
   name: string;
   image: StaticImageData | string;
   stock?: boolean;
+  type: "account" | "topup";
 }) => {
   return (
     <Link href={`/product/${_id}`}>
@@ -24,15 +25,16 @@ const GameComponent = ({
               priority={true}
               height={150}
               width={150}
-              className={`rounded-lg md:w-full h-auto aspect-square object-cover ${
-                !stock ? "grayscale" : ""
-              }`}
+              className={`rounded-lg md:w-full h-auto aspect-square object-cover ${!stock ? "grayscale" : ""
+                }`}
             />
           </div>
           <div className="h-[20%]">
             <div className="mt-2 font-bold md:text-sm text-xs ">{name}</div>
             <button className="mt-2 float-end w-full bg-primary text-black font-bold md:text-lg text-xs md:py-2 py-1 rounded-lg">
-              Top Up
+              {
+                type == "account" ? "Buy" : "Top Up"
+              }
             </button>
           </div>
         </div>

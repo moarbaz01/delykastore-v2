@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Table,
   TableBody,
@@ -26,18 +26,20 @@ import {
 import { Delete, Edit } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import axios from "axios";
+import { useCreateCustomer, useDeleteCustomer } from "@/hooks/useCustomers";
 
 interface Customer {
   _id: string;
-  email: string;
+  email?: string;
+  telegramId?: string;
   role: "admin" | "user";
   isBlocked: boolean;
   createdAt: string;
   isDeleted: boolean;
   updatedAt: string;
 }
-const Customers = ({ allCustomers }) => {
+
+const Customers = ({ allCustomers }: { allCustomers: Customer[] }) => {
   const [customers, setCustomers] = useState<Customer[]>(allCustomers);
   const [orderBy] = useState<string>("createdAt");
   const [page, setPage] = useState(1);
@@ -51,7 +53,15 @@ const Customers = ({ allCustomers }) => {
     email: "",
     password: "",
   });
+
   const router = useRouter();
+  const createMutation = useCreateCustomer();
+  const deleteMutation = useDeleteCustomer();
+
+  // Sync state with props when allCustomers changes
+  useEffect(() => {
+    setCustomers(allCustomers);
+  }, [allCustomers]);
 
   // Open/close modal handlers
   const handleOpenModal = () => setOpenModal(true);
@@ -74,13 +84,10 @@ const Customers = ({ allCustomers }) => {
   // Handle user creation
   const handleCreateUser = async () => {
     try {
-      const res = await axios.post("/api/user", newUser);
-      if (res.status === 201) {
-        toast.success("User created successfully!");
-        setCustomers((prev) => [...prev, res.data]);
-        handleCloseModal();
-      }
-    } catch (error) {
+      await createMutation.mutateAsync(newUser);
+      toast.success("User created successfully!");
+      handleCloseModal();
+    } catch (error: any) {
       toast.error(error.response?.data?.message || "Failed to create user");
     }
   };
@@ -97,12 +104,10 @@ const Customers = ({ allCustomers }) => {
     if (!confirm("Do you really wanna delete this user?")) {
       return toast.error("User not deleted");
     }
-    const endpoint = `/api/user?id=${id}`;
-    const res = await axios.delete(endpoint);
-    if (res.status === 200) {
+    try {
+      await deleteMutation.mutateAsync(id);
       toast.success("User deleted successfully!");
-      setCustomers((prev) => prev.filter((customer) => customer._id !== id));
-    } else {
+    } catch (error) {
       toast.error("Failed to delete user.");
     }
   };
@@ -127,18 +132,19 @@ const Customers = ({ allCustomers }) => {
   const handleBlockedFilterChange = (event: SelectChangeEvent<string>) => {
     setBlockedFilter(event.target.value as string);
   };
+
   // Filtering logic
   const filteredCustomers = customers
     .filter((customer) =>
-      customer?.email.toLowerCase().includes(emailFilter.toLowerCase())
+      (customer?.email || customer?.telegramId || "").toLowerCase().includes(emailFilter.toLowerCase())
     )
     .filter((customer) => (roleFilter ? customer.role === roleFilter : true))
     .filter((customer) =>
       blockedFilter === "blocked"
         ? customer.isBlocked
         : blockedFilter === "active"
-        ? !customer.isBlocked
-        : true
+          ? !customer.isBlocked
+          : true
     );
 
   // Sorting the filtered customers
@@ -164,7 +170,7 @@ const Customers = ({ allCustomers }) => {
       {/* Filters */}
       <div className="mb-6 flex flex-col md:flex-row gap-4">
         <TextField
-          label="Filter by Email"
+          label="Filter by Email/Telegram"
           variant="outlined"
           size="small"
           value={emailFilter}
@@ -172,16 +178,24 @@ const Customers = ({ allCustomers }) => {
           className="w-64"
         />
         <FormControl size="small" className="w-64">
-          <InputLabel>Filter by Role</InputLabel>
-          <Select value={roleFilter} onChange={handleRoleFilterChange}>
+          <InputLabel shrink>Filter by Role</InputLabel>
+          <Select
+            value={roleFilter}
+            onChange={handleRoleFilterChange}
+            label="Filter by Role"
+          >
             <MenuItem value="">All</MenuItem>
             <MenuItem value="user">User</MenuItem>
             <MenuItem value="admin">Admin</MenuItem>
           </Select>
         </FormControl>
         <FormControl size="small" className="w-64">
-          <InputLabel>Filter by Status</InputLabel>
-          <Select value={blockedFilter} onChange={handleBlockedFilterChange}>
+          <InputLabel shrink>Filter by Status</InputLabel>
+          <Select
+            value={blockedFilter}
+            onChange={handleBlockedFilterChange}
+            label="Filter by Status"
+          >
             <MenuItem value="">All</MenuItem>
             <MenuItem value="active">Active</MenuItem>
             <MenuItem value="blocked">Blocked</MenuItem>
@@ -192,13 +206,6 @@ const Customers = ({ allCustomers }) => {
       <div className="mb-4">
         <Button
           variant="contained"
-          sx={{
-            backgroundColor: "#f68181",
-            "&:hover": {
-              backgroundColor: "#f68181c7",
-            },
-            fontSize: "12px",
-          }}
           onClick={handleOpenModal}
         >
           Create User
@@ -248,25 +255,25 @@ const Customers = ({ allCustomers }) => {
           <Button onClick={handleCloseModal}>Cancel</Button>
           <Button
             onClick={handleCreateUser}
-            disabled={!newUser.email || newUser.password.length < 8}
+            disabled={!newUser.email || newUser.password.length < 8 || createMutation.isPending}
             variant="contained"
             color="primary"
           >
-            Create
+            {createMutation.isPending ? "Creating..." : "Create"}
           </Button>
         </DialogActions>
       </Dialog>
 
       {/* Table */}
-      <TableContainer className="bg-gray-800 rounded-xl">
+      <TableContainer>
         <Table
           sx={{ minWidth: 650 }}
           aria-label="customers table"
           size="medium"
         >
-          <TableHead className="bg-gray-600">
+          <TableHead>
             <TableRow>
-              <TableCell>Email</TableCell>
+              <TableCell>Email / Telegram</TableCell>
               <TableCell>Role</TableCell>
               <TableCell>Status</TableCell>
               <TableCell>Actions</TableCell>
@@ -276,17 +283,27 @@ const Customers = ({ allCustomers }) => {
             {currentCustomers.map(
               (customer: any) =>
                 !customer?.isDeleted && (
-                  <TableRow key={customer._id}>
-                    <TableCell>{customer?.email}</TableCell>
+                  <TableRow key={customer._id} hover>
+                    <TableCell>
+                      {customer?.email ? customer.email : `Telegram ID: ${customer?.telegramId || "N/A"}`}
+                    </TableCell>
                     <TableCell>
                       <Chip
                         label={customer?.role === "admin" ? "Admin" : "User"}
                         size="small"
-                        className="bg-gray-700 text-white"
+                        sx={{
+                          fontWeight: "bold"
+                        }}
+                        color={customer?.role === "admin" ? "primary" : "default"}
                       />
                     </TableCell>
                     <TableCell>
-                      {customer?.isBlocked ? "Blocked" : "Active"}
+                      <Chip
+                        label={customer?.isBlocked ? "Blocked" : "Active"}
+                        size="small"
+                        color={customer?.isBlocked ? "error" : "success"}
+                        variant="outlined"
+                      />
                     </TableCell>
                     <TableCell>
                       <div className="flex items-center gap-4 md:flex-row flex-col">
@@ -294,13 +311,14 @@ const Customers = ({ allCustomers }) => {
                           onClick={() =>
                             router.push(`/dashboard/customers/${customer?._id}`)
                           }
-                          className="text-primary"
+                          className="text-primary hover:text-opacity-80 transition-colors"
                         >
                           <Edit />
                         </button>
                         <button
                           onClick={() => handleDeleteUser(customer?._id)}
-                          className="text-red-500"
+                          className="text-red-500 hover:text-red-400 transition-colors"
+                          disabled={deleteMutation.isPending}
                         >
                           <Delete />
                         </button>
@@ -308,6 +326,13 @@ const Customers = ({ allCustomers }) => {
                     </TableCell>
                   </TableRow>
                 )
+            )}
+            {currentCustomers.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={4} align="center">
+                  No customers found
+                </TableCell>
+              </TableRow>
             )}
           </TableBody>
         </Table>

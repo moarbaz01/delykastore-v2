@@ -273,14 +273,11 @@ export const CouponForm: React.FC<CouponFormProps> = ({
   };
 
   return (
-    <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen bg-gray-900">
+    <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen">
       <Typography variant="h6" gutterBottom>
         {isEdit ? "Edit Coupon" : "Create New Coupon"}
       </Typography>
-      <Paper
-        className="p-6 rounded-md"
-        sx={{ backgroundColor: "#374151", color: "#D1D5DB" }}
-      >
+      <Paper className="p-6 rounded-md">
         <form onSubmit={handleSubmit}>
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
@@ -293,7 +290,6 @@ export const CouponForm: React.FC<CouponFormProps> = ({
                 error={!!errors.coupon}
                 helperText={errors.coupon}
                 disabled={isEdit}
-                sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -316,10 +312,6 @@ export const CouponForm: React.FC<CouponFormProps> = ({
                 value={formData.type}
                 onChange={handleSelectChange}
                 error={!!errors.type}
-                sx={{
-                  backgroundColor: "#1F2937",
-                  color: "#E5E7EB",
-                }}
               >
                 <MenuItem value="percentage">Percentage Discount</MenuItem>
                 <MenuItem value="flat">Flat Discount</MenuItem>
@@ -339,7 +331,7 @@ export const CouponForm: React.FC<CouponFormProps> = ({
                 onChange={handleChange}
                 error={!!errors.discount}
                 helperText={errors.discount}
-                sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
+
                 InputProps={{
                   endAdornment:
                     formData.type === "percentage" ? (
@@ -361,7 +353,7 @@ export const CouponForm: React.FC<CouponFormProps> = ({
                   onChange={handleChange}
                   error={!!errors.maxDiscount}
                   helperText={errors.maxDiscount}
-                  sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
+  
                   InputProps={{
                     startAdornment: (
                       <InputAdornment position="start">$</InputAdornment>
@@ -380,7 +372,7 @@ export const CouponForm: React.FC<CouponFormProps> = ({
                 onChange={handleChange}
                 error={!!errors.minAmount}
                 helperText={errors.minAmount}
-                sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
+
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">$</InputAdornment>
@@ -398,7 +390,6 @@ export const CouponForm: React.FC<CouponFormProps> = ({
                 onChange={handleChange}
                 error={!!errors.limit}
                 helperText={errors.limit}
-                sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
               />
             </Grid>
             <Grid item xs={12} md={6}>
@@ -411,7 +402,7 @@ export const CouponForm: React.FC<CouponFormProps> = ({
                 onChange={handleDateChange}
                 error={!!errors.startDate}
                 helperText={errors.startDate}
-                sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
+
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -427,7 +418,7 @@ export const CouponForm: React.FC<CouponFormProps> = ({
                 onChange={handleDateChange}
                 error={!!errors.expiry}
                 helperText={errors.expiry}
-                sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
+
                 InputLabelProps={{
                   shrink: true,
                 }}
@@ -435,10 +426,10 @@ export const CouponForm: React.FC<CouponFormProps> = ({
             </Grid>
             <Grid item xs={12}>
               <FormControl fullWidth error={!!errors.selectedProducts}>
-                <InputLabel>Applicable Products</InputLabel>
+                <InputLabel shrink>Applicable Products</InputLabel>
                 <Select
                   value={formData.selectedProducts}
-                  sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
+                  label="Applicable Products"
                 >
                   {products.map((product) => (
                     <MenuItem
@@ -459,10 +450,11 @@ export const CouponForm: React.FC<CouponFormProps> = ({
             {formData.selectedProducts.length > 0 && (
               <Grid item xs={12}>
                 <FormControl fullWidth>
-                  <InputLabel>Selected Products Costs</InputLabel>
+                  <InputLabel shrink>Selected Products Costs</InputLabel>
                   <Select
                     multiple
                     value={formData.selectedCosts}
+                    label="Selected Products Costs"
                     sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
                     renderValue={(selected) =>
                       (selected as string[])

@@ -17,11 +17,13 @@ import {
     TextField,
     SelectChangeEvent,
     Chip,
+    Button,
 } from "@mui/material";
 import { CgEye } from "react-icons/cg";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useUpdateGiftTransactionStatus } from "@/hooks/useGiftTransactions";
 
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";
@@ -68,7 +70,7 @@ interface GiftTransactionsProps {
 const renderSkeletonRows = (rowCount: number = 10) => {
     return Array.from({ length: rowCount }).map((_, index) => (
         <TableRow key={index} className="py-4">
-            {Array.from({ length: 7 }).map((_, cellIndex) => (
+            {Array.from({ length: 9 }).map((_, cellIndex) => (
                 <TableCell key={cellIndex}>
                     <Skeleton height={40} baseColor="#3f3f46" highlightColor="#52525b" />
                 </TableCell>
@@ -91,14 +93,16 @@ const GiftTransactions: React.FC<GiftTransactionsProps> = ({
     const rowsPerPage = parseInt(searchParams.get("limit") || "10");
 
     // State for filters that will be added to URL
+    const [monthFilter, setMonthFilter] = useState(
+        searchParams.get("month") || ""
+    );
     const [statusFilter, setStatusFilter] = useState(
-        searchParams.get("status") || "",
+        searchParams.get("status") || ""
     );
+    const [dateFilter, setDateFilter] = useState(searchParams.get("date") || "");
+    const [search, setSearch] = useState(searchParams.get("search") || "");
     const [userIdFilter, setUserIdFilter] = useState(
-        searchParams.get("userId") || "",
-    );
-    const [giftIdFilter, setGiftIdFilter] = useState(
-        searchParams.get("giftId") || "",
+        searchParams.get("userId") || ""
     );
 
     const updateFilters = () => {
@@ -108,14 +112,20 @@ const GiftTransactions: React.FC<GiftTransactionsProps> = ({
         params.set("page", "1");
 
         // Update filter params
+        if (monthFilter) params.set("month", monthFilter);
+        else params.delete("month");
+
         if (statusFilter) params.set("status", statusFilter);
         else params.delete("status");
 
+        if (dateFilter) params.set("date", dateFilter);
+        else params.delete("date");
+
+        if (search) params.set("search", search);
+        else params.delete("search");
+
         if (userIdFilter) params.set("userId", userIdFilter);
         else params.delete("userId");
-
-        if (giftIdFilter) params.set("giftId", giftIdFilter);
-        else params.delete("giftId");
 
         router.push(`${pathname}?${params.toString()}`);
     };
@@ -127,7 +137,7 @@ const GiftTransactions: React.FC<GiftTransactionsProps> = ({
         }, 500); // 500ms debounce
 
         return () => clearTimeout(timer);
-    }, [statusFilter, userIdFilter, giftIdFilter]);
+    }, [monthFilter, statusFilter, dateFilter, search, userIdFilter]);
 
     const handleChangePage = (event: unknown, newPage: number) => {
         const params = new URLSearchParams(searchParams.toString());
@@ -159,21 +169,16 @@ const GiftTransactions: React.FC<GiftTransactionsProps> = ({
         });
     }, [allTransactions, orderBy, orderDirection]);
 
+    const updateStatusMutation = useUpdateGiftTransactionStatus();
+
     const updateTransactionStatus = async (transactionId: string, newStatus: string) => {
         try {
-            const response = await axios.put('/api/gift-transaction', {
+            await updateStatusMutation.mutateAsync({
                 id: transactionId,
                 status: newStatus
             });
-
-            if (response.data) {
-                toast.success('Transaction status updated successfully');
-                // Refetch the data to show updated status
-                window.location.reload();
-            }
         } catch (error) {
-            toast.error('Failed to update transaction status');
-            console.error('Error updating transaction status:', error);
+            // error is handled in mutation
         }
     };
 
@@ -190,6 +195,34 @@ const GiftTransactions: React.FC<GiftTransactionsProps> = ({
 
             {/* Filters */}
             <div className="mb-6 flex flex-wrap gap-4">
+                <FormControl size="small" className="w-64">
+                    <InputLabel shrink>Filter by Month</InputLabel>
+                    <Select
+                        value={monthFilter}
+                        onChange={(e: SelectChangeEvent<string>) =>
+                            setMonthFilter(e.target.value)
+                        }
+                        label="Filter by Month"
+                    >
+                        <MenuItem value="">All</MenuItem>
+                        {Array.from({ length: 12 }, (_, i) => (
+                            <MenuItem key={i} value={i + 1}>
+                                {new Date(0, i).toLocaleString("default", { month: "long" })}
+                            </MenuItem>
+                        ))}
+                    </Select>
+                </FormControl>
+
+                <TextField
+                    fullWidth
+                    size="small"
+                    label="Search by Trans ID"
+                    variant="outlined"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                    sx={{ width: "300px" }}
+                />
+
                 <TextField
                     fullWidth
                     size="small"
@@ -200,18 +233,8 @@ const GiftTransactions: React.FC<GiftTransactionsProps> = ({
                     sx={{ width: "300px" }}
                 />
 
-                <TextField
-                    fullWidth
-                    size="small"
-                    label="Search by Gift ID"
-                    variant="outlined"
-                    value={giftIdFilter}
-                    onChange={(e) => setGiftIdFilter(e.target.value)}
-                    sx={{ width: "300px" }}
-                />
-
                 <FormControl size="small" className="w-64">
-                    <InputLabel>Filter by Status</InputLabel>
+                    <InputLabel shrink>Filter by Status</InputLabel>
                     <Select
                         value={statusFilter}
                         onChange={(e: SelectChangeEvent<string>) =>
@@ -220,17 +243,27 @@ const GiftTransactions: React.FC<GiftTransactionsProps> = ({
                         label="Filter by Status"
                     >
                         <MenuItem value="">All</MenuItem>
+                        <MenuItem value="success">Success</MenuItem>
                         <MenuItem value="pending">Pending</MenuItem>
-                        <MenuItem value="approved">Approved</MenuItem>
-                        <MenuItem value="rejected">Rejected</MenuItem>
+                        <MenuItem value="failed">Failed</MenuItem>
                     </Select>
                 </FormControl>
+
+                <TextField
+                    variant="outlined"
+                    size="small"
+                    type="date"
+                    value={dateFilter}
+                    onChange={(e) => setDateFilter(e.target.value)}
+                    className="w-64"
+                    InputLabelProps={{ shrink: true }}
+                />
             </div>
 
             {/* Table */}
-            <TableContainer className="bg-gray-800 rounded-xl">
+            <TableContainer>
                 <Table>
-                    <TableHead className="bg-gray-600">
+                    <TableHead>
                         <TableRow>
                             <TableCell>Transaction ID</TableCell>
                             <TableCell>User ID</TableCell>
@@ -255,13 +288,14 @@ const GiftTransactions: React.FC<GiftTransactionsProps> = ({
                                 </TableSortLabel>
                             </TableCell>
                             <TableCell>Status</TableCell>
+                            <TableCell sx={{ textAlign: "right" }}>Actions</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {isLoading
                             ? renderSkeletonRows(rowsPerPage)
                             : sortedTransactions?.map((transaction) => (
-                                <TableRow key={transaction?._id}>
+                                <TableRow key={transaction?._id} hover>
                                     <TableCell>{transaction?._id}</TableCell>
                                     <TableCell>{transaction?.userId}</TableCell>
                                     <TableCell>{transaction?.productId?.name || "N/A"}</TableCell>
@@ -287,47 +321,49 @@ const GiftTransactions: React.FC<GiftTransactionsProps> = ({
                                         {new Date(transaction?.createdAt).toLocaleString()}
                                     </TableCell>
                                     <TableCell>
-                                        <FormControl size="small" className="w-32">
-                                            <Select
-                                                value={transaction?.status}
-                                                onChange={(e: SelectChangeEvent<string>) =>
-                                                    updateTransactionStatus(transaction?._id, e.target.value)
-                                                }
-                                                className="text-white"
-                                                renderValue={(value) => (
-                                                    <div className="flex items-center gap-2">
-                                                        <div
-                                                            className={`w-2 h-2 rounded-full ${value === "success"
-                                                                    ? "bg-green-500"
-                                                                    : value === "pending"
-                                                                        ? "bg-yellow-500"
-                                                                        : "bg-red-500"
-                                                                }`}
-                                                        />
-                                                        {value === "success" ? "Success" : value === "pending" ? "Pending" : "Failed"}
-                                                    </div>
-                                                )}
+                                        <Chip
+                                            label={transaction?.status?.toUpperCase()}
+                                            size="small"
+                                            sx={{ fontWeight: "bold" }}
+                                            color={
+                                                transaction?.status === "success"
+                                                    ? "success"
+                                                    : transaction?.status === "pending"
+                                                        ? "warning"
+                                                        : "error"
+                                            }
+                                        />
+                                    </TableCell>
+                                    <TableCell sx={{ textAlign: "right" }}>
+                                        <div className="flex gap-2">
+                                            <Button
+                                                size="small"
+                                                variant="contained"
+                                                color="success"
+                                                disabled={transaction?.status === "success" || updateStatusMutation.isPending}
+                                                onClick={() => updateTransactionStatus(transaction?._id, "success")}
                                             >
-                                                <MenuItem value="pending">
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                                                        Pending
-                                                    </div>
-                                                </MenuItem>
-                                                <MenuItem value="success">
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="w-2 h-2 rounded-full bg-green-500" />
-                                                        Success
-                                                    </div>
-                                                </MenuItem>
-                                                <MenuItem value="failed">
-                                                    <div className="flex items-center gap-2">
-                                                        <div className="w-2 h-2 rounded-full bg-red-500" />
-                                                        Failed
-                                                    </div>
-                                                </MenuItem>
-                                            </Select>
-                                        </FormControl>
+                                                {updateStatusMutation.isPending && updateStatusMutation.variables?.id === transaction?._id ? "..." : "Success"}
+                                            </Button>
+                                            <Button
+                                                size="small"
+                                                variant="contained"
+                                                color="warning"
+                                                disabled={transaction?.status === "pending" || updateStatusMutation.isPending}
+                                                onClick={() => updateTransactionStatus(transaction?._id, "pending")}
+                                            >
+                                                {updateStatusMutation.isPending && updateStatusMutation.variables?.id === transaction?._id ? "..." : "Pending"}
+                                            </Button>
+                                            <Button
+                                                size="small"
+                                                variant="contained"
+                                                color="error"
+                                                disabled={transaction?.status === "failed" || updateStatusMutation.isPending}
+                                                onClick={() => updateTransactionStatus(transaction?._id, "failed")}
+                                            >
+                                                {updateStatusMutation.isPending && updateStatusMutation.variables?.id === transaction?._id ? "..." : "Failed"}
+                                            </Button>
+                                        </div>
                                     </TableCell>
                                 </TableRow>
                             ))}

@@ -17,6 +17,7 @@ import {
   TextField,
   SelectChangeEvent,
   Chip,
+  Tooltip,
 } from "@mui/material";
 import { CgEye } from "react-icons/cg";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
@@ -62,7 +63,7 @@ interface OrdersProps {
 const renderSkeletonRows = (rowCount: number = 10) => {
   return Array.from({ length: rowCount }).map((_, index) => (
     <TableRow key={index} className="py-4">
-      {Array.from({ length: 12 }).map((_, cellIndex) => (
+      {Array.from({ length: 11 }).map((_, cellIndex) => (
         <TableCell key={cellIndex}>
           <Skeleton height={40} baseColor="#3f3f46" highlightColor="#52525b" />
         </TableCell>
@@ -82,7 +83,7 @@ const Orders: React.FC<OrdersProps> = ({
 
   // Get current pagination values
   const page = parseInt(searchParams.get("page") || "1") - 1;
-  const rowsPerPage = parseInt(searchParams.get("limit") || "10");
+  const rowsPerPage = parseInt(searchParams.get("limit") || "25");
 
   // State for filters that will be added to URL
   const [monthFilter, setMonthFilter] = useState(
@@ -177,7 +178,7 @@ const Orders: React.FC<OrdersProps> = ({
   const [orderBy, setOrderBy] = useState<string>("createdAt");
 
   const sortedOrders = useMemo(() => {
-    return [...allOrders].sort((a, b) => {
+    return [...(allOrders || [])].sort((a, b) => {
       if (orderDirection === "asc") {
         return a[orderBy] > b[orderBy] ? 1 : -1;
       } else {
@@ -198,7 +199,7 @@ const Orders: React.FC<OrdersProps> = ({
       {/* Filters */}
       <div className="mb-6 flex flex-wrap gap-4">
         <FormControl size="small" className="w-64">
-          <InputLabel>Filter by Month</InputLabel>
+          <InputLabel shrink>Filter by Month</InputLabel>
           <Select
             value={monthFilter}
             onChange={(e: SelectChangeEvent<string>) =>
@@ -246,7 +247,7 @@ const Orders: React.FC<OrdersProps> = ({
         /> */}
 
         <FormControl size="small" className="w-64">
-          <InputLabel>Filter by Status</InputLabel>
+          <InputLabel shrink>Filter by Status</InputLabel>
           <Select
             value={statusFilter}
             onChange={(e: SelectChangeEvent<string>) =>
@@ -262,7 +263,7 @@ const Orders: React.FC<OrdersProps> = ({
         </FormControl>
 
         <FormControl size="small" className="w-64">
-          <InputLabel>Filter by Game</InputLabel>
+          <InputLabel shrink>Filter by Game</InputLabel>
           <Select
             value={gameFilter}
             onChange={(e: SelectChangeEvent<string>) =>
@@ -288,7 +289,7 @@ const Orders: React.FC<OrdersProps> = ({
         </FormControl>
 
         <FormControl size="small" className="w-64">
-          <InputLabel>Filter by Order Type</InputLabel>
+          <InputLabel shrink>Filter by Order Type</InputLabel>
           <Select
             value={orderTypeFilter}
             onChange={(e: SelectChangeEvent<string>) =>
@@ -314,17 +315,15 @@ const Orders: React.FC<OrdersProps> = ({
       </div>
 
       {/* Table */}
-      <TableContainer className="bg-gray-800 rounded-xl">
-        <Table>
-          <TableHead className="bg-gray-600">
+      <TableContainer>
+        <Table sx={{ minWidth: 1200 }}>
+          <TableHead>
             <TableRow>
-              <TableCell>OrderId</TableCell>
-              <TableCell>OrderType</TableCell>
               <TableCell>Transaction ID</TableCell>
+              <TableCell>OrderType</TableCell>
               <TableCell>Price</TableCell>
-              <TableCell>Coupon Code</TableCell>
               <TableCell>Discount</TableCell>
-              <TableCell>Pack</TableCell>
+              <TableCell sx={{ maxWidth: 150 }}>Pack</TableCell>
               <TableCell>Product</TableCell>
               <TableCell>User ID</TableCell>
               <TableCell>Zone ID</TableCell>
@@ -337,67 +336,75 @@ const Orders: React.FC<OrdersProps> = ({
                 </TableSortLabel>
               </TableCell>
               <TableCell>Status</TableCell>
-              <TableCell>Actions</TableCell>
+              <TableCell sx={{ textAlign: "right" }}>Actions</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {isLoading
               ? renderSkeletonRows(rowsPerPage)
               : sortedOrders?.map((order) => (
-                  <TableRow key={order?._id}>
-                    <TableCell>{order?._id}</TableCell>
-                    <TableCell>{order?.orderType || "N/A"}</TableCell>
-                    <TableCell>{order?.transactionId || "N/A"}</TableCell>
-                    <TableCell>${order?.amount}</TableCell>
-                    <TableCell>{order?.couponCode || "N/A"}</TableCell>
-                    <TableCell>
-                      {" "}
-                      {order?.couponDetails?.discountValue
-                        ? `${order?.couponDetails.type === "flat" ? "$" : ""}${
-                            order?.couponDetails?.discountValue
-                          }
-                  ${order?.couponDetails?.type === "percentage" ? "%" : ""} 
-                  `
-                        : "No discount applied"}
-                    </TableCell>
-                    <TableCell>{order?.orderDetails || "N/A"}</TableCell>
-
-                    <TableCell>
-                      {order?.product?.name || "Fack Order"}
-                    </TableCell>
-                    <TableCell>
-                      {order?.gameCredentials?.userId || "N/A"}
-                    </TableCell>
-                    <TableCell>
-                      {order?.gameCredentials?.zoneId || "N/A"}
-                    </TableCell>
-                    <TableCell>
-                      {new Date(order?.createdAt).toLocaleString()}
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        label={order?.status}
-                        color={
-                          order?.status === "success"
-                            ? "success"
-                            : order?.status === "pending"
-                            ? "warning"
-                            : "error"
-                        }
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <button
-                        onClick={() =>
-                          router.push(`/dashboard/orders/${order?._id}`)
-                        }
-                        className="px-2 py-2 bg-blue-500 rounded-full text-white"
-                      >
-                        <CgEye />
-                      </button>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                <TableRow key={order?._id} hover>
+                  <TableCell>{order?.transactionId || "N/A"}</TableCell>
+                  <TableCell>{order?.orderType || "N/A"}</TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>${order?.amount}</TableCell>
+                  <TableCell>
+                    {order?.couponDetails?.discountValue
+                      ? `${order?.couponDetails.type === "flat" ? "$" : ""}${order?.couponDetails?.discountValue
+                      }${order?.couponDetails?.type === "percentage" ? "%" : ""}`
+                      : "None"}
+                  </TableCell>
+                  <TableCell sx={{
+                    maxWidth: 150,
+                    overflow: "hidden",
+                    textOverflow: "ellipsis",
+                    cursor: "help"
+                  }}>
+                    <Tooltip title={order?.orderDetails || "N/A"} arrow placement="top">
+                      <span>{order?.orderDetails || "N/A"}</span>
+                    </Tooltip>
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>
+                    {order?.product?.name || "Manual"}
+                  </TableCell>
+                  <TableCell>
+                    {order?.gameCredentials?.userId || "N/A"}
+                  </TableCell>
+                  <TableCell>
+                    {order?.gameCredentials?.zoneId || "N/A"}
+                  </TableCell>
+                  <TableCell>
+                    {new Date(order?.createdAt).toLocaleString()}
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label={order?.status?.toUpperCase()}
+                      size="small"
+                      sx={{
+                        fontWeight: "bold",
+                        backgroundColor:
+                          order?.status === "success" ? "rgba(34, 197, 94, 0.1)" :
+                            order?.status === "pending" ? "rgba(234, 179, 8, 0.1)" :
+                              "rgba(239, 68, 68, 0.1)",
+                        color:
+                          order?.status === "success" ? "#22c55e" :
+                            order?.status === "pending" ? "#eab308" :
+                              "#ef4444",
+                        borderRadius: "6px"
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell sx={{ textAlign: "right" }}>
+                    <button
+                      onClick={() =>
+                        router.push(`/dashboard/orders/${order?._id}`)
+                      }
+                      className="p-2 hover:bg-blue-500/20 text-blue-400 rounded-lg transition-colors"
+                    >
+                      <CgEye size={20} />
+                    </button>
+                  </TableCell>
+                </TableRow>
+              ))}
           </TableBody>
         </Table>
       </TableContainer>

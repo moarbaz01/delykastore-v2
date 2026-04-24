@@ -3,6 +3,7 @@ import { Order } from "@/models/order.model";
 import { dbConnect } from "@/lib/database";
 import { gameOrderRequest } from "@/utils/smileone";
 import { Coupon } from "@/models/coupon.model";
+import { Account } from "@/models/account.model";
 import { ghorApiTopup } from "@/utils/unipin";
 import { GhorTopUp } from "@/utils/topupghor";
 import { createHmac } from "crypto";
@@ -10,6 +11,7 @@ import "@/models/product.model";
 import axios from "axios";
 import { makePurchase } from "@/utils/bangla_api";
 import { SpinTransaction } from "@/models/spin.transaction.model";
+import { createOrderLog } from "@/utils/orderLogs";
 
 const isValidTransaction = (trans) => {
   return (
@@ -106,6 +108,7 @@ export async function POST(req: Request) {
     }
 
     // Handle API orders
+
     if (order?.orderType === "API Order") {
       let orderResponse;
       const game = order?.gameCredentials?.game;
@@ -113,26 +116,26 @@ export async function POST(req: Request) {
       // If game is mobile legends
       if (game === "mobilelegends") {
         if (order.region === "brazil") {
-          if (order?.product?.apiName === "TopUp Ghor Api") {
-            orderResponse = await GhorTopUp(order, "86289");
+          if ((order?.product as any)?.apiName === "TopUp Ghor Api") {
+            orderResponse = await GhorTopUp(order as any, "86289");
           } else {
-            orderResponse = await gameOrderRequest(order);
+            orderResponse = await gameOrderRequest(order as any);
           }
         } else if (order.region === "philippines") {
-          if (order?.product?.apiName === "TopUp Ghor Api") {
-            orderResponse = await GhorTopUp(order, "86286");
+          if ((order?.product as any)?.apiName === "TopUp Ghor Api") {
+            orderResponse = await GhorTopUp(order as any, "86286");
           } else {
-            orderResponse = await ghorApiTopup(order);
+            orderResponse = await ghorApiTopup(order as any);
           }
         } else if (order.region === "indonesia") {
-          orderResponse = await GhorTopUp(order, "39365");
+          orderResponse = await GhorTopUp(order as any, "39365");
         } else if (order.region === "malaysia") {
-          orderResponse = await GhorTopUp(order, "39347");
+          orderResponse = await GhorTopUp(order as any, "39347");
         }
       } else if (game === "freefire") {
-        if (order?.product?.apiName === "TopUp Ghor Api") {
-          orderResponse = await GhorTopUp(order, "582");
-        } else if (order?.product?.apiName === "Bangla Api") {
+        if ((order?.product as any)?.apiName === "TopUp Ghor Api") {
+          orderResponse = await GhorTopUp(order as any, "582");
+        } else if ((order?.product as any)?.apiName === "Bangla Api") {
           orderResponse = await makePurchase({
             playerid: order.gameCredentials.userId,
             orderid: order.transactionId,
@@ -141,17 +144,17 @@ export async function POST(req: Request) {
         }
       } else if (game === "pubg") {
         // If game is free fire
-        orderResponse = await GhorTopUp(order, "654");
+        orderResponse = await GhorTopUp(order as any, "654");
       } else if (game === "honorofkings") {
         // If game is free fire
-        orderResponse = await GhorTopUp(order, "67607");
+        orderResponse = await GhorTopUp(order as any, "67607");
       } else if (game === "magicchess") {
         // If game is free fire
-        orderResponse = await GhorTopUp(order, "232990");
+        orderResponse = await GhorTopUp(order as any, "232990");
       } else if (game === "bloodstrike") {
-        orderResponse = await GhorTopUp(order, "213941");
+        orderResponse = await GhorTopUp(order as any, "213941");
       } else if (game === "genshinimpact") {
-        orderResponse = await GhorTopUp(order, "33221");
+        orderResponse = await GhorTopUp(order as any, "33221");
       }
 
       if (orderResponse?.status !== 200) {
@@ -167,8 +170,74 @@ export async function POST(req: Request) {
     }
 
     // Save order and notify customer
-    if (order.orderType === "API Order") {
-      if (order.product.apiName === "Bangla Api") {
+    if ((order.product as any)?.type === "account") {
+      let availableAccount = null;
+
+      if (order.account) {
+        // Always prefer the account that was reserved at transaction creation.
+        // Never silently swap to a different account.
+        availableAccount = await Account.findOne({
+          _id: order.account,
+          isActive: true,
+        });
+      }
+
+      if (availableAccount) {
+        // Mark account as sold and clear reservation
+        availableAccount.isActive = false;
+        availableAccount.isReserved = false;
+        availableAccount.reservedExpiry = undefined;
+        await availableAccount.save();
+
+        // Attach account details to order
+        order.account = availableAccount._id;
+        order.accountDetails = {
+          email: availableAccount.email,
+          password: availableAccount.password,
+          additionalInfo: availableAccount.additionalInfo,
+        };
+
+        await createOrderLog({
+          transactionId: order.transactionId,
+          orderId: order._id?.toString(),
+          provider: "Account Fulfillment",
+          requestPayload: { accountId: availableAccount._id },
+          responsePayload: {
+            email: availableAccount.email,
+            status: "assigned",
+          },
+          status: "success",
+        });
+
+        // Calculate expiration date
+        const costItem = (order.product as any)?.cost?.find(
+          (c: any) => c.id === order.costId,
+        );
+        const durationDays = parseInt(
+          costItem?.durationDays?.toString() || "0",
+        );
+        if (durationDays > 0) {
+          const expiryDate = new Date();
+          expiryDate.setDate(expiryDate.getDate() + durationDays);
+          order.expiresAt = expiryDate;
+        }
+
+        order.status = "success";
+      } else {
+        // Reserved account is gone (e.g. reservation expired and was taken).
+        // Payment was received but no account can be assigned — flag for admin.
+        await createOrderLog({
+          transactionId: order.transactionId,
+          orderId: order._id?.toString(),
+          provider: "Account Fulfillment",
+          requestPayload: { accountId: order.account },
+          responsePayload: { error: "Reserved account no longer available" },
+          status: "failed",
+        });
+        order.status = "pending"; // Admin must manually fulfill
+      }
+    } else if (order.orderType === "API Order") {
+      if ((order.product as any)?.apiName === "Bangla Api") {
         order.status = "pending";
       } else {
         order.status = "success";
@@ -196,13 +265,13 @@ export async function POST(req: Request) {
     // Create spin transaction if costId is in spinCostIds and spinActive is true
     if (
       order.costId &&
-      order.product?.spinActive &&
-      order.product?.spinCostIds?.includes(order.costId)
+      (order.product as any)?.spinActive &&
+      (order.product as any)?.spinCostIds?.includes(order.costId)
     ) {
       try {
         const res = await SpinTransaction.create({
           transactionId: order.transactionId,
-          productId: order.product._id,
+          productId: (order.product as any)?._id,
           userId: order.gameCredentials.userId,
           zoneId: order.gameCredentials.zoneId || null,
           costId: order.costId,

@@ -1,6 +1,36 @@
-import mongoose from "mongoose";
+import mongoose, { Document, Model, Schema } from "mongoose";
 
-const orderSchema = new mongoose.Schema(
+export interface IOrder extends Document {
+  costId: string;
+  orderDetails: string;
+  gameCredentials: {
+    userId?: string;
+    zoneId?: string;
+    game?: string;
+  };
+  region?: string;
+  orderType: string;
+  transactionId?: string;
+  failureReason?: string;
+  couponCode?: string;
+  isCouponApplied: boolean;
+  couponDetails?: any;
+  product?: mongoose.Types.ObjectId;
+  user?: mongoose.Types.ObjectId;
+  account?: mongoose.Types.ObjectId;
+  amount: string;
+  status: "pending" | "success" | "failed";
+  accountDetails?: {
+    email: string;
+    password?: string;
+    additionalInfo?: string;
+  };
+  expiresAt?: Date;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const orderSchema = new Schema<IOrder>(
   {
     costId: {
       type: String,
@@ -53,6 +83,14 @@ const orderSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Product",
     },
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    },
+    account: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Account",
+    },
     amount: {
       type: String,
       required: true,
@@ -62,9 +100,18 @@ const orderSchema = new mongoose.Schema(
       enum: ["pending", "success", "failed"],
       default: "pending",
     },
+    accountDetails: {
+      email: { type: String },
+      password: { type: String },
+      additionalInfo: { type: String },
+    },
+    expiresAt: {
+      type: Date,
+    },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 export const Order =
-  mongoose.models.Order || mongoose.model("Order", orderSchema);
+  (mongoose.models.Order as Model<IOrder>) ||
+  mongoose.model<IOrder>("Order", orderSchema);

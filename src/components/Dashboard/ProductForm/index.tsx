@@ -18,7 +18,8 @@ import { useRouter } from "next/navigation";
 
 interface CostItem {
   id: string;
-  amount: string;
+  amount?: string;
+  durationDays?: string | number;
   price: string;
   note?: string;
   category?: string;
@@ -27,6 +28,7 @@ interface CostItem {
 
 interface Product {
   _id?: string;
+  type?: string;
   name: string;
   description: string;
   isApi: boolean;
@@ -37,7 +39,6 @@ interface Product {
   banner: string | File;
   image: string | File | null;
   isDeleted: boolean;
-  category: string;
   cost: CostItem[];
   stock: boolean;
   spinActive: boolean;
@@ -47,6 +48,7 @@ interface Product {
 const ProductForm = ({ product }: { product?: Product }) => {
   const [formData, setFormData] = useState<Product>({
     _id: product?._id || "",
+    type: product?.type || "topup",
     name: product?.name || "",
     description: product?.description || "",
     isApi: product?.isApi || false,
@@ -55,7 +57,6 @@ const ProductForm = ({ product }: { product?: Product }) => {
     apiName: product?.apiName || "",
     image: product?.image || null,
     isDeleted: product?.isDeleted || false,
-    category: product?.category || "game",
     cost: product?.cost || [
       {
         id: "",
@@ -83,7 +84,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
   const [costCategories, setCostCategories] = useState<
-    { name: string; _id: string }[]
+    { name: string; _id: string, type: string }[]
   >([]);
 
   // Initialize previews from existing data
@@ -123,9 +124,23 @@ const ProductForm = ({ product }: { product?: Product }) => {
   };
 
   const handleSelectChange = (e: SelectChangeEvent<string>) => {
-    const { name, value } = e.target;
+    const name = e.target.name as string;
+    const value = e.target.value as string;
+
     if (name) {
-      setFormData((prev) => ({ ...prev, [name]: value as string }));
+      setFormData((prev) => {
+        const newData = { ...prev, [name]: value };
+        // Reset fields when type changes
+        if (name === "type") {
+          if (value === "account") {
+            newData.isApi = false;
+            newData.game = "Custom Game";
+          } else {
+            newData.game = "";
+          }
+        }
+        return newData;
+      });
     }
   };
 
@@ -288,7 +303,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
       }
     }
 
-    if (!formData.game) {
+    if (!formData.game && formData.type !== "account") {
       toast.error("Game is required.");
       toast.dismiss(loadingRef.current);
       setLoading(false);
@@ -302,9 +317,8 @@ const ProductForm = ({ product }: { product?: Product }) => {
     }
 
     const isValid = formData.cost.every(
-      (cost) => cost.id && cost.price && cost.amount
+      (cost) => cost.id && cost.price && (formData.type === "account" ? cost.durationDays : cost.amount)
     );
-
     if (!isValid) {
       toast.error("Please fill all cost fields with valid values.");
       toast.dismiss(loadingRef.current);
@@ -314,10 +328,11 @@ const ProductForm = ({ product }: { product?: Product }) => {
 
     // Form data for the request
     const data = new FormData();
+    data.append("type", formData.type || "topup");
     data.append("name", formData.name);
     data.append("description", formData.description);
-    data.append("isApi", JSON.stringify(formData.isApi));
-    data.append("game", formData.game);
+    data.append("isApi", JSON.stringify(formData.type === "account" ? false : formData.isApi));
+    data.append("game", formData.type === "account" ? "Custom Game" : formData.game);
     if (formData.isApi) {
       data.append("apiName", formData.apiName);
       if (formData.game === "mobilelegends") {
@@ -326,11 +341,10 @@ const ProductForm = ({ product }: { product?: Product }) => {
         data.append("region", "");
       }
     }
-    if (formData.image && typeof formData.image !== "string") {
+    if (formData.image) {
       data.append("image", formData.image);
     }
     data.append("isDeleted", JSON.stringify(formData.isDeleted));
-    data.append("category", formData.category);
     data.append("stock", formData.stock.toString());
     data.append("spinActive", formData.spinActive.toString());
     data.append("spinCostIds", JSON.stringify(formData.spinCostIds));
@@ -420,15 +434,26 @@ const ProductForm = ({ product }: { product?: Product }) => {
   };
 
   return (
-    <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen bg-gray-900">
+    <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen">
       <h1 className="text-2xl font-bold text-white mb-6">
         {product ? "Edit Product" : "Create Product"}
       </h1>
-      <Paper
-        className="p-6"
-        sx={{ backgroundColor: "#374151", color: "#D1D5DB" }}
-      >
+      <Paper className="p-6">
         <form>
+          {/* Type Select */}
+          <div className="mb-4">
+            <label className="block mb-2 text-white font-medium">Product Type</label>
+            <Select
+              fullWidth
+              name="type"
+              value={formData.type || "topup"}
+              onChange={handleSelectChange}
+            >
+              <MenuItem value="topup">Top-Up (In-Game Currency)</MenuItem>
+              <MenuItem value="account">Premium Account</MenuItem>
+            </Select>
+          </div>
+
           {/* Name */}
           <TextField
             fullWidth
@@ -438,7 +463,6 @@ const ProductForm = ({ product }: { product?: Product }) => {
             onChange={handleInputChange}
             margin="normal"
             variant="outlined"
-            sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
           />
 
           {/* Description */}
@@ -452,25 +476,24 @@ const ProductForm = ({ product }: { product?: Product }) => {
             multiline
             rows={4}
             variant="outlined"
-            sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
           />
 
           {/* Is API */}
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="isApi"
-                checked={formData.isApi}
-                onChange={handleCheckboxChange}
-                sx={{ color: "#E5E7EB" }}
-              />
-            }
-            label="Is API"
-            sx={{ color: "#D1D5DB" }}
-          />
+          {formData.type !== "account" && (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="isApi"
+                  checked={formData.isApi}
+                  onChange={handleCheckboxChange}
+                />
+              }
+              label="Is API"
+            />
+          )}
 
           {/* API Name (Select) */}
-          {formData.isApi && (
+          {formData.type !== "account" && formData.isApi && (
             <>
               <Select
                 fullWidth
@@ -478,11 +501,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
                 value={formData.apiName}
                 onChange={handleSelectChange}
                 displayEmpty
-                sx={{
-                  margin: "16px 0",
-                  backgroundColor: "#1F2937",
-                  color: "#E5E7EB",
-                }}
+                sx={{ margin: "16px 0" }}
               >
                 <MenuItem value="">Select API Name</MenuItem>
                 <MenuItem value="Smile One Api">Smile One Api</MenuItem>
@@ -492,50 +511,44 @@ const ProductForm = ({ product }: { product?: Product }) => {
               </Select>
               {(formData.apiName === "Smile One Api" ||
                 formData.game === "mobilelegends") && (
-                <Select
-                  fullWidth
-                  name="region"
-                  value={formData.region}
-                  onChange={handleSelectChange}
-                  displayEmpty
-                  sx={{
-                    margin: "16px 0",
-                    backgroundColor: "#1F2937",
-                    color: "#E5E7EB",
-                  }}
-                >
-                  <MenuItem value="">Select Region</MenuItem>
-                  <MenuItem value="brazil">Brazil</MenuItem>
-                  <MenuItem value="philippines">Philippines</MenuItem>
-                  <MenuItem value="indonesia">Indonesia</MenuItem>
-                </Select>
-              )}
+                  <Select
+                    fullWidth
+                    name="region"
+                    value={formData.region}
+                    onChange={handleSelectChange}
+                    displayEmpty
+                    sx={{ margin: "16px 0" }}
+                  >
+                    <MenuItem value="">Select Region</MenuItem>
+                    <MenuItem value="brazil">Brazil</MenuItem>
+                    <MenuItem value="philippines">Philippines</MenuItem>
+                    <MenuItem value="indonesia">Indonesia</MenuItem>
+                  </Select>
+                )}
             </>
           )}
 
           {/* Game */}
-          <Select
-            fullWidth
-            name="game"
-            value={formData.game}
-            onChange={handleSelectChange}
-            displayEmpty
-            sx={{
-              margin: "16px 0",
-              backgroundColor: "#1F2937",
-              color: "#E5E7EB",
-            }}
-          >
-            <MenuItem value="">Select Game</MenuItem>
-            <MenuItem value="freefire">Free Fire</MenuItem>
-            <MenuItem value="mobilelegends">MLBB</MenuItem>
-            <MenuItem value="pubg">PUBG Global</MenuItem>
-            <MenuItem value="honorofkings">Honor Of Kings</MenuItem>
-            <MenuItem value="magicchess">Magic Chess</MenuItem>
-            <MenuItem value="bloodstrike">Blood Strike</MenuItem>
-            <MenuItem value="genshinimpact">Genshin Impact</MenuItem>
-            <MenuItem value="Custom Game">Custom</MenuItem>
-          </Select>
+          {formData.type !== "account" && (
+            <Select
+              fullWidth
+              name="game"
+              value={formData.game}
+              onChange={handleSelectChange}
+              displayEmpty
+              sx={{ margin: "16px 0" }}
+            >
+              <MenuItem value="">Select Game</MenuItem>
+              <MenuItem value="freefire">Free Fire</MenuItem>
+              <MenuItem value="mobilelegends">MLBB</MenuItem>
+              <MenuItem value="pubg">PUBG Global</MenuItem>
+              <MenuItem value="honorofkings">Honor Of Kings</MenuItem>
+              <MenuItem value="magicchess">Magic Chess</MenuItem>
+              <MenuItem value="bloodstrike">Blood Strike</MenuItem>
+              <MenuItem value="genshinimpact">Genshin Impact</MenuItem>
+              <MenuItem value="Custom Game">Custom</MenuItem>
+            </Select>
+          )}
 
           {/* Stock (Boolean) */}
           <FormControlLabel
@@ -544,29 +557,27 @@ const ProductForm = ({ product }: { product?: Product }) => {
                 name="stock"
                 checked={formData.stock}
                 onChange={handleCheckboxChange}
-                sx={{ color: "#E5E7EB" }}
               />
             }
             label="In Stock"
-            sx={{ color: "#D1D5DB", display: "block" }}
           />
 
           {/* Spin Active (Boolean) */}
-          <FormControlLabel
-            control={
-              <Checkbox
-                name="spinActive"
-                checked={formData.spinActive}
-                onChange={handleCheckboxChange}
-                sx={{ color: "#E5E7EB" }}
-              />
-            }
-            label="Spin Active"
-            sx={{ color: "#D1D5DB" }}
-          />
+          {formData.type !== "account" && (
+            <FormControlLabel
+              control={
+                <Checkbox
+                  name="spinActive"
+                  checked={formData.spinActive}
+                  onChange={handleCheckboxChange}
+                />
+              }
+              label="Spin Active"
+            />
+          )}
 
           {/* Spin Cost IDs Selector */}
-          {formData.spinActive && (
+          {formData.type !== "account" && formData.spinActive && (
             <div className="mb-4">
               <label className="block mb-2 text-white">
                 Select Cost IDs for Spin
@@ -584,11 +595,9 @@ const ProductForm = ({ product }: { product?: Product }) => {
                           onChange={(e) =>
                             handleSpinCostChange(costItem.id, e.target.checked)
                           }
-                          sx={{ color: "#E5E7EB" }}
                         />
                       }
                       label={`${costItem.amount} - $${costItem.price}`}
-                      sx={{ color: "#D1D5DB" }}
                     />
                   ))}
               </div>
@@ -596,14 +605,31 @@ const ProductForm = ({ product }: { product?: Product }) => {
           )}
 
           {/* Main Image Upload */}
-          <div className="mb-4">
-            <label className="block mb-2">Main Image</label>
-            <input
-              type="file"
-              onChange={handleImageUpload}
-              accept="image/*"
-              className="mb-2"
-            />
+          <div className="mb-4 mt-4">
+            {!imagePreview && !(formData.image && typeof formData.image === "string") && (
+              <>
+                <label className="block mb-2 text-white font-medium">Main Image</label>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  sx={{
+                    color: "#9CA3AF",
+                    borderColor: "#4B5563",
+                    textTransform: "none",
+                    mb: 2,
+                    "&:hover": { borderColor: "#6B7280" }
+                  }}
+                >
+                  Choose File
+                  <input
+                    type="file"
+                    onChange={handleImageUpload}
+                    accept="image/*"
+                    hidden
+                  />
+                </Button>
+              </>
+            )}
             {imagePreview && (
               <div className="mt-2">
                 <Image
@@ -611,40 +637,67 @@ const ProductForm = ({ product }: { product?: Product }) => {
                   height={100}
                   width={100}
                   alt="Main Image Preview"
-                  className="rounded"
+                  className="rounded border border-gray-600"
                 />
                 <Button
                   onClick={handleRemoveImage}
                   color="secondary"
-                  variant="contained"
-                  className="mt-2"
+                  variant="outlined"
+                  size="small"
+                  className="mt-2 text-red-400 border-red-500/30 hover:border-red-500"
                 >
                   Remove Image
                 </Button>
               </div>
             )}
-            {formData.image && typeof formData.image === "string" && (
+            {formData.image && typeof formData.image === "string" && !imagePreview && (
               <div className="mt-2">
                 <Image
                   src={formData.image}
                   height={100}
                   width={100}
                   alt="Main Image"
-                  className="rounded"
+                  className="rounded border border-gray-600"
                 />
+                <Button
+                  onClick={handleRemoveImage}
+                  color="secondary"
+                  variant="outlined"
+                  size="small"
+                  className="mt-2 text-red-400 border-red-500/30 hover:border-red-500"
+                >
+                  Remove Image
+                </Button>
               </div>
             )}
           </div>
 
           {/* Banner Upload */}
           <div className="mb-4">
-            <label className="block mb-2">Banner Image</label>
-            <input
-              type="file"
-              onChange={handleBannerUpload}
-              accept="image/*"
-              className="mb-2"
-            />
+            {!bannerPreview && !(formData.banner && typeof formData.banner === "string") && (
+              <>
+                <label className="block mb-2 text-white font-medium">Banner Image</label>
+                <Button
+                  variant="outlined"
+                  component="label"
+                  sx={{
+                    color: "#9CA3AF",
+                    borderColor: "#4B5563",
+                    textTransform: "none",
+                    mb: 2,
+                    "&:hover": { borderColor: "#6B7280" }
+                  }}
+                >
+                  Choose File
+                  <input
+                    type="file"
+                    onChange={handleBannerUpload}
+                    accept="image/*"
+                    hidden
+                  />
+                </Button>
+              </>
+            )}
             {bannerPreview && (
               <div className="mt-2">
                 <Image
@@ -652,14 +705,15 @@ const ProductForm = ({ product }: { product?: Product }) => {
                   height={150}
                   width={300}
                   alt="Banner Preview"
-                  className="rounded"
+                  className="rounded border border-gray-600"
                   style={{ objectFit: "cover" }}
                 />
                 <Button
                   onClick={handleRemoveBanner}
                   color="secondary"
-                  variant="contained"
-                  className="mt-2"
+                  variant="outlined"
+                  size="small"
+                  className="mt-2 text-red-400 border-red-500/30 hover:border-red-500"
                 >
                   Remove Banner
                 </Button>
@@ -674,63 +728,58 @@ const ProductForm = ({ product }: { product?: Product }) => {
                     height={150}
                     width={300}
                     alt="Banner"
-                    className="rounded"
+                    className="rounded border border-gray-600"
                     style={{ objectFit: "cover" }}
                   />
+                  <Button
+                    onClick={handleRemoveBanner}
+                    color="secondary"
+                    variant="outlined"
+                    size="small"
+                    className="mt-2 text-red-400 border-red-500/30 hover:border-red-500"
+                  >
+                    Remove Banner
+                  </Button>
                 </div>
               )}
           </div>
 
           {/* Slides Upload */}
-          <div className="mb-4">
-            <label className="block mb-2">Slides</label>
-            <input
-              type="file"
-              onChange={handleSlidesUpload}
-              accept="image/*"
-              multiple
-              className="mb-2"
-            />
-            <div className="flex flex-wrap gap-2 mt-2">
+          <div className="mb-6">
+            <label className="block mb-2 text-white">Slides</label>
+            <div className="flex flex-wrap gap-4 mt-2">
               {slidePreviews.map((preview, index) => (
-                <div key={index} className="relative">
+                <div key={index} className="relative group w-24 h-24 border border-gray-600 rounded flex items-center justify-center overflow-hidden">
                   <Image
                     src={preview}
-                    height={100}
-                    width={100}
+                    fill
+                    style={{ objectFit: "cover" }}
                     alt={`Slide ${index + 1}`}
-                    className="rounded"
                   />
-                  <Button
-                    size="small"
-                    color="secondary"
-                    onClick={() => handleRemoveSlide(index)}
-                    className="absolute top-0 right-0 min-w-0 p-1"
-                    variant="contained"
-                  >
-                    <Delete fontSize="small" />
-                  </Button>
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity">
+                    <button
+                      type="button"
+                      onClick={() => handleRemoveSlide(index)}
+                      className="text-white hover:text-red-500"
+                    >
+                      <Delete />
+                    </button>
+                  </div>
                 </div>
               ))}
+              <label className="w-24 h-24 border-2 border-dashed border-gray-500 rounded flex flex-col items-center justify-center cursor-pointer hover:bg-white/5 transition-colors">
+                <Add className="text-gray-400" />
+                <span className="text-xs text-gray-400 mt-1">Add Slide</span>
+                <input
+                  type="file"
+                  onChange={handleSlidesUpload}
+                  accept="image/*"
+                  multiple
+                  className="hidden"
+                />
+              </label>
             </div>
           </div>
-
-          {/* Category */}
-          <Select
-            fullWidth
-            name="category"
-            value={formData.category}
-            onChange={handleSelectChange}
-            displayEmpty
-            sx={{
-              margin: "16px 0",
-              backgroundColor: "#1F2937",
-              color: "#E5E7EB",
-            }}
-          >
-            <MenuItem value="">Select Category</MenuItem>
-            <MenuItem value="game">Game</MenuItem>
-          </Select>
 
           {/* Cost Items */}
           {formData.cost.map((costItem, index) => (
@@ -745,18 +794,33 @@ const ProductForm = ({ product }: { product?: Product }) => {
                 variant="outlined"
                 sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
               />
-              {/* Amount Input */}
-              <TextField
-                fullWidth
-                label="Amount"
-                value={costItem.amount}
-                onChange={(e) =>
-                  handleCostChange(index, "amount", e.target.value)
-                }
-                margin="normal"
-                variant="outlined"
-                sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
-              />
+              {/* Conditional Amount/Duration Input */}
+              {formData.type === "account" ? (
+                <TextField
+                  fullWidth
+                  label="Duration (Days)"
+                  type="number"
+                  value={costItem.durationDays || ""}
+                  onChange={(e) =>
+                    handleCostChange(index, "durationDays", e.target.value)
+                  }
+                  margin="normal"
+                  variant="outlined"
+                  sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
+                />
+              ) : (
+                <TextField
+                  fullWidth
+                  label="Amount"
+                  value={costItem.amount || ""}
+                  onChange={(e) =>
+                    handleCostChange(index, "amount", e.target.value)
+                  }
+                  margin="normal"
+                  variant="outlined"
+                  sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
+                />
+              )}
               {/* Price Input */}
               <TextField
                 fullWidth
@@ -767,7 +831,6 @@ const ProductForm = ({ product }: { product?: Product }) => {
                 }
                 margin="normal"
                 variant="outlined"
-                sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
               />
               {/* Note Input */}
               <TextField
@@ -779,7 +842,6 @@ const ProductForm = ({ product }: { product?: Product }) => {
                 }
                 margin="normal"
                 variant="outlined"
-                sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
               />
               {/* Category Select */}
               <Select
@@ -789,49 +851,66 @@ const ProductForm = ({ product }: { product?: Product }) => {
                   handleCostChange(index, "category", e.target.value)
                 }
                 variant="outlined"
-                sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
               >
                 <MenuItem value="no_category">No Category</MenuItem>
                 {costCategories.length > 0 &&
-                  costCategories.map((category) => (
-                    <MenuItem key={category.name} value={category.name}>
-                      {category.name}
-                    </MenuItem>
-                  ))}
+                  costCategories
+                    .filter((cat) => cat.type === (formData.type || "topup"))
+                    .map((category) => (
+                      <MenuItem key={category.name} value={category.name}>
+                        {category.name}
+                      </MenuItem>
+                    ))}
               </Select>
               {/* Image Upload for Cost Item */}
-              <div className="mb-4">
-                <label htmlFor={`costItemImage${index}`} className="block mb-2">
-                  Upload Image
-                </label>
-                <input
-                  type="file"
-                  accept="image/*"
-                  id={`costItemImage${index}`}
-                  onChange={(e) =>
-                    handleCostImageUpload(index, e.target.files?.[0]!)
-                  }
-                  className="mb-2"
-                />
-                {imagePreviews[index] ||
-                (costItem.image && typeof costItem.image === "string") ? (
-                  <Image
-                    src={imagePreviews[index] || (costItem.image as string)}
-                    height="100"
-                    alt="Cost Item Preview"
-                    width="100"
-                  />
-                ) : null}
-                {costItem.image && typeof costItem.image !== "string" && (
-                  <Button
-                    color="secondary"
-                    onClick={() => handleCostImageRemove(index)}
-                    variant="contained"
-                    className="mt-2"
-                  >
-                    Remove Image
-                  </Button>
+              <div className="mb-4 w-full md:w-auto">
+                {!imagePreviews[index] && !(costItem.image && typeof costItem.image === "string") && (
+                  <>
+                    <label htmlFor={`costItemImage${index}`} className="block mb-2 text-white text-sm">
+                      Upload Image
+                    </label>
+                    <Button
+                      variant="outlined"
+                      component="label"
+                      fullWidth
+                      sx={{
+                        color: "#9CA3AF",
+                        borderColor: "#4B5563",
+                        textTransform: "none",
+                        mb: 2,
+                        "&:hover": { borderColor: "#6B7280" }
+                      }}
+                    >
+                      Choose Image
+                      <input
+                        type="file"
+                        hidden
+                        accept="image/*"
+                        id={`costItemImage${index}`}
+                        onChange={(e) => handleCostImageUpload(index, e.target.files?.[0]!)}
+                      />
+                    </Button>
+                  </>
                 )}
+                {imagePreviews[index] ||
+                  (costItem.image && typeof costItem.image === "string") ? (
+                  <div className="flex flex-col items-start gap-2">
+                    <Image
+                      src={imagePreviews[index] || (costItem.image as string)}
+                      height="64"
+                      width="64"
+                      alt="Cost Item Preview"
+                      className="rounded border border-gray-600"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => handleCostImageRemove(index)}
+                      className="text-xs text-red-400 hover:text-red-500 font-medium"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ) : null}
               </div>
               {/* Remove Cost Item Button */}
               <Button

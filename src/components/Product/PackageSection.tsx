@@ -6,7 +6,8 @@ interface PackageSectionProps {
     category: string;
     items: Array<{
       id: string;
-      amount: string;
+      amount?: string;
+      durationDays?: number;
       price: string;
       image?: string;
       note?: string;
@@ -15,7 +16,8 @@ interface PackageSectionProps {
   }>;
   amountSelected: {
     id: string;
-    amount: string;
+    amount?: string;
+    durationDays?: number;
     price: string;
   };
   setAmountSelected: (value: any) => void;
@@ -28,7 +30,7 @@ const PackageSection = ({
 }: PackageSectionProps) => {
   return (
     <div className="p-4 rounded-lg border bg-secondary border-gray-600 relative">
-      <Label text={"ជ្រើសរើសកញ្ចប់ ពេជ្រ"} number={2} />
+      <Label text={"ជ្រើសរើសកញ្ចប់"} number={2} />
       {groupedCost.map((item, index) => (
         <div key={index} className="mt-4">
           {item.category !== "no_category" && item.items.length !== 0 && (

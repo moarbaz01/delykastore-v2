@@ -3,17 +3,26 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { encryptData } from "@/utils/encryption";
 
+import { useSession } from "next-auth/react";
+
 export const useOrder = (setPaymentData: (value: any) => void) => {
+  const { data: session } = useSession();
   const [isLoading, setIsLoading] = useState(false);
 
   const createOrder = useCallback(
     async (params: {
       userId: string;
       zoneId: string;
-      amountSelected: { id: string; amount: string; price: string };
+      amountSelected: {
+        id: string;
+        amount: string;
+        price: string;
+        durationDays?: number;
+      };
       isAgree: boolean;
       stock: boolean;
       game: string;
+      type: "account" | "topup";
       isApi: boolean;
       playerAvailable: boolean;
       name: string;
@@ -33,10 +42,16 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
         name,
         _id,
         region,
+        type,
         appliedCoupon,
       } = params;
 
-      if (!userId) {
+      if (type === "account" && !session) {
+        toast.error("Please login");
+        return;
+      }
+
+      if (type === "topup" && !userId) {
         toast.error("Please fill UserId");
         return;
       }
@@ -73,7 +88,11 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
       const orderParams = {
         name,
         costId: amountSelected.id,
-        orderDetails: amountSelected.amount,
+        orderDetails:
+          amountSelected.amount ||
+          (amountSelected.durationDays
+            ? `${amountSelected.durationDays} Days`
+            : "Package"),
         orderType: isApi ? "API Order" : "Custom Order",
         userId: userId?.trim(),
         zoneId: zoneId?.trim(),
@@ -82,6 +101,7 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
         productId: _id,
         couponCode: appliedCoupon?.code,
         isCouponApplied: !!appliedCoupon,
+        user: session?.user?.id,
       };
 
       const encryptedPayload = encryptData(orderParams);
@@ -108,5 +128,22 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
     [setPaymentData],
   );
 
-  return { createOrder, isLoading };
+  const testOrder = useCallback(async (orderId: string) => {
+    try {
+      setIsLoading(true);
+      const res = await axios.post("/api/test/fulfill", { orderId });
+      if (res.status === 200) {
+        toast.success("Test Order Successful!");
+        window.location.href = "/order-history";
+      }
+    } catch (error: any) {
+      toast.error(
+        `Test Order Failed: ${error.response?.data?.message || error.message}`,
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  return { createOrder, testOrder, isLoading };
 };

@@ -21,38 +21,20 @@ import {
 } from "@mui/material";
 import { Delete, Edit, Add } from "@mui/icons-material";
 import { useRouter } from "next/navigation";
-
-interface Gift {
-    _id: string;
-    productId: {
-        _id: string;
-        name: string;
-    };
-    bannerText?: string;
-    startDate?: string;
-    endDate?: string;
-    features?: Array<{
-        title: string;
-        value: string;
-    }>;
-    wagering: string
-    isActive: boolean;
-    createdAt: string;
-    updatedAt: string;
-}
+import { Gift } from "@/types/main";
 
 interface GiftsProps {
     gifts: Gift[];
     products: Array<{ _id: string; name: string }>;
     isLoading: boolean;
+    onDeleteGift: (id: string) => void;
+    // Handlers for compatibility with wrapper (can be empty)
     onCreateGift: (giftData: any) => void;
     onUpdateGift: (id: string, giftData: any) => void;
-    onDeleteGift: (id: string) => void;
 }
 
 const Gifts: React.FC<GiftsProps> = ({
     gifts,
-    isLoading,
     onDeleteGift,
 }) => {
     const router = useRouter();
@@ -93,7 +75,7 @@ const Gifts: React.FC<GiftsProps> = ({
     };
 
     return (
-        <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen bg-gray-900">
+        <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen">
             <div className="flex items-center justify-between">
                 <h1 className="text-2xl font-bold text-white mb-6">Gifts Management</h1>
                 <p className="text-2xl font-bold text-white mb-6">
@@ -109,52 +91,13 @@ const Gifts: React.FC<GiftsProps> = ({
                     size="small"
                     value={productFilter}
                     onChange={(e) => setProductFilter(e.target.value)}
-                    className="w-64 bg-gray-700"
-                    sx={{
-                        '& .MuiOutlinedInput-root': {
-                            '& fieldset': {
-                                borderColor: '#4B5563',
-                            },
-                            '&:hover fieldset': {
-                                borderColor: '#6B7280',
-                            },
-                            '&.Mui-focused fieldset': {
-                                borderColor: '#ff962d',
-                            },
-                        },
-                        '& .MuiInputLabel-root': {
-                            color: '#9CA3AF',
-                        },
-                        '& .MuiInputBase-input': {
-                            color: 'white',
-                        },
-                    }}
+                    className="w-64"
                 />
                 <FormControl size="small" className="w-64">
-                    <InputLabel className="text-gray-300">Filter by Status</InputLabel>
+                    <InputLabel>Filter by Status</InputLabel>
                     <Select
                         value={statusFilter}
                         onChange={(e) => setStatusFilter(e.target.value)}
-                        className="bg-gray-700 text-white"
-                        sx={{
-                            '& .MuiOutlinedInput-root': {
-                                '& fieldset': {
-                                    borderColor: '#4B5563',
-                                },
-                                '&:hover fieldset': {
-                                    borderColor: '#6B7280',
-                                },
-                                '&.Mui-focused fieldset': {
-                                    borderColor: '#ff962d',
-                                },
-                            },
-                            '& .MuiInputLabel-root': {
-                                color: '#9CA3AF',
-                            },
-                            '& .MuiSelect-select': {
-                                color: 'white',
-                            },
-                        }}
                     >
                         <MenuItem value="">All</MenuItem>
                         <MenuItem value="active">Active</MenuItem>
@@ -169,22 +112,15 @@ const Gifts: React.FC<GiftsProps> = ({
                     variant="contained"
                     startIcon={<Add />}
                     onClick={() => router.push("/dashboard/gifts/create")}
-                    sx={{
-                        backgroundColor: "#f68181",
-                        "&:hover": {
-                            backgroundColor: "#f68181c7",
-                        },
-                        fontSize: "12px",
-                    }}
                 >
                     Create Gift
                 </Button>
             </div>
 
             {/* Table */}
-            <TableContainer className="bg-gray-800 rounded-xl">
+            <TableContainer>
                 <Table>
-                    <TableHead className="bg-gray-600">
+                    <TableHead>
                         <TableRow>
                             <TableCell>Product</TableCell>
                             <TableCell>Banner Text</TableCell>
@@ -198,13 +134,21 @@ const Gifts: React.FC<GiftsProps> = ({
                         {filteredGifts
                             .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                             .map((gift) => (
-                                <TableRow key={gift._id}>
-                                    <TableCell className="text-white">{gift.productId.name}</TableCell>
-                                    <TableCell className="text-white">{gift.bannerText || "N/A"}</TableCell>
-                                    <TableCell className="text-white">
-                                        {gift.wagering
-                                            ? `${gift.wagering}`
-                                            : "N/A"}
+                                <TableRow key={gift._id} hover>
+                                    <TableCell>{gift.productId.name}</TableCell>
+                                    <TableCell>{gift.bannerText || "N/A"}</TableCell>
+                                    <TableCell>
+                                        {gift.wageringLevels && gift.wageringLevels.length > 0 ? (
+                                            <div className="flex flex-col gap-1">
+                                                {gift.wageringLevels.map((lvl) => (
+                                                    <div key={lvl.level} className="text-xs">
+                                                        L{lvl.level}: <span className="text-primary font-bold">${lvl.wagering}</span>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        ) : (
+                                            "N/A"
+                                        )}
                                     </TableCell>
                                     <TableCell>
                                         <Chip
@@ -213,7 +157,7 @@ const Gifts: React.FC<GiftsProps> = ({
                                             size="small"
                                         />
                                     </TableCell>
-                                    <TableCell className="text-white">
+                                    <TableCell>
                                         {new Date(gift.createdAt).toLocaleDateString()}
                                     </TableCell>
                                     <TableCell>
@@ -249,20 +193,6 @@ const Gifts: React.FC<GiftsProps> = ({
                 rowsPerPage={rowsPerPage}
                 onRowsPerPageChange={handleChangeRowsPerPage}
                 rowsPerPageOptions={[5, 10, 25]}
-                sx={{
-                    '& .MuiTablePagination-root': {
-                        color: 'white',
-                    },
-                    '& .MuiIconButton-root': {
-                        color: 'white',
-                    },
-                    '& .MuiSelect-select': {
-                        color: 'white',
-                    },
-                    '& .MuiMenuItem-root': {
-                        color: 'black',
-                    },
-                }}
             />
         </div>
     );

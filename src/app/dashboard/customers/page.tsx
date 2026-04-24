@@ -1,20 +1,33 @@
+"use client";
+
 import Customers from "@/components/Dashboard/Customers";
-import { dbConnect } from "@/lib/database";
-import { User } from "@/models/user.model";
-import { unstable_noStore } from "next/cache";
+import { CircularProgress, Box } from "@mui/material";
+import { useCustomers } from "@/hooks/useCustomers";
 
-const Page = async () => {
-  unstable_noStore();
+export default function CustomersPage() {
+  const { data: customers = [], isLoading, isError } = useCustomers();
 
-  try {
-    await dbConnect();
-    const customers = await User.find().lean();
-
-    return <Customers allCustomers={JSON.parse(JSON.stringify(customers))} />;
-  } catch (error) {
-    console.error("Failed to fetch customers:", error);
-    return <div>Failed to load customers. Please try again later.</div>;
+  if (isLoading) {
+    return (
+      <Box
+        display="flex"
+        justifyContent="center"
+        alignItems="center"
+        minHeight="100vh"
+        className="md:pl-72 bg-gray-900"
+      >
+        <CircularProgress sx={{ color: "#f68181" }} />
+      </Box>
+    );
   }
-};
 
-export default Page;
+  if (isError) {
+    return (
+      <div className="md:pl-72 px-4 py-6 text-white bg-gray-900 min-h-screen">
+        Failed to load customers. Please try again later.
+      </div>
+    );
+  }
+
+  return <Customers allCustomers={customers} />;
+}

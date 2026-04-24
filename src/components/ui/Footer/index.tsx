@@ -8,7 +8,7 @@ const Footer = () => {
   const currentYear = new Date().getFullYear();
   const pathname = usePathname();
 
-  if (["dashboard", "product"].includes(pathname.split("/")[1] || "")) {
+  if (["dashboard", "not-found", "notfound"].includes(pathname.split("/")[1] || "")) {
     return null;
   }
   return (
@@ -30,12 +30,6 @@ const Footer = () => {
                 className="hover:text-blue-600 transition-colors"
               >
                 <FaFacebook />
-              </Link>
-              <Link
-                href="tiktok.com/@winwintopup"
-                className="hover:text-pink-500 transition-colors"
-              >
-                <FaTiktok />
               </Link>
             </div>
           </div>
@@ -72,15 +66,11 @@ const Footer = () => {
           {/* Legal Links Section */}
           <div className="flex flex-col items-center  justify-center md:items-end text-sm">
             <div className="space-x-3">
-              <Link href="/privacy" className="hover:underline">
-                Privacy Policy
-              </Link>
-              <span>|</span>
-              <Link href="/terms" className="hover:underline">
+              <Link href="/terms-and-conditions" className="hover:underline">
                 Terms and Conditions
               </Link>
             </div>
-            <p className="mt-2 ">
+            <p className="mt-2 md:text-start text-center ">
               Copyright © {currentYear} - Win Win Topup. All Rights Reserved.
             </p>
           </div>

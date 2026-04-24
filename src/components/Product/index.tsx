@@ -12,6 +12,8 @@ import { useProductState } from "./hooks/useProductState";
 import { useCoupon } from "./hooks/useCoupon";
 import { useUserVerification } from "./hooks/useUserVerification";
 import { useOrder } from "./hooks/useOrder";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { calculateTotal } from "./utils/productUtils";
 import GiftBox from "../ui/Gift";
 import GiftModal from "../ui/GiftModal";
@@ -35,13 +37,16 @@ const Product = ({
   game,
   groupedCost,
   categories,
+  type,
+  description,
 }: {
   name: string;
+  description: string;
   _id: string;
   image: string;
   region?: string;
   isDeleted: boolean;
-  category: string;
+  type: string;
   isApi: boolean;
   stock: true;
   gift: {
@@ -65,10 +70,13 @@ const Product = ({
     image?: string;
     note?: string;
     category?: string;
+    slots?: number;
   }[];
   groupedCost?: any[];
   categories?: string[];
 }) => {
+  const { data: session } = useSession();
+  const router = useRouter();
   const state = useProductState(game, region);
   const [showGiftModal, setShowGiftModal] = useState(false);
   const [wagering, setWagering] = useState(0);
@@ -122,7 +130,7 @@ const Product = ({
     setMessage,
     setErrorMessage,
   );
-
+ 
   const { createOrder: createOrderUtil, isLoading } = useOrder(setPaymentData);
 
   const handleApplyCoupon = async () => {
@@ -204,6 +212,12 @@ const Product = ({
     }
   }, [playerAvailable, userId]);
 
+  useEffect(() => {
+    if (type === "account") {
+      setPlayerAvailable(true);
+    }
+  }, [type]);
+
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setPlayerAvailable(false);
@@ -213,6 +227,11 @@ const Product = ({
   };
 
   const handleCreateOrder = async () => {
+    if (type === "account" && !session) {
+      router.push("/login");
+      return;
+    }
+    
     await createOrderUtil({
       userId,
       zoneId,
@@ -225,6 +244,7 @@ const Product = ({
       name,
       _id,
       region,
+      type: type as any,
       appliedCoupon,
     });
   };
@@ -318,17 +338,28 @@ const Product = ({
 
           </div> */}
 
-          <UserIdSection
-            game={game}
-            userId={userId}
-            zoneId={zoneId}
-            message={message}
-            errorMessage={errorMessage}
-            loading={loading}
-            handleInputChange={handleInputChange}
-            setZoneId={setZoneId}
-            handleSubmitCheckRole={handleSubmitCheckRole}
-          />
+          {type !== "account" && (
+            <UserIdSection
+              game={game}
+              userId={userId}
+              zoneId={zoneId}
+              message={message}
+              errorMessage={errorMessage}
+              loading={loading}
+              handleInputChange={handleInputChange}
+              setZoneId={setZoneId}
+              handleSubmitCheckRole={handleSubmitCheckRole}
+            />
+          )}
+
+          {type === "account" && description && (
+            <div className="p-4 rounded-lg border bg-secondary border-gray-600">
+              <h2 className="text-lg font-bold text-primary mb-2">Description</h2>
+              <p className="text-gray-300 whitespace-pre-wrap text-sm leading-relaxed break-words">
+                {description}
+              </p>
+            </div>
+          )}
 
           <PackageSection
             groupedCost={groupedCostState}

@@ -1,5 +1,6 @@
 import Banner from "@/components/Home/Banner";
 import TrendingGames from "@/components/Home/TrendingGames";
+import AccountProducts from "@/components/Home/AccountProducts";
 import WhyChooseUs from "@/components/Home/WhyChooseUs";
 
 export default function Home() {
@@ -9,6 +10,7 @@ export default function Home() {
         <Banner />
       </div>
       <TrendingGames />
+      <AccountProducts />
       <WhyChooseUs />
     </>
   );

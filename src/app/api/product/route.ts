@@ -5,6 +5,7 @@ import { Product } from "@/models/product.model";
 import { cloudinaryDelete, cloudinaryUpload } from "@/utils/cloudinary";
 import { encryptData } from "@/utils/encryption";
 import { extractPublicId } from "@/utils/getPublicId";
+import { Account } from "@/models/account.model";
 import mongoose from "mongoose";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
@@ -14,14 +15,15 @@ import { z } from "zod";
 const productSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().min(1, "Description is required"),
-  category: z.string().min(1, "Category is required"),
+  type: z.enum(["topup", "account"]).optional(),
   region: z.string().optional(),
   apiName: z.string().optional(),
   cost: z.array(
     z.object({
       id: z.string(),
       price: z.string(),
-      amount: z.string(),
+      amount: z.string().optional(),
+      durationDays: z.union([z.string(), z.number()]).optional(),
       category: z.string().optional(),
       note: z.string().optional(),
       image: z.any().optional(),
@@ -174,6 +176,36 @@ export async function GET(req: Request) {
             ),
         }));
 
+        // If account type, add slot availability
+        if (products.type === "account") {
+          const slots = await Account.aggregate([
+            {
+              $match: {
+                productId: new mongoose.Types.ObjectId(id),
+                isActive: true,
+              },
+            },
+            { $group: { _id: "$costId", count: { $sum: 1 } } },
+          ]);
+
+          const slotsMap = slots.reduce((acc: any, slot: any) => {
+            acc[slot._id] = slot.count;
+            return acc;
+          }, {});
+
+          // Add slots to groupedCost items
+          groupedCost.forEach((group: any) => {
+            group.items.forEach((item: any) => {
+              item.slots = slotsMap[item.id] || 0;
+            });
+          });
+
+          // Also add slots to the main cost array in case it's used elsewhere
+          products.cost.forEach((item: any) => {
+            item.slots = slotsMap[item.id] || 0;
+          });
+        }
+
         const gift = (await Gift.findOne({
           productId: id,
           isActive: true,
@@ -320,14 +352,25 @@ export async function PUT(req: NextRequest) {
       ),
     ]);
 
-    // Prepare update data
-    const updateData = {
+    // Prepare update data carefully to avoid removing fields
+    const updateData: any = {
       ...validatedData,
-      image: imageUrl.url,
-      banner: bannerUrl.url,
-      slides: slidesUrls,
+      image: imageUrl.url || existingProduct.image,
+      banner: bannerUrl.url || existingProduct.banner,
+      slides: slidesUrls.length > 0 ? slidesUrls : existingProduct.slides,
       cost: costImages,
     };
+
+    // Remove any undefined/null fields from the root update object to be safe
+    Object.keys(updateData).forEach((key) => {
+      if (updateData[key] === undefined || updateData[key] === null) {
+        delete updateData[key];
+      }
+    });
+
+    // Explicitly restore mandatory fields if they were deleted by the loop
+    if (!updateData.image) updateData.image = existingProduct.image;
+    if (!updateData.banner) updateData.banner = existingProduct.banner;
 
     // Handle image deletions
     if (validatedData.image instanceof File && existingProduct.image) {

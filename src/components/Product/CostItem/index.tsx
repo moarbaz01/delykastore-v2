@@ -1,21 +1,25 @@
 import Image from "next/image";
 
 const CostItem = ({ item, i, amountSelected, setAmountSelected }) => {
+  const isSelected = amountSelected?.id === item.id;
+  const isDisabled = item.slots !== undefined && item.slots === 0;
+
   return (
     <div
       onClick={() =>
+        !isDisabled &&
         setAmountSelected({
           id: item.id,
           amount: item.amount,
+          durationDays: item.durationDays,
           price: item.price,
         })
       }
-      className={`rounded-lg bg-card-bg  hover:border-2 hover:border-primary ${
-        `${amountSelected?.id + amountSelected?.amount}` ===
-        `${item.id + item.amount}`
-          ? "border-2 border-primary"
-          : "border-2 border-card-bg"
-      } cursor-pointer justify-between transition p-3 flex relative gap-6 items-center`}
+      className={`rounded-lg bg-card-bg transition p-3 flex relative gap-6 items-center ${
+        isDisabled
+          ? "opacity-50 grayscale cursor-not-allowed pointer-events-none"
+          : "cursor-pointer hover:border-2 hover:border-primary"
+      } ${isSelected ? "border-2 border-primary" : "border-2 border-card-bg"}`}
     >
       {item.note && (
         <div className="bg-primary text-black rounded-tr-md -top-2 -left-0.5 absolute px-2 py-1 text-xs leading-none">
@@ -36,12 +40,20 @@ const CostItem = ({ item, i, amountSelected, setAmountSelected }) => {
       </div>
 
       <div className="flex-1 min-w-0">
-        <p className="text-sm text-white leading-tight">{item.amount}</p>
+        <p className="text-sm text-white leading-tight">
+          {item.amount || `${item.durationDays} Days`}
+          {item.slots !== undefined && (
+            <span
+              className={`text-[12px] ml-2 ${item.slots > 0 ? "text-primary" : "text-red-400"}`}
+            >
+              {item.slots > 0 ? `(${item.slots} Slots)` : "(No Stock)"}
+            </span>
+          )}
+        </p>
         <p className="font-bold text-primary text-base">USD {item.price}</p>
       </div>
 
-      {`${amountSelected?.id + amountSelected?.amount}` ===
-        `${item.id + item.amount}` && (
+      {isSelected && (
         <div className="bg-primary rounded-bl-lg absolute top-0 right-0 p-1.5">
           <svg
             className="w-4 h-4 text-black"
