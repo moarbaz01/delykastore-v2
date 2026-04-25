@@ -17,7 +17,7 @@ const StoreUser = () => {
 
   useEffect(() => {
     if (session?.user) {
-      fetchUser(session.user.id!).then((userData) => {
+      fetchUser().then((userData) => {
         if (userData) {
           dispatch(setUser(userData));
         }

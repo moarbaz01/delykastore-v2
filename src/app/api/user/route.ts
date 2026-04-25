@@ -22,33 +22,59 @@ const updateUserSchema = z.object({
     .optional(),
 });
 
-export async function GET(req: Request) {
+export async function GET(req: NextRequest) {
   try {
     await dbConnect();
 
     // Parse query parameters
     const url = new URL(req.url);
     const userId = url.searchParams.get("id");
+    const me = url.searchParams.get("me");
+
+    if (me === "true") {
+      const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+      if (!token || !token.id) {
+        return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      }
+
+      const user = await User.findById(token.id).select(
+        "-password -order -payment -__v",
+      );
+      
+      if (!user) {
+        return NextResponse.json({ message: "User not found" }, { status: 404 });
+      }
+
+      return NextResponse.json(user, { status: 200 });
+    }
+
+    // If not fetching 'me', the user MUST be an admin to query by ID or fetch all users
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    if (!token || token.role !== "admin") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
 
     if (userId) {
-      const user = await User.findById(userId);
+      const user = await User.findById(userId).select(
+        "-password -order -payment -__v",
+      );
       if (!user) {
         return NextResponse.json(
           { message: "User not found" },
-          { status: 404 }
+          { status: 404 },
         );
       }
 
       return NextResponse.json(user, { status: 200 });
     }
 
-    const users = await User.find();
+    const users = await User.find().select("-password -order -payment -__v");
     return NextResponse.json(users, { status: 200 });
   } catch (error: any) {
     console.error("Error fetching users:", error.message);
     return NextResponse.json(
       { message: "Failed to fetch users", error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -64,7 +90,7 @@ export async function POST(req: Request) {
     if (existingUser) {
       return NextResponse.json(
         { message: "User already exists" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -76,14 +102,14 @@ export async function POST(req: Request) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { message: "Validation error", errors: error.errors },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     console.error("Error creating user:", error.message);
     return NextResponse.json(
       { message: "Failed to create user", error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -103,7 +129,7 @@ export async function PUT(req: NextRequest) {
     if (!userId) {
       return NextResponse.json(
         { message: "User ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -128,14 +154,14 @@ export async function PUT(req: NextRequest) {
     if (error instanceof z.ZodError) {
       return NextResponse.json(
         { message: "Validation error", errors: error.errors },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     console.error("Error updating user:", error.message);
     return NextResponse.json(
       { message: "Failed to update user", error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -159,7 +185,7 @@ export async function DELETE(req: NextRequest) {
     if (!userId) {
       return NextResponse.json(
         { message: "User ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -167,13 +193,13 @@ export async function DELETE(req: NextRequest) {
 
     return NextResponse.json(
       { message: "User deleted successfully" },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error: any) {
     console.error("Error deleting user:", error.message);
     return NextResponse.json(
       { message: "Failed to delete user", error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
