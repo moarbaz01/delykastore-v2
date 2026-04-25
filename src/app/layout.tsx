@@ -8,7 +8,6 @@ import { Toaster } from "react-hot-toast";
 import Provider from "@/components/Provider";
 import LogoButton from "@/components/ui/LogoButton";
 import PaywayScript from "@/components/PaywayScript";
-import BrowserInspectionProtection from "@/components/BrowserInspectionProtection";
 
 export const metadata: Metadata = {
   title: "Win Win Top-Up",
@@ -40,12 +39,10 @@ export default function RootLayout({
         <Provider>
           <NextTopLoader color="#ff962d" />
           <Toaster />
-          {/* <BrowserInspectionProtection> */}
-          <Navbar /> {/* Conditionally render Navbar */}
+          <Navbar />
           {children}
           <Footer />
           <LogoButton />
-          {/* </BrowserInspectionProtection> */}
         </Provider>
         <PaywayScript />
       </body>

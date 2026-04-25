@@ -24,16 +24,13 @@ export const makePurchase = async ({ playerid, pacakge, orderid }: Params) => {
       autocode: process.env.BANGLA_AUTOCODE,
     };
 
-    console.log("payload bangla", payload);
-
     const res = await axios.post(process.env.BANGLA_PURCHASE_URL, payload);
-    console.log("response bangla", res.status);
 
     await createOrderLog({
       transactionId: orderid,
       provider: "Bangla Api",
       requestPayload: payload,
-      responsePayload: res.data,
+      responsePayload: res.data || res,
       status: res.status === 200 ? "success" : "failed",
     });
 
@@ -49,8 +46,6 @@ export const makePurchase = async ({ playerid, pacakge, orderid }: Params) => {
       };
     }
   } catch (error: any) {
-    console.log("error bangla", error);
-
     const payload = {
       playerid,
       pacakge,
@@ -73,7 +68,7 @@ export const makePurchase = async ({ playerid, pacakge, orderid }: Params) => {
 
     return NextResponse.json(
       { error: "Something went wrong" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 };

@@ -1,5 +1,5 @@
 "use client";
-import Image from "next/image";
+// import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { FaTelegram } from "react-icons/fa";
 
@@ -11,7 +11,7 @@ const LogoButton = () => {
     <a
       href="https://t.me/bluetechink"
       target="_blank"
-      className=" cursor-pointer px-4 py-2 bg-blue-500 flex items-center gap-2 hover:opacity-80 transition z-[50]  rounded-full fixed bottom-20 md:bottom-10 right-4 "
+      className=" cursor-pointer px-4 py-2 bg-blue-500 flex items-center gap-2 hover:opacity-80 transition z-[50]  rounded-full fixed bottom-12 md:bottom-10 right-4 "
     >
       {/* <Image
         width={100}

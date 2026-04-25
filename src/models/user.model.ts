@@ -96,6 +96,14 @@ const userSchema = new Schema<IUser>(
   { timestamps: true },
 );
 
+// Pre-save hook to ensure empty/null emails don't break the sparse unique index
+userSchema.pre("save", function (next) {
+  if (this.email === "" || this.email === null) {
+    this.email = undefined;
+  }
+  next();
+});
+
 // Method to compare passwords
 userSchema.methods.comparePassword = async function (enteredPassword: string) {
   if (!this.password) return false;

@@ -19,7 +19,6 @@ export const authOptions: AuthOptions = {
       async authorize(credentials) {
         try {
           await dbConnect();
-          console.log("Auth Status: DB Connected");
 
           const user = await User.findOne({
             email: credentials?.email,
@@ -28,7 +27,6 @@ export const authOptions: AuthOptions = {
             .lean();
 
           if (!user) {
-            console.log("Auth Status: User not found");
             throw new Error("User not found");
           }
 
@@ -42,16 +40,13 @@ export const authOptions: AuthOptions = {
           );
 
           if (!isValidPassword) {
-            console.log("Auth Status: Invalid password");
             throw new Error("Invalid credentials");
           }
 
           if (user.authProvider === "email" && !user.isVerified) {
-            console.log("Auth Status: Not verified");
             throw new Error("Please verify your account before logging in");
           }
 
-          console.log("Auth Status: Success for", user.email);
           return {
             id: user._id.toString(),
             email: user.email,
