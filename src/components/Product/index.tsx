@@ -130,7 +130,7 @@ const Product = ({
     setMessage,
     setErrorMessage,
   );
- 
+
   const { createOrder: createOrderUtil, isLoading } = useOrder(setPaymentData);
 
   const handleApplyCoupon = async () => {
@@ -231,7 +231,7 @@ const Product = ({
       router.push("/login");
       return;
     }
-    
+
     await createOrderUtil({
       userId,
       zoneId,
@@ -312,6 +312,7 @@ const Product = ({
                   alt={banner as string}
                   width={400}
                   height={400}
+                  priority
                   className="rounded-lg w-full"
                 />
               </div>

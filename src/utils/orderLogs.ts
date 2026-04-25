@@ -17,8 +17,6 @@ export const createOrderLog = async (params: CreateOrderLogParams) => {
     const log = await OrderLog.create(params);
     return log;
   } catch (error) {
-    console.error("Failed to create order log:", error);
-    // Don't throw error to prevent interrupting the main process
     return null;
   }
 };
