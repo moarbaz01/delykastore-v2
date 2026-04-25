@@ -6,16 +6,23 @@ const GameComponent = ({
   name,
   image,
   stock,
-  type
+  type,
+  isLink,
+  link
 }: {
   _id: string;
   name: string;
   image: StaticImageData | string;
   stock?: boolean;
   type: "account" | "topup";
+  isLink?: boolean;
+  link?: string;
 }) => {
+  const href = isLink && link ? link : `/product/${_id}`;
+  const isExternal = isLink && link && (link.startsWith("http") || link.startsWith("https"));
+
   return (
-    <Link href={`/product/${_id}`}>
+    <Link href={href} target={isExternal ? "_blank" : undefined} rel={isExternal ? "noopener noreferrer" : undefined}>
       <div className="text-white hover:opacity-80  transition bg-gradient-to-b from-primary/40 via-primary/20 to-secondary  h-auto p-3  rounded-lg overflow-hidden">
         <div className="flex   flex-col">
           <div className="w-full h-[80%]">

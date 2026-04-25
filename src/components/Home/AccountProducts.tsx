@@ -27,6 +27,8 @@ const AccountProducts = async () => {
               image={item.image}
               stock={item.stock}
               type="account"
+              isLink={item.isLink}
+              link={item.link}
             />
           ))}
         </div>

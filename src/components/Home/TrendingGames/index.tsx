@@ -29,6 +29,8 @@ const TrendingGames = async () => {
                 image={item.image}
                 stock={item.stock}
                 type={item.type as "topup"}
+                isLink={item.isLink}
+                link={item.link}
               />
             ))
           ) : (

@@ -11,6 +11,8 @@ export interface IProduct extends Document {
   isDeleted: boolean;
   apiName?: string;
   isApi: boolean;
+  isLink?: boolean;
+  link?: string;
   stock: boolean;
   spinActive: boolean;
   spinCostIds: string[];
@@ -68,6 +70,13 @@ const productSchema = new Schema<IProduct>(
     isApi: {
       type: Boolean,
       default: false,
+    },
+    isLink: {
+      type: Boolean,
+      default: false,
+    },
+    link: {
+      type: String,
     },
     stock: {
       type: Boolean,

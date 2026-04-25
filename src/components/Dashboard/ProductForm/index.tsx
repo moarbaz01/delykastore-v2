@@ -32,6 +32,8 @@ interface Product {
   name: string;
   description: string;
   isApi: boolean;
+  isLink?: boolean;
+  link?: string;
   region: string;
   game: string;
   apiName: string;
@@ -52,6 +54,8 @@ const ProductForm = ({ product }: { product?: Product }) => {
     name: product?.name || "",
     description: product?.description || "",
     isApi: product?.isApi || false,
+    isLink: product?.isLink || false,
+    link: product?.link || "",
     region: product?.region || "",
     game: product?.game || "",
     apiName: product?.apiName || "",
@@ -407,7 +411,15 @@ const ProductForm = ({ product }: { product?: Product }) => {
       await Promise.allSettled(uploadPromises);
     }
 
-    data.append("cost", JSON.stringify(formData.cost));
+    if (formData.isLink) {
+      data.append("cost", "[]");
+    } else {
+      data.append("cost", JSON.stringify(formData.cost));
+    }
+    data.append("isLink", formData.isLink ? "true" : "false");
+    if (formData.link) {
+      data.append("link", formData.link);
+    }
     if (product) {
       data.append("id", formData._id);
     }
@@ -526,6 +538,34 @@ const ProductForm = ({ product }: { product?: Product }) => {
                   </Select>
                 )}
             </>
+          )}
+
+          {/* isLink and Link Input (Only for account) */}
+          {formData.type === "account" && (
+            <div className="mb-4">
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="isLink"
+                    checked={formData.isLink}
+                    onChange={handleCheckboxChange}
+                  />
+                }
+                label="Is Link (Direct Redirect)"
+              />
+              {formData.isLink && (
+                <TextField
+                  fullWidth
+                  name="link"
+                  label="Direct Link URL"
+                  value={formData.link}
+                  onChange={handleInputChange}
+                  margin="normal"
+                  variant="outlined"
+                  sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
+                />
+              )}
+            </div>
           )}
 
           {/* Game */}
@@ -782,7 +822,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
           </div>
 
           {/* Cost Items */}
-          {formData.cost.map((costItem, index) => (
+          {!formData.isLink && formData.cost.map((costItem, index) => (
             <div key={index} className="mb-4 md:flex items-center gap-4">
               {/* ID Input */}
               <TextField
@@ -923,14 +963,16 @@ const ProductForm = ({ product }: { product?: Product }) => {
               </Button>
             </div>
           ))}
-          <Button
-            onClick={handleAddCost}
-            color="primary"
-            variant="contained"
-            className="mb-4 bg-white"
-          >
-            Cost Item <Add />
-          </Button>
+          {!formData.isLink && (
+            <Button
+              onClick={handleAddCost}
+              color="primary"
+              variant="contained"
+              className="mb-4 bg-white"
+            >
+              Cost Item <Add />
+            </Button>
+          )}
 
           {/* Submit Button */}
           <div className="mt-4">
