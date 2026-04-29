@@ -147,66 +147,96 @@ const OrderLogs: React.FC<OrderLogsProps> = ({ logs, total, isLoading }) => {
             {isLoading
               ? renderSkeletonRows(rowsPerPage)
               : logs?.map((log) => (
-                  <TableRow key={log._id} hover>
-                    <TableCell>
-                      {new Date(log.createdAt).toLocaleString()}
-                    </TableCell>
-                    <TableCell sx={{ fontWeight: "bold" }}>
-                      {log.provider}
-                    </TableCell>
-                    <TableCell>{log.transactionId || "N/A"}</TableCell>
-                    <TableCell sx={{ maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", cursor: "help" }}>
-                      <Tooltip 
-                        title={<Box component="pre" sx={{ fontSize: '0.75rem', p: 1 }}>{JSON.stringify(log.requestPayload, null, 2)}</Box>} 
-                        arrow 
-                        placement="top"
-                      >
-                        <span>{JSON.stringify(log.requestPayload)}</span>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell sx={{ maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", cursor: "help" }}>
-                      <Tooltip 
-                        title={<Box component="pre" sx={{ fontSize: '0.75rem', p: 1 }}>{JSON.stringify(log.responsePayload, null, 2)}</Box>} 
-                        arrow 
-                        placement="top"
-                      >
-                        <span>{JSON.stringify(log.responsePayload)}</span>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell>
-                      <Chip
-                        label={log.status.toUpperCase()}
-                        size="small"
-                        sx={{
-                          fontWeight: "bold",
-                          backgroundColor:
-                            log.status === "success"
-                              ? "rgba(34, 197, 94, 0.1)"
-                              : log.status === "pending"
+                <TableRow key={log._id} hover>
+                  <TableCell>
+                    {new Date(log.createdAt).toLocaleString()}
+                  </TableCell>
+                  <TableCell sx={{ fontWeight: "bold" }}>
+                    {log.provider}
+                  </TableCell>
+                  <TableCell>{log.transactionId || "N/A"}</TableCell>
+                  <TableCell sx={{ maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", cursor: "help" }}>
+                    <Tooltip
+                      title={
+                        <Box
+                          component="pre"
+                          sx={{
+                            fontSize: "0.75rem",
+                            p: 1,
+                            maxWidth: "400px",
+                            maxHeight: "300px",
+                            overflow: "auto",
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-all",
+                          }}
+                        >
+                          {JSON.stringify(log.requestPayload, null, 2)}
+                        </Box>
+                      }
+                      arrow
+                      placement="top"
+                    >
+                      <span>{JSON.stringify(log.requestPayload)}</span>
+                    </Tooltip>
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", cursor: "help" }}>
+                    <Tooltip
+                      title={
+                        <Box
+                          component="pre"
+                          sx={{
+                            fontSize: "0.75rem",
+                            p: 1,
+                            maxWidth: "400px",
+                            maxHeight: "300px",
+                            overflow: "auto",
+                            whiteSpace: "pre-wrap",
+                            wordBreak: "break-all",
+                          }}
+                        >
+                          {JSON.stringify(log.responsePayload, null, 2)}
+                        </Box>
+                      }
+                      arrow
+                      placement="top"
+                    >
+                      <span>{JSON.stringify(log.responsePayload)}</span>
+                    </Tooltip>
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label={log.status.toUpperCase()}
+                      size="small"
+                      sx={{
+                        fontWeight: "bold",
+                        backgroundColor:
+                          log.status === "success"
+                            ? "rgba(34, 197, 94, 0.1)"
+                            : log.status === "pending"
                               ? "rgba(234, 179, 8, 0.1)"
                               : "rgba(239, 68, 68, 0.1)",
-                          color:
-                            log.status === "success"
-                              ? "#22c55e"
-                              : log.status === "pending"
+                        color:
+                          log.status === "success"
+                            ? "#22c55e"
+                            : log.status === "pending"
                               ? "#eab308"
                               : "#ef4444",
-                          borderRadius: "6px",
-                        }}
-                      />
-                    </TableCell>
-                    <TableCell sx={{ maxWidth: 300, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", cursor: "help" }}>
-                      <Tooltip title={log.errorMessage || ""} arrow placement="top">
-                        <span>{log.errorMessage || "—"}</span>
-                      </Tooltip>
-                    </TableCell>
-                    <TableCell sx={{ textAlign: "right" }}>
-                      <IconButton onClick={() => setSelectedLog(log)}>
-                        <Visibility />
-                      </IconButton>
-                    </TableCell>
-                  </TableRow>
-                ))}
+                        borderRadius: "6px",
+                      }}
+                    />
+                  </TableCell>
+                  <TableCell sx={{ maxWidth: 300, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", cursor: "help" }}>
+                    <Tooltip title={log.errorMessage || ""} arrow placement="top">
+                      <span>{log.errorMessage || "—"}</span>
+                    </Tooltip>
+                  </TableCell>
+                  <TableCell sx={{ textAlign: "right" }}>
+                    <IconButton onClick={() => setSelectedLog(log)}>
+                      <Visibility />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))}
             {!isLoading && logs.length === 0 && (
               <TableRow>
                 <TableCell colSpan={6} sx={{ textAlign: "center", py: 5 }}>
