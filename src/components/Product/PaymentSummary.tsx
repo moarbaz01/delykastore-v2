@@ -8,6 +8,7 @@ interface PaymentSummaryProps {
   total: string;
   isAgree: boolean;
   game: string;
+  type: string;
   playerAvailable: boolean;
   createOrder: () => void;
   isLoading?: boolean;
@@ -19,6 +20,7 @@ const PaymentSummary = ({
   total,
   isAgree,
   game,
+  type,
   playerAvailable,
   createOrder,
   isLoading = false,
@@ -56,8 +58,9 @@ const PaymentSummary = ({
         <button
           disabled={
             !isAgree ||
-            (game === "mobilelegends" && !playerAvailable) ||
-            !amountSelected.id
+            !amountSelected.id ||
+            // For topup games (not account, not Custom Game), require ID verification
+            (type !== "account" && game !== "Custom Game" && !playerAvailable)
           }
           onClick={createOrder}
           className="bg-primary disabled:opacity-50 w-[100px] rounded-lg p-2 text-black font-bold"

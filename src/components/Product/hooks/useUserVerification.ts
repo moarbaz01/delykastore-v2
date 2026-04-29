@@ -5,7 +5,7 @@ export const useUserVerification = (
   setLoading: (value: boolean) => void,
   setPlayerAvailable: (value: boolean) => void,
   setMessage: (value: string) => void,
-  setErrorMessage: (value: string) => void
+  setErrorMessage: (value: string) => void,
 ) => {
   const checkUserAccount = useCallback(
     async (game: string, userId: string, zoneId: string) => {
@@ -17,10 +17,11 @@ export const useUserVerification = (
           zoneId,
         });
 
-        const { username, error } = res.data;
-        if (username) {
+        const { username, error, name } = res.data;
+        const playerName = username || name;
+        if (playerName) {
           setPlayerAvailable(true);
-          setMessage(username);
+          setMessage(playerName);
           setErrorMessage("");
         } else {
           setPlayerAvailable(false);
@@ -29,22 +30,17 @@ export const useUserVerification = (
         }
       } catch (error: any) {
         setErrorMessage(
-          error.response?.data?.error || "Error checking player information"
+          error.response?.data?.error || "Error checking player information",
         );
       } finally {
         setLoading(false);
       }
     },
-    [setLoading, setPlayerAvailable, setMessage, setErrorMessage]
+    [setLoading, setPlayerAvailable, setMessage, setErrorMessage],
   );
 
   const fetchCheckRole = useCallback(
-    async (
-      userId: string,
-      zoneId: string,
-      game: string,
-      region?: string
-    ) => {
+    async (userId: string, zoneId: string, game: string, region?: string) => {
       if (!userId) {
         setErrorMessage("Please fill userId");
         return;
@@ -108,7 +104,13 @@ export const useUserVerification = (
         setLoading(false);
       }
     },
-    [checkUserAccount, setLoading, setPlayerAvailable, setMessage, setErrorMessage]
+    [
+      checkUserAccount,
+      setLoading,
+      setPlayerAvailable,
+      setMessage,
+      setErrorMessage,
+    ],
   );
 
   return { checkUserAccount, fetchCheckRole };

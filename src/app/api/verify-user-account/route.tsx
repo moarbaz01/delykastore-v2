@@ -1,4 +1,4 @@
-import { checkAccount } from "@/utils/topupghor";
+import { checkAluuAccount } from "@/utils/aluu";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -7,36 +7,36 @@ export async function POST(req: Request) {
     if (!game || !userId) {
       return NextResponse.json(
         { message: "Missing game_path or userId" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     let game_path;
 
     if (game === "pubg") {
-      game_path = "pubg";
+      game_path = "pubgm";
     } else if (game === "freefire") {
-      game_path = "free-fire/mysg";
+      game_path = "freefire_br";
     } else if (game === "honorofkings") {
-      game_path = "honor-of-kings";
+      game_path = "hok";
     } else if (game === "mobilelegends") {
-      game_path = "mobile-legends";
+      game_path = "mlbb";
     } else if (game === "genshinimpact") {
-      game_path = "genshin-impact";
+      game_path = "genshin";
     } else if (game === "bloodstrike") {
-      game_path = "blood-strike";
+      game_path = "bloodstrike";
     } else {
       return NextResponse.json({ error: "Invalid game" }, { status: 400 });
     }
 
-    const res = await checkAccount({ game_path, userId, zoneId });
-    console.log(res);
+    const res = await checkAluuAccount({ game_path, userId, zoneId });
 
     if (res.error) {
-      return NextResponse.json({ error: res.message }, { status: 500 });
+      // 400 = user error (invalid ID, daily limit, etc.) — shows message on frontend
+      return NextResponse.json({ error: res.message }, { status: 400 });
     }
     return NextResponse.json(res);
   } catch (error) {
-    return NextResponse.json({ error }, { status: 500 });
+    return NextResponse.json({ error: "Server error" }, { status: 500 });
   }
 }

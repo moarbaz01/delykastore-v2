@@ -18,7 +18,7 @@ const LogoButton = () => {
     <a
       href="https://t.me/bluetechink"
       target="_blank"
-      className=" cursor-pointer px-4 py-2 bg-blue-500 flex items-center gap-2 hover:opacity-80 transition z-[50]  rounded-full fixed bottom-8 md:bottom-10 right-4 "
+      className=" cursor-pointer px-4 py-2 bg-blue-500 flex items-center gap-2 hover:opacity-80 transition z-[50]  rounded-full fixed bottom-24 md:bottom-10 right-4 "
     >
       <FaTelegram />
       <span>តបឆាតលឿនតាម Telegram</span>

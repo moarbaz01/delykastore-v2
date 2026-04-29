@@ -390,6 +390,7 @@ const Product = ({
             total={total}
             isAgree={isAgree}
             game={game}
+            type={type}
             playerAvailable={playerAvailable}
             createOrder={handleCreateOrder}
             isLoading={isLoading}
