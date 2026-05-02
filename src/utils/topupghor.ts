@@ -13,13 +13,11 @@ export const GetTopUpGhorBalance = async () => {
     );
 
     const data = res.data;
-    console.log("BALANCE", data);
     return {
       error: false,
       data: { name: "Api Balance", ...data },
     };
   } catch (error) {
-    console.error("Error:", error);
     return {
       error: true,
       message: "Something went wrong",

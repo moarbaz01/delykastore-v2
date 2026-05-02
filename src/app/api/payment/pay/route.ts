@@ -125,7 +125,7 @@ export async function POST(req: Request) {
           if ((order?.product as any)?.apiName === "TopUp Ghor Api") {
             orderResponse = await GhorTopUp(order as any, "86286");
           } else {
-            orderResponse = await ghorApiTopup(order as any);
+            orderResponse = await gameOrderRequest(order as any);
           }
         } else if (order.region === "indonesia") {
           orderResponse = await GhorTopUp(order as any, "39365");

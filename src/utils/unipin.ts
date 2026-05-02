@@ -6,7 +6,6 @@ import { createOrderLog } from "./orderLogs";
 export const ghorApiTopup = async (order: GameOrder) => {
   // Extract Costids if array
   const costIds = order?.costId?.split("&");
-  console.log("costIds", costIds);
   const responses = await Promise.all(
     costIds.map(async (cost: string) => {
       try {
@@ -24,7 +23,7 @@ export const ghorApiTopup = async (order: GameOrder) => {
               "Content-Type": "application/json",
               "X-Api-Key": process.env.GHOR_API_KEY!,
             },
-          }
+          },
         );
 
         const data = await res.data;
@@ -69,7 +68,7 @@ export const ghorApiTopup = async (order: GameOrder) => {
 
         return { status: 500, error: error?.message, data: null }; // Failure
       }
-    })
+    }),
   );
 
   // Find a successful response or handle failures
@@ -100,7 +99,7 @@ export const freeFireTopup = async (order: GameOrder) => {
               "Content-Type": "application/json",
               "X-Api-Key": process.env.GHOR_API_KEY!,
             },
-          }
+          },
         );
 
         const data = await res.data;
@@ -133,7 +132,7 @@ Transaction ID: ${order?.transactionId}
 User Id : ${order?.gameCredentials?.userId}
 Game: ${order?.gameCredentials?.game}
 </pre>
-`
+`,
           );
           return { status: 500, error: data?.msg, data: null };
         }
@@ -158,7 +157,7 @@ Game: ${order?.gameCredentials?.game}
 
         return { status: 500, error: error?.message, data: null }; // Failure
       }
-    })
+    }),
   );
 
   // Find a successful response or handle failures

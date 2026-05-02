@@ -1,8 +1,5 @@
 import { dbConnect } from "@/lib/database";
 import { Order } from "@/models/order.model";
-import { gameOrderRequest } from "@/utils/smileone";
-import { GhorTopUp } from "@/utils/topupghor";
-import { freeFireTopup, ghorApiTopup } from "@/utils/unipin";
 import { getToken } from "next-auth/jwt";
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
@@ -45,7 +42,9 @@ export async function GET(req: NextRequest) {
     let orders;
     if (id) {
       // Fetch a single order by ID
-      orders = await Order.findById(id).populate("product").populate("user", "email");
+      orders = await Order.findById(id)
+        .populate("product")
+        .populate("user", "email");
       if (!orders) {
         return NextResponse.json({ error: "Order not found" }, { status: 404 });
       }
@@ -59,7 +58,7 @@ export async function GET(req: NextRequest) {
     console.error("GET Error:", error);
     return NextResponse.json(
       { error: "Failed to retrieve orders" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -86,7 +85,7 @@ export async function PUT(req: NextRequest) {
     if (!id) {
       return NextResponse.json(
         { error: "Order ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     // Validate the input (partial update allowed)
@@ -95,7 +94,9 @@ export async function PUT(req: NextRequest) {
     // Update the order
     const updatedOrder = await Order.findByIdAndUpdate(id, validatedData, {
       new: true,
-    }).populate("product").populate("user", "email");
+    })
+      .populate("product")
+      .populate("user", "email");
 
     if (!updatedOrder) {
       return NextResponse.json({ error: "Order not found" }, { status: 404 });
@@ -109,7 +110,7 @@ export async function PUT(req: NextRequest) {
     console.error("PUT Error:", error);
     return NextResponse.json(
       { error: error.message || "Failed to update order" },
-      { status: 400 }
+      { status: 400 },
     );
   }
 }
@@ -133,7 +134,7 @@ export async function DELETE(req: NextRequest) {
     if (!id) {
       return NextResponse.json(
         { error: "Order ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -146,13 +147,13 @@ export async function DELETE(req: NextRequest) {
 
     return NextResponse.json(
       { message: "Order deleted successfully" },
-      { status: 200 }
+      { status: 200 },
     );
   } catch (error) {
     console.error("DELETE Error:", error);
     return NextResponse.json(
       { error: "Failed to delete order" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

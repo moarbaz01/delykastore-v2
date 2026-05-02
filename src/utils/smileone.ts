@@ -3,7 +3,6 @@ import { generateSign } from "./hash";
 import { type GameOrder } from "@/types/main";
 import { createOrderLog } from "./orderLogs";
 
-
 export const gameOrderRequest = async (order: GameOrder) => {
   const timestamp = Math.floor(Date.now() / 1000);
   const costIds = order?.costId?.split("&");
@@ -36,11 +35,11 @@ export const gameOrderRequest = async (order: GameOrder) => {
         const res = await axios.post(
           apiUrl,
           { ...params, sign },
-          { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+          { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
         );
 
         console.log("SmileOne Response", res.data);
-        
+
         await createOrderLog({
           transactionId: order.transactionId,
           orderId: order._id,
@@ -54,9 +53,9 @@ export const gameOrderRequest = async (order: GameOrder) => {
       } catch (error: any) {
         console.error(
           `Failed to create order for cost ID ${cost}:`,
-          error.message
+          error.message,
         );
-        
+
         await createOrderLog({
           transactionId: order.transactionId,
           orderId: order._id,
@@ -69,7 +68,7 @@ export const gameOrderRequest = async (order: GameOrder) => {
 
         return { status: 500, error: error.message, cost }; // Failure
       }
-    })
+    }),
   );
 
   // Find a successful response or handle failures
@@ -94,14 +93,13 @@ export const getSmileOneBalance = async () => {
     time: timestamp,
   };
 
-
   const sign = generateSign(params, process.env.SMILE_ONE_API_KEY);
 
   try {
     const res = await axios.post(
       apiUrl,
       { ...params, sign },
-      { headers: { "Content-Type": "application/x-www-form-urlencoded" } }
+      { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
     );
 
     console.log("SmileOne Response", res.data);
