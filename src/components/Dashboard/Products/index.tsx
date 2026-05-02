@@ -28,7 +28,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { FaGift } from "react-icons/fa";
 
-const Products = ({ allProducts, productsList, ghorProductlist }) => {
+const Products = ({ allProducts, brProductsList, phProductsList }) => {
   const router = useRouter();
   const [products, setProducts] = useState(allProducts);
   const [search, setSearch] = useState("");
@@ -72,7 +72,7 @@ const Products = ({ allProducts, productsList, ghorProductlist }) => {
     (product) =>
       (product.name.toLowerCase().includes(search.toLowerCase()) ||
         product._id.includes(search)) &&
-      (typeFilter === "all" || product.type === typeFilter)
+      (typeFilter === "all" || product.type === typeFilter),
   );
 
   return (
@@ -145,9 +145,7 @@ const Products = ({ allProducts, productsList, ghorProductlist }) => {
                     />
                   </TableCell>
                   <TableCell>{product._id}</TableCell>
-                  <TableCell>
-                    {product.name}
-                  </TableCell>
+                  <TableCell>{product.name}</TableCell>
                   <TableCell sx={{ textTransform: "capitalize" }}>
                     {product.type || "topup"}
                   </TableCell>
@@ -194,28 +192,81 @@ const Products = ({ allProducts, productsList, ghorProductlist }) => {
       </TableContainer>
       <div className="flex mt-6  gap-8">
         <div className="">
-          <h1 className="text-primary font-bold mb-2 text-xl">Products List</h1>
+          <h1 className="text-primary font-bold mb-2 text-xl">
+            Philippines Products List
+          </h1>
           <ul className="flex flex-col gap-4">
-            {productsList?.map((product) => (
-              <li key={product.id}>
-                <p>id : {product.id}</p>
-                <p>spu : {product.spu}</p>
-                <p>price : {product.price}</p>
-                <p>discount : {product.discount}</p>
+            {phProductsList?.map((product, index) => (
+              <li
+                key={product.id || index}
+                className="p-4 border border-gray-700 rounded-md"
+              >
+                <p>
+                  <span className="font-bold text-gray-400">Region:</span>{" "}
+                  {product.region?.toUpperCase()}
+                </p>
+                <p>
+                  <span className="font-bold text-gray-400">ID:</span>{" "}
+                  {product.id || product.productid}
+                </p>
+                <p>
+                  <span className="font-bold text-gray-400">Name (SPU):</span>{" "}
+                  {product.spu || product.name}
+                </p>
+                <p>
+                  <span className="font-bold text-gray-400">Price:</span>{" "}
+                  {product.price || product.amount}
+                </p>
+                {product.cost_price && (
+                  <p>
+                    <span className="font-bold text-gray-400">Cost Price:</span>{" "}
+                    {product.cost_price}
+                  </p>
+                )}
+                {product.discount && (
+                  <p>
+                    <span className="font-bold text-gray-400">Discount:</span>{" "}
+                    {product.discount}
+                  </p>
+                )}
               </li>
             ))}
           </ul>
         </div>
         <div className="">
           <h1 className="text-primary font-bold mb-2 text-xl">
-            Philips Product List
+            Brazil Product List
           </h1>
           <ul className="flex flex-col gap-4">
-            {ghorProductlist?.map((product, index) => (
-              <li key={index}>
-                <p>id : {product.id}</p>
-                <p>name : {product.name}</p>
-                <p>price : {product.amount}</p>
+            {brProductsList?.map((product, index) => (
+              <li
+                key={product.id || index}
+                className="p-4 border border-gray-700 rounded-md"
+              >
+                <p>
+                  <span className="font-bold text-gray-400">ID:</span>{" "}
+                  {product.id || product.productid}
+                </p>
+                <p>
+                  <span className="font-bold text-gray-400">Name (SPU):</span>{" "}
+                  {product.spu || product.name}
+                </p>
+                <p>
+                  <span className="font-bold text-gray-400">Price:</span>{" "}
+                  {product.price || product.amount}
+                </p>
+                {product.cost_price && (
+                  <p>
+                    <span className="font-bold text-gray-400">Cost Price:</span>{" "}
+                    {product.cost_price}
+                  </p>
+                )}
+                {product.discount && (
+                  <p>
+                    <span className="font-bold text-gray-400">Discount:</span>{" "}
+                    {product.discount}
+                  </p>
+                )}
               </li>
             ))}
           </ul>

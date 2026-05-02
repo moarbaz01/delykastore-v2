@@ -14,6 +14,8 @@ export default function BalancePage() {
     },
   });
 
+  console.log("data", data);
+
   if (isLoading) {
     return (
       <Box
@@ -37,9 +39,6 @@ export default function BalancePage() {
   }
 
   return (
-    <Balance
-      smileOneBalance={data?.smileOneBalance}
-      ghorBalance={data?.ghorBalance}
-    />
+    <Balance smileOneBalance={data?.smileOneBalance} ghorBalance={data?.ghorBalance} />
   );
-}
+} 

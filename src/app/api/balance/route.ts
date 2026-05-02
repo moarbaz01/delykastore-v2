@@ -9,14 +9,17 @@ export async function GET() {
 
     try {
       smileOneBalance = await getSmileOneBalance();
+      console.log("smileOneBalance", smileOneBalance);
       if (!smileOneBalance?.data) {
         smileOneBalance = {
-          data: { name: "SmileOne (Error)", smile_points: 0 },
+          data: { name: "SmileOne (Error)", br_points: 0, ph_points: 0 },
         };
       }
     } catch (error) {
       console.error("Error fetching SmileOne balance:", error);
-      smileOneBalance = { data: { name: "SmileOne (Error)", smile_points: 0 } };
+      smileOneBalance = {
+        data: { name: "SmileOne (Error)", br_points: 0, ph_points: 0 },
+      };
     }
 
     try {

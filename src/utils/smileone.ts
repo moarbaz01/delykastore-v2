@@ -6,14 +6,11 @@ import { createOrderLog } from "./orderLogs";
 export const gameOrderRequest = async (order: GameOrder) => {
   const timestamp = Math.floor(Date.now() / 1000);
   const costIds = order?.costId?.split("&");
-  console.log("costIds", costIds);
   // Prepare API URL based on the region
   const apiUrl =
     order.region === "brazil"
       ? "https://www.smile.one/smilecoin/api/createorder"
       : "https://www.smile.one/ph/smilecoin/api/createorder";
-
-  console.log("apiUrl", apiUrl);
 
   const responses = await Promise.all(
     costIds.map(async (cost: string) => {
@@ -27,8 +24,6 @@ export const gameOrderRequest = async (order: GameOrder) => {
         time: timestamp,
       };
 
-      console.log("params", params);
-
       const sign = generateSign(params, process.env.SMILE_ONE_API_KEY);
 
       try {
@@ -37,8 +32,6 @@ export const gameOrderRequest = async (order: GameOrder) => {
           { ...params, sign },
           { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
         );
-
-        console.log("SmileOne Response", res.data);
 
         await createOrderLog({
           transactionId: order.transactionId,
@@ -51,11 +44,6 @@ export const gameOrderRequest = async (order: GameOrder) => {
 
         return { status: res.data.status, data: res.data }; // Success
       } catch (error: any) {
-        console.error(
-          `Failed to create order for cost ID ${cost}:`,
-          error.message,
-        );
-
         await createOrderLog({
           transactionId: order.transactionId,
           orderId: order._id,
@@ -83,8 +71,6 @@ export const gameOrderRequest = async (order: GameOrder) => {
 
 export const getSmileOneBalance = async () => {
   const timestamp = Math.floor(Date.now() / 1000);
-  // Prepare API URL based on the region
-  const apiUrl = "https://www.smile.one/smilecoin/api/querypoints";
 
   const params = {
     uid: process.env.SMILE_ONE_UID!,
@@ -95,21 +81,92 @@ export const getSmileOneBalance = async () => {
 
   const sign = generateSign(params, process.env.SMILE_ONE_API_KEY);
 
+  const formData = new URLSearchParams();
+  Object.entries({ ...params, sign }).forEach(([key, value]) => {
+    formData.append(key, value.toString());
+  });
+
   try {
-    const res = await axios.post(
-      apiUrl,
-      { ...params, sign },
-      { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
+    const phResponse = axios.post(
+      "https://www.smile.one/ph/smilecoin/api/querypoints",
+      formData,
     );
 
-    console.log("SmileOne Response", res.data);
+    const brResponse = axios.post(
+      "https://www.smile.one/smilecoin/api/querypoints",
+      formData,
+    );
+
+    const [ph, br] = await Promise.allSettled([phResponse, brResponse]);
+
+    const phData = ph.status === "fulfilled" ? ph.value.data : null;
+    const brData = br.status === "fulfilled" ? br.value.data : null;
+
+    // Determine overall success if either succeeds
+    const finalStatus = phData || brData ? 200 : 500;
+
     return {
-      status: res.data.status,
-      data: { name: "SmileOne", ...res.data },
+      status: finalStatus,
+      data: {
+        name: "SmileOne",
+        ph_points: phData?.smile_points || phData?.smile_point,
+        br_points: brData?.smile_points || brData?.smile_point,
+      },
       error: null,
     }; // Success
   } catch (error: any) {
-    console.error(`Failed to get balance:`, error.message);
     return { status: 500, error: error.message, data: null }; // Failure
+  }
+};
+
+export const getGameList = async () => {
+  try {
+    const timestamp = Math.floor(Date.now() / 1000);
+
+    const params = {
+      uid: process.env.SMILE_ONE_UID!,
+      email: process.env.SMILE_ONE_EMAIL!,
+      product: "mobilelegends",
+      time: timestamp,
+    };
+
+    const sign = generateSign(params, process.env.SMILE_ONE_API_KEY!);
+
+    const formData = new URLSearchParams();
+    Object.entries({ ...params, sign }).forEach(([key, value]) => {
+      formData.append(key, value.toString());
+    });
+
+    const phProducts = axios.post(
+      "https://www.smile.one/ph/smilecoin/api/productlist",
+      formData,
+    );
+    const brProducts = axios.post(
+      "https://www.smile.one/smilecoin/api/productlist",
+      formData,
+    );
+
+    const [phRes, brRes] = await Promise.allSettled([phProducts, brProducts]);
+
+    const phData =
+      phRes.status === "fulfilled" ? phRes.value.data.data.product : [];
+    const brData =
+      brRes.status === "fulfilled" ? brRes.value.data.data.product : [];
+
+    // Flatten into a single array for easier frontend rendering
+    // Return 200 if at least one request succeeded
+    const finalStatus =
+      phRes.status === "fulfilled" || brRes.status === "fulfilled" ? 200 : 500;
+
+    return {
+      status: finalStatus,
+      data: {
+        ph: phData,
+        br: brData,
+      },
+      error: null,
+    };
+  } catch (error: any) {
+    return { status: 500, error: error.message, data: null };
   }
 };

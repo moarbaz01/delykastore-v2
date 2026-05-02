@@ -26,10 +26,15 @@ const Balance = ({ smileOneBalance, ghorBalance }) => {
             <TableBody>
               {/* Wrap TableCells in a TableRow */}
               <TableRow hover>
-                <TableCell>{smileOneBalance?.data.name}</TableCell>
+                <TableCell>PH {smileOneBalance?.data.name}</TableCell>
                 <TableCell>
-                  {smileOneBalance?.data?.smile_points || 0}
+                  {smileOneBalance?.data?.ph_points || 0}
                 </TableCell>
+                <TableCell>USD</TableCell>
+              </TableRow>
+              <TableRow hover>
+                <TableCell>BR {smileOneBalance?.data.name}</TableCell>
+                <TableCell>{smileOneBalance?.data?.br_points || 0}</TableCell>
                 <TableCell>USD</TableCell>
               </TableRow>
               <TableRow hover>

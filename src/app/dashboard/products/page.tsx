@@ -2,7 +2,6 @@
 import Products from "@/components/Dashboard/Products";
 import Loader from "@/components/Loader";
 import { useAllProducts } from "@/hooks/useAllProducts";
-import { useGhorProducts } from "@/hooks/useGhorProducts";
 import { useProductsList } from "@/hooks/useProductsList";
 
 const Page = () => {
@@ -11,15 +10,9 @@ const Page = () => {
     isLoading: isLoadingAll,
     error: errorAll,
   } = useAllProducts();
-  const {
-    data: ghorProductsList,
-    isLoading: isLoadingGhor,
-    error: errorGhor,
-  } = useGhorProducts();
+
   const {
     data: productsList,
-    isLoading: isLoadingList,
-    error: errorList,
   } = useProductsList();
 
   const loading = isLoadingAll; // Only wait for the main products list
@@ -39,9 +32,9 @@ const Page = () => {
 
   return (
     <Products
-      ghorProductlist={ghorProductsList || []}
       allProducts={allProducts}
-      productsList={productsList || []}
+      brProductsList={productsList?.br || []}
+      phProductsList={productsList?.ph || []}
     />
   );
 };
