@@ -51,21 +51,21 @@ export default function RootLayout({
         </div>
         <div className="relative z-0">
           <Provider>
-          <NextTopLoader color="#A855F7" showSpinner={false} />
-          <Toaster
-            toastOptions={{
-              style: {
-                background: "#1A1730",
-                color: "#F5F3FF",
-                border: "1px solid rgba(168,85,247,0.2)",
-              },
-            }}
-          />
-          <Navbar />
-          {children}
-          <Footer />
-          <BottomNav />
-          <LogoButton />
+            <NextTopLoader color="#A855F7" showSpinner={false} />
+            <Toaster
+              toastOptions={{
+                style: {
+                  background: "#1A1730",
+                  color: "#F5F3FF",
+                  border: "1px solid rgba(168,85,247,0.2)",
+                },
+              }}
+            />
+            <Navbar />
+            {children}
+            <Footer />
+            <BottomNav />
+            <LogoButton />
           </Provider>
           <PaywayScript />
         </div>

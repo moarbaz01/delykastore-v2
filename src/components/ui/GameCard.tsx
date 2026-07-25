@@ -45,48 +45,45 @@ const GameCard = ({
         rel={isExternal ? "noopener noreferrer" : undefined}
         className="group block"
       >
-      <div
-        className={`relative rounded-2xl overflow-hidden transition-all duration-300 bg-[#161430] hover:shadow-[0_0_25px_rgba(168,85,247,0.2)] hover:-translate-y-1 ${
-          !stock ? "opacity-60" : ""
-        }`}
-      >
-        {/* Image Area */}
-        <div className="relative w-full aspect-square overflow-hidden">
-          <Image
-            src={image}
-            alt={name}
-            priority={true}
-            fill
-            className={`object-cover transition-transform duration-700 group-hover:scale-110 ${
-              !stock ? "grayscale" : ""
-            }`}
-          />
-          {/* Out of stock overlay */}
-          {!stock && (
-            <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/60">
-              <span className="text-[10px] md:text-xs font-bold text-red-400 bg-black/80 px-2 py-1 rounded-full border border-red-500/30">
-                Out of Stock
-              </span>
-            </div>
-          )}
-        </div>
+        <div
+          className={`relative rounded-2xl overflow-hidden transition-all duration-300 bg-[#161430] hover:shadow-[0_0_25px_rgba(168,85,247,0.2)] hover:-translate-y-1 ${
+            !stock ? "opacity-60" : ""
+          }`}
+        >
+          {/* Image Area */}
+          <div className="relative w-full aspect-square overflow-hidden">
+            <Image
+              src={image}
+              alt={name}
+              priority={true}
+              fill
+              className={`object-cover transition-transform duration-700 group-hover:scale-110 ${
+                !stock ? "grayscale" : ""
+              }`}
+            />
+            {/* Out of stock overlay */}
+            {!stock && (
+              <div className="absolute inset-0 z-30 flex items-center justify-center bg-black/60">
+                <span className="text-[10px] md:text-xs font-bold text-red-400 bg-black/80 px-2 py-1 rounded-full border border-red-500/30">
+                  Out of Stock
+                </span>
+              </div>
+            )}
+          </div>
 
-        {/* Info at the bottom */}
-        <div className="p-3 flex flex-col justify-end h-full">
-          <p className="text-sm font-bold text-white leading-tight truncate mb-2">
-            {name}
-          </p>
-          <div className="flex items-center justify-between mt-auto">
-            <p className="text-[13px] md:text-sm text-white font-black">
-              ${displayPrice}
+          {/* Info at the bottom */}
+          <div className="p-3 flex flex-col justify-end h-full">
+            <p className="text-sm font-bold text-white leading-tight truncate mb-2">
+              {name}
             </p>
-            <div className="px-3 py-1 bg-gradient-to-r from-purple-600 to-primary rounded-lg text-[10px] md:text-xs font-bold text-white shadow-sm shadow-purple-500/20 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all">
-              Top Up
+            <div className="flex items-center w-full mt-auto">
+              <div className="px-3 py-1 bg-gradient-to-r from-purple-600 to-primary rounded-lg text-[10px] md:text-xs font-bold text-white shadow-sm shadow-purple-500/20 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all">
+                Top Up
+              </div>
             </div>
           </div>
         </div>
-      </div>
-    </Link>
+      </Link>
     </Reveal>
   );
 };
