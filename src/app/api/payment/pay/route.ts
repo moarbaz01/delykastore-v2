@@ -114,7 +114,7 @@ export async function POST(req: Request) {
 
       // Handle Aluu API
       if (apiName === "Aluu Api") {
-        const { processAluuOrder } = require("@/utils/aluu");
+        const { processAluuOrder } = await import("@/utils/aluu");
         orderResponse = await processAluuOrder(order);
       }
       // If game is mobile legends
