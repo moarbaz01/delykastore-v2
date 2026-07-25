@@ -14,13 +14,7 @@ import {
 import Link from "next/link";
 import { RxCross2 } from "react-icons/rx";
 import { HiMenuAlt1 } from "react-icons/hi";
-import {
-  CategoryOutlined,
-  DiscountOutlined,
-  Gamepad,
-  Logout,
-  Wallet,
-} from "@mui/icons-material";
+import { FaGamepad, FaSignOutAlt, FaWallet, FaTags } from "react-icons/fa";
 import { signOut } from "next-auth/react";
 import toast from "react-hot-toast";
 import Image from "next/image";
@@ -39,17 +33,17 @@ const menuGroups = [
       {
         href: "/dashboard/categories",
         label: "Categories",
-        icon: CategoryOutlined,
+        icon: FaList,
       },
-      { href: "/dashboard/coupons", label: "Coupons", icon: DiscountOutlined },
+      { href: "/dashboard/coupons", label: "Coupons", icon: FaTags },
       { href: "/dashboard/accounts", label: "Accounts", icon: FaUsers },
     ],
   },
   {
     title: "Configs",
     links: [
-      { href: "/dashboard/game-list", label: "Api Game List", icon: Gamepad },
-      { href: "/dashboard/balance", label: "Balance", icon: Wallet },
+      { href: "/dashboard/game-list", label: "Api Game List", icon: FaGamepad },
+      { href: "/dashboard/balance", label: "Balance", icon: FaWallet },
     ],
   },
   {
@@ -90,7 +84,7 @@ const Navbar = () => {
       <div className="w-full py-4 md:px-6 px-4 fixed top-0 left-0 z-[999] md:hidden bg-secondary border-b border-darkBlue">
         <div className="flex justify-between items-center">
           <Link href="/dashboard" className="text-white font-black text-xl tracking-tight uppercase">
-            WinWin
+            DELYKASTORE
           </Link>
           <div onClick={() => setIsOpen(true)}>
             <HiMenuAlt1 className="text-3xl text-primary" />
@@ -106,14 +100,14 @@ const Navbar = () => {
                 <div className="w-10 h-10 shrink-0">
                   <Image
                     src="/images/logo.png"
-                    alt="WinWin Store"
+                    alt="DELYKASTORE"
                     width={40}
                     height={40}
                     className="w-full h-full object-contain"
                   />
                 </div>
                 <h1 className="text-white font-black text-lg tracking-tight uppercase">
-                  WinWin
+                  DELYKASTORE
                 </h1>
               </Link>
               <div onClick={() => setIsOpen(false)}>
@@ -155,7 +149,7 @@ const Navbar = () => {
                     onClick={handleLogout}
                     className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 text-sm font-semibold tracking-wide text-red-400 hover:bg-darkBlue hover:text-red-300`}
                   >
-                    <Logout className="mr-3 text-[18px] shrink-0 text-red-400" />
+                    <FaSignOutAlt className="mr-3 text-[18px] shrink-0 text-red-400" />
                     <span>Logout</span>
                   </div>
                 </li>

@@ -1,15 +1,18 @@
 interface LabelProps {
-  number: string | number;
   text: string;
+  number: number | string;
 }
 
-const Label = ({ number, text }: LabelProps) => {
+const Label = ({ text, number }: LabelProps) => {
   return (
-    <div className="flex items-center w-fit h-auto gap-2 text-white rounded-3xl">
-      <div className="bg-primary text-black font-bold rounded-full h-8 w-8 flex items-center justify-center">
+    <div className="flex items-center gap-2.5 mb-1">
+      <div
+        className="w-6 h-6 rounded-lg flex items-center justify-center text-white text-xs font-bold shrink-0"
+        style={{ background: "linear-gradient(135deg, #7B2FBE, #A855F7)" }}
+      >
         {number}
       </div>
-      <h1 className="text-lg text-white">{text}</h1>
+      <h2 className="font-semibold text-sm text-gray-200">{text}</h2>
     </div>
   );
 };

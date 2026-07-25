@@ -10,7 +10,7 @@ import {
   MenuItem,
   SelectChangeEvent,
 } from "@mui/material";
-import { Add, Delete } from "@mui/icons-material";
+import { Plus as Add, Trash2 as Delete } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Image from "next/image";

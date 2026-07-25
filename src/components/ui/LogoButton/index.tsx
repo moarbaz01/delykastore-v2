@@ -16,12 +16,12 @@ const LogoButton = () => {
     return null;
   return (
     <a
-      href="https://t.me/bluetechink"
+      href="https://t.me/Delyy_kaa"
       target="_blank"
-      className=" cursor-pointer px-4 py-2 bg-blue-500 flex items-center gap-2 hover:opacity-80 transition z-[50]  rounded-full fixed bottom-24 lg:bottom-10 right-4 "
+      className="cursor-pointer w-14 h-14 bg-primary flex items-center justify-center text-white hover:bg-primary-light shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:-translate-y-1 transition-all duration-300 z-[50] rounded-full fixed bottom-24 lg:bottom-10 right-4"
+      aria-label="Contact Telegram"
     >
-      <FaTelegram />
-      <span>តបឆាតលឿនតាម Telegram</span>
+      <FaTelegram size={28} />
     </a>
   );
 };

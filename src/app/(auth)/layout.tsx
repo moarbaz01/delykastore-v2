@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { Loader2 } from "lucide-react";
+import Loader from "@/components/ui/Loader";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
@@ -20,15 +21,11 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
   }, [status, session, router]);
 
   if (status === "loading" || status === "authenticated") {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="animate-spin text-primary" size={32} />
-      </div>
-    );
+    return <Loader fullScreen />;
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen flex items-center justify-center">
       {children}
     </div>
   );

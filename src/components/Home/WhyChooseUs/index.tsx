@@ -1,68 +1,110 @@
-import { FaShieldAlt, FaHeadset, FaBolt, FaGift, FaChartLine, FaUsers, FaTag, FaWallet } from "react-icons/fa";
+import { FaShieldAlt, FaBolt, FaGift, FaTag, FaWallet } from "react-icons/fa";
 
 const features = [
-    {
-        icon: FaTag,
-        title: "តម្លៃសមរម្យ",
-        description: "តែងតែផ្តល់នូវផលិតផលដែលមានគុណភាពល្អ ក្នុងតម្លៃទាបបំផុតសម្រាប់ហ្គេមដែលមានទាំងអស់"
-    },
-    {
-        icon: FaWallet,
-        title: "ជម្រើសទូទាត់ប្រាក់",
-        description: "ជម្រើសទូទាត់ប្រាក់មានច្រើនប្រភេទឲ្យជ្រើសរើសមានដូចជា KHQR, WING, ABA, ACLEDA..."
-    },
-    {
-        icon: FaGift,
-        title: "ការផ្តល់ជូនពិសេស",
-        description: "តែងតែមានការផ្តល់ជូនពិសេសៗទៅកាន់អតិថិជន ក៏ដូចជាមានការចាប់រង្វាន់រៀងរាល់ខែ"
-    },
-    {
-        icon: FaBolt,
-        title: "សេវាកម្មរហ័ស",
-        description: "សេវាកម្ម និងការដឹកជញ្ជូនឆាប់រហ័សរាល់ការជាវនូវគ្រប់ផលិតផល"
-    },
-    {
-        icon: FaShieldAlt,
-        title: "សុវត្តិភាព និង ទំនុកចិត្ត",
-        description: "ការរក្សាបាននូវសុត្ថិភាព និងទំនុកចិត្តខ្ពស់សម្រាប់គណនីផ្ទាល់ខ្លួនរបស់អ្នក"
-    }
+  {
+    icon: FaTag,
+    title: "តម្លៃសមរម្យ",
+    description: "តែងតែផ្តល់នូវផលិតផលដែលមានគុណភាពល្អ ក្នុងតម្លៃទាបបំផុតសម្រាប់ហ្គេមដែលមានទាំងអស់",
+    color: "#A855F7",
+  },
+  {
+    icon: FaWallet,
+    title: "ជម្រើសទូទាត់ប្រាក់",
+    description: "ជម្រើសទូទាត់ប្រាក់មានច្រើនប្រភេទឲ្យជ្រើសរើសមានដូចជា KHQR, WING, ABA, ACLEDA...",
+    color: "#8B5CF6",
+  },
+  {
+    icon: FaGift,
+    title: "ការផ្តល់ជូនពិសេស",
+    description: "តែងតែមានការផ្តល់ជូនពិសេសៗទៅកាន់អតិថិជន ក៏ដូចជាមានការចាប់រង្វាន់រៀងរាល់ខែ",
+    color: "#C084FC",
+  },
+  {
+    icon: FaBolt,
+    title: "សេវាកម្មរហ័ស",
+    description: "សេវាកម្ម និងការដឹកជញ្ជូនឆាប់រហ័សរាល់ការជាវនូវគ្រប់ផលិតផល",
+    color: "#A855F7",
+  },
+  {
+    icon: FaShieldAlt,
+    title: "សុវត្តិភាព និង ទំនុកចិត្ត",
+    description: "ការរក្សាបាននូវសុត្ថិភាព និងទំនុកចិត្តខ្ពស់សម្រាប់គណនីផ្ទាល់ខ្លួនរបស់អ្នក",
+    color: "#7C3AED",
+  },
 ];
 
 export default function WhyChooseUs() {
-    return (
-        <section className="py-16 px-4  ">
-            <div className="max-w-7xl mx-auto">
-                <div className="text-center mb-12">
-                    <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
-                        ហេតុអ្វីត្រូវជ្រើសរើសយើង
-                    </h2>
-                    <p className="text-gray-300 text-lg max-w-2xl mx-auto">
-                        យើងផ្តល់ជូននូវបទពិសោធន៍ល្បែងល្អបំផុតជាមួយនឹងលក្ខណៈពិសេស និងអត្ថប្រយោជន៍ដែលគ្មានអ្នកណាអាចប្រៀបផ្ទឹមបាន
-                    </p>
+  return (
+    <section className="py-16 px-4 relative overflow-hidden">
+      {/* Background glow blobs */}
+      <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-violet-500/5 rounded-full blur-3xl pointer-events-none" />
+
+      <div className="max-w-7xl mx-auto relative">
+        {/* Section title */}
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold text-purple-400 mb-4"
+            style={{ background: "rgba(168,85,247,0.1)", border: "1px solid rgba(168,85,247,0.2)" }}>
+            <span>⭐</span> Why Choose Us
+          </div>
+          <h2
+            className="text-3xl md:text-4xl font-bold mb-4"
+            style={{
+              background: "linear-gradient(135deg, #C084FC 0%, #A855F7 50%, #7B2FBE 100%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              backgroundClip: "text",
+            }}
+          >
+            ហេតុអ្វីត្រូវជ្រើសរើសយើង
+          </h2>
+          <p className="text-gray-400 text-base max-w-2xl mx-auto leading-relaxed">
+            យើងផ្តល់ជូននូវបទពិសោធន៍ល្បែងល្អបំផុតជាមួយនឹងលក្ខណៈពិសេស និងអត្ថប្រយោជន៍ដែលគ្មានអ្នកណាអាចប្រៀបផ្ទឹមបាន
+          </p>
+        </div>
+
+        {/* Feature cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+            return (
+              <div
+                key={index}
+                className="group relative rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(168,85,247,0.2)]"
+                style={{
+                  background: "#12102A",
+                  border: "1px solid rgba(168, 85, 247, 0.15)",
+                  animationDelay: `${index * 100}ms`,
+                }}
+              >
+                {/* Icon */}
+                <div
+                  className="w-12 h-12 rounded-xl flex items-center justify-center mb-4 transition-all duration-300 group-hover:scale-110"
+                  style={{ background: `${feature.color}20` }}
+                >
+                  <Icon className="text-xl" style={{ color: feature.color }} />
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                    {features.map((feature, index) => {
-                        const Icon = feature.icon;
-                        return (
-                            <div
-                                key={index}
-                                className="bg-secondary border border-gray-600/30 rounded-xl p-6 hover:border-primary/50 transition-all duration-300 hover:transform hover:scale-105 group"
-                            >
-                                <div className="w-16 h-16 bg-primary/20 rounded-full flex items-center justify-center mb-4 group-hover:bg-primary/30 transition-colors duration-300">
-                                    <Icon className="text-2xl text-primary" />
-                                </div>
-                                <h3 className="text-xl font-bold text-white mb-3">
-                                    {feature.title}
-                                </h3>
-                                <p className="text-gray-300 leading-relaxed">
-                                    {feature.description}
-                                </p>
-                            </div>
-                        );
-                    })}
-                </div>
-            </div>
-        </section>
-    );
+                {/* Content */}
+                <h3 className="text-base font-bold text-white mb-2">
+                  {feature.title}
+                </h3>
+                <p className="text-gray-400 text-sm leading-relaxed">
+                  {feature.description}
+                </p>
+
+                {/* Hover glow corner */}
+                <div
+                  className="absolute top-0 right-0 w-16 h-16 rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+                  style={{
+                    background: `radial-gradient(circle at top right, ${feature.color}15, transparent)`,
+                  }}
+                />
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+  );
 }

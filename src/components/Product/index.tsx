@@ -19,6 +19,7 @@ import GiftBox from "../ui/Gift";
 import GiftModal from "../ui/GiftModal";
 import axios from "axios";
 import { useUserWagering } from "@/hooks/useUserWagering";
+import { Reveal } from "../ui/Reveal";
 
 declare const AbaPayway: any;
 
@@ -289,7 +290,7 @@ const Product = ({
   return (
     <>
       <div
-        className={`grid max-w-screen-xl relative mx-auto gap-6 md:py-6 sm:px-4 px-4 items-start ${slides.length === 0 && !banner
+        className={`grid max-w-screen-xl relative mx-auto gap-6 md:py-6 sm:px-4 px-4 items-start animate-fade-in ${slides.length === 0 && !banner
           ? "grid-cols-1 justify-center"
           : "grid-cols-1 lg:grid-cols-3"
           }`}
@@ -340,49 +341,62 @@ const Product = ({
           </div> */}
 
           {type !== "account" && (
-            <UserIdSection
-              game={game}
-              userId={userId}
-              zoneId={zoneId}
-              message={message}
-              errorMessage={errorMessage}
-              loading={loading}
-              handleInputChange={handleInputChange}
-              setZoneId={setZoneId}
-              handleSubmitCheckRole={handleSubmitCheckRole}
-            />
+            <Reveal width="100%" delay={0.1}>
+              <UserIdSection
+                game={game}
+                userId={userId}
+                zoneId={zoneId}
+                message={message}
+                errorMessage={errorMessage}
+                loading={loading}
+                handleInputChange={handleInputChange}
+                setZoneId={setZoneId}
+                handleSubmitCheckRole={handleSubmitCheckRole}
+              />
+            </Reveal>
           )}
 
           {type === "account" && description && (
-            <div className="p-4 rounded-lg border bg-secondary border-gray-600">
-              <h2 className="text-lg font-bold text-primary mb-2">Description</h2>
-              <p className="text-gray-300 whitespace-pre-wrap text-sm leading-relaxed break-words">
-                {description}
-              </p>
-            </div>
+            <Reveal width="100%" delay={0.1}>
+              <div
+                className="p-4 rounded-2xl"
+                style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
+              >
+                <h2 className="text-sm font-bold mb-2" style={{ color: "#A855F7" }}>Description</h2>
+                <p className="text-gray-300 whitespace-pre-wrap text-sm leading-relaxed break-words">
+                  {description}
+                </p>
+              </div>
+            </Reveal>
           )}
 
-          <PackageSection
-            groupedCost={groupedCostState}
-            amountSelected={amountSelected}
-            setAmountSelected={setAmountSelected}
-          />
+          <Reveal width="100%" delay={0.2}>
+            <PackageSection
+              groupedCost={groupedCostState}
+              amountSelected={amountSelected}
+              setAmountSelected={setAmountSelected}
+            />
+          </Reveal>
 
-          <CouponSection
-            appliedCoupon={appliedCoupon}
-            couponCode={couponCode}
-            couponError={couponError}
-            isCheckingCoupon={isCheckingCoupon}
-            setCouponCode={setCouponCode}
-            handleApplyCoupon={handleApplyCoupon}
-            removeCoupon={handleRemoveCoupon}
-          />
+          <Reveal width="100%" delay={0.3}>
+            <CouponSection
+              appliedCoupon={appliedCoupon}
+              couponCode={couponCode}
+              couponError={couponError}
+              isCheckingCoupon={isCheckingCoupon}
+              setCouponCode={setCouponCode}
+              handleApplyCoupon={handleApplyCoupon}
+              removeCoupon={handleRemoveCoupon}
+            />
+          </Reveal>
 
-          <PaymentSection
-            total={total}
-            isAgree={isAgree}
-            setIsAgree={setIsAgree}
-          />
+          <Reveal width="100%" delay={0.4}>
+            <PaymentSection
+              total={total}
+              isAgree={isAgree}
+              setIsAgree={setIsAgree}
+            />
+          </Reveal>
 
           <PaymentSummary
             appliedCoupon={appliedCoupon}

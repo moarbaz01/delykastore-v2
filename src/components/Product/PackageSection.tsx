@@ -29,17 +29,31 @@ const PackageSection = ({
   setAmountSelected,
 }: PackageSectionProps) => {
   return (
-    <div className="p-4 rounded-lg border bg-secondary border-gray-600 relative">
+    <div
+      className="p-4 rounded-2xl relative"
+      style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
+    >
       <Label text={"ជ្រើសរើសកញ្ចប់"} number={2} />
       {groupedCost.map((item, index) => (
         <div key={index} className="mt-4">
           {item.category !== "no_category" && item.items.length !== 0 && (
-            <div className="text-primary flex items-center mt-2 gap-2 rounded-lg w-fit">
-              <h1 className="font-bold text-lg">{item.category}</h1>
+            <div className="flex items-center gap-2 mt-2 mb-3">
+              <div className="h-px flex-1 bg-purple-500/10" />
+              <h3
+                className="font-bold text-sm px-3 py-1 rounded-full"
+                style={{
+                  background: "rgba(168,85,247,0.1)",
+                  color: "#C084FC",
+                  border: "1px solid rgba(168,85,247,0.2)",
+                }}
+              >
+                {item.category}
+              </h3>
+              <div className="h-px flex-1 bg-purple-500/10" />
             </div>
           )}
 
-          <div className="grid md:grid-cols-3 grid-cols-1 gap-4 md:gap-6 mt-4">
+          <div className="grid md:grid-cols-3 grid-cols-1 gap-3 md:gap-4 mt-2">
             {item.items.map((item, i) => (
               <CostItem
                 key={item.id}

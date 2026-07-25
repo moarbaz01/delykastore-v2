@@ -1,4 +1,5 @@
-import GameComponent from "@/components/GameComponent";
+import GameCard from "@/components/ui/GameCard";
+import SectionHeader from "@/components/ui/SectionHeader";
 import { dbConnect } from "@/lib/database";
 import { Product } from "@/models/product.model";
 import { unstable_noStore } from "next/cache";
@@ -13,16 +14,20 @@ const TrendingGames = async () => {
   }).lean();
 
   return (
-    <div className=" mx-4 md:mx-auto max-w-7xl mt-8 mb-6">
-      <div className="w-full bg-secondary border border-gray-600 p-4 rounded-lg ">
-        <div className=" font-extrabold flex items-center gap-2 text-xl">
-          <IoLogoGameControllerB className="text-2xl" />
-          <span>GAME TOPUP</span>
-        </div>
-        <div className="grid grid-cols-3 md:grid-cols-3  items-center justify-center lg:grid-cols-4 md:gap-6 gap-4 mt-4">
-          {products.length > 0 ? (
-            products.map((item) => (
-              <GameComponent
+    <section id="games" className="mx-4 md:mx-auto max-w-7xl mt-8 mb-6">
+      <div
+        className="rounded-2xl md:p-6"
+
+      >
+        <SectionHeader
+          title="GAME TOP UP"
+          icon={<IoLogoGameControllerB size={16} />}
+        />
+
+        {products.length > 0 ? (
+          <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
+            {products.map((item) => (
+              <GameCard
                 key={item._id.toString()}
                 _id={item._id.toString()}
                 name={item.name}
@@ -32,15 +37,15 @@ const TrendingGames = async () => {
                 isLink={item.isLink}
                 link={item.link}
               />
-            ))
-          ) : (
-            <p className="text-white col-span-full text-center">
-              No games found
-            </p>
-          )}
-        </div>
+            ))}
+          </div>
+        ) : (
+          <div className="py-12 text-center text-gray-500 text-sm">
+            No games found
+          </div>
+        )}
       </div>
-    </div>
+    </section>
   );
 };
 

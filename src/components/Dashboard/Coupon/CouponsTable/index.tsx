@@ -22,9 +22,9 @@ import {
 } from "@mui/material";
 import {
   Edit as EditIcon,
-  Delete as DeleteIcon,
-  Add as AddIcon,
-} from "@mui/icons-material";
+  Trash2 as DeleteIcon,
+  Plus as AddIcon,
+} from "lucide-react";
 import { format } from "date-fns";
 
 interface Coupon {

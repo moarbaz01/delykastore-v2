@@ -19,11 +19,12 @@ import {
 } from "@mui/material";
 import {
   Edit as EditIcon,
-  Delete as DeleteIcon,
-  Add,
-} from "@mui/icons-material";
+  Trash2 as DeleteIcon,
+  Plus as Add,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import FallbackImage from "@/components/ui/FallbackImage";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { FaGift } from "react-icons/fa";
@@ -136,12 +137,13 @@ const Products = ({ allProducts, brProductsList, phProductsList }) => {
               filteredProducts.map((product) => (
                 <TableRow key={product._id}>
                   <TableCell>
-                    <Image
+                    <FallbackImage
                       src={product.image}
                       alt={product.name}
                       className="object-cover rounded-md"
                       width={50}
                       height={50}
+                      fallbackIconSize={24}
                     />
                   </TableCell>
                   <TableCell>{product._id}</TableCell>

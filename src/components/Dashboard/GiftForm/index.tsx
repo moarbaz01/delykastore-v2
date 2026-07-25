@@ -14,7 +14,7 @@ import {
     FormControlLabel,
     Paper,
 } from "@mui/material";
-import { Delete, Save, ArrowBack } from "@mui/icons-material";
+import { Trash2 as Delete, Save, ArrowLeft as ArrowBack } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useProducts, useGift, useCreateGift, useUpdateGift, Product } from "@/hooks/useGifts";

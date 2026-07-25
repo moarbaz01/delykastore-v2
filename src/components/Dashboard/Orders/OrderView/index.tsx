@@ -15,15 +15,15 @@ import {
   InputLabel,
 } from "@mui/material";
 import {
-  CalendarToday,
-  Person,
+  CalendarDays as CalendarToday,
+  User as Person,
   Receipt,
-  Gamepad,
-  AttachMoney,
+  Gamepad2 as Gamepad,
+  DollarSign as AttachMoney,
   CheckCircle,
-  Error,
-  Pending,
-} from "@mui/icons-material";
+  AlertCircle as Error,
+  Clock as Pending,
+} from "lucide-react";
 import { useUpdateOrderStatus } from "@/hooks/useOrders";
 
 interface Order {
@@ -107,7 +107,7 @@ const OrderView = ({ order }: { order: Order }) => {
           </Typography>
         </Box>
         <Chip
-          icon={<currentStatus.icon sx={{ color: `${currentStatus.text} !important` }} />}
+          icon={<currentStatus.icon color={currentStatus.text} />}
           label={order.status.toUpperCase()}
           sx={{
             backgroundColor: currentStatus.bg,
@@ -190,7 +190,7 @@ const OrderView = ({ order }: { order: Order }) => {
               }}
             >
               <Box sx={{ display: "flex", alignItems: "center", gap: 1, mb: 3 }}>
-                <Gamepad sx={{ color: "#60a5fa" }} />
+                <Gamepad color="#60a5fa" />
                 <Typography variant="h6" sx={{ color: "white", fontWeight: "bold" }}>
                   Game Credentials
                 </Typography>

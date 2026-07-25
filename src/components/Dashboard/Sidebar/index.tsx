@@ -13,13 +13,7 @@ import {
   FaTerminal,
 } from "react-icons/fa";
 import { HiMenuAlt1 } from "react-icons/hi"; // Hamburger icon
-import {
-  CategoryOutlined,
-  DiscountOutlined,
-  Gamepad,
-  Logout,
-  Wallet,
-} from "@mui/icons-material";
+import { LayoutGrid, Tag, Gamepad2, LogOut, Wallet } from "lucide-react";
 import { signOut } from "next-auth/react";
 import toast from "react-hot-toast";
 import Image from "next/image";
@@ -51,16 +45,16 @@ const Sidebar = () => {
         {
           href: "/dashboard/categories",
           label: "Categories",
-          icon: CategoryOutlined,
+          icon: LayoutGrid,
         },
-        { href: "/dashboard/coupons", label: "Coupons", icon: DiscountOutlined },
+        { href: "/dashboard/coupons", label: "Coupons", icon: Tag },
         { href: "/dashboard/accounts", label: "Accounts", icon: FaUsers },
       ],
     },
     {
       title: "Configs",
       links: [
-        { href: "/dashboard/game-list", label: "Api Game List", icon: Gamepad },
+        { href: "/dashboard/game-list", label: "Api Game List", icon: Gamepad2 },
         { href: "/dashboard/balance", label: "Balance", icon: Wallet },
       ],
     },
@@ -103,14 +97,14 @@ const Sidebar = () => {
               <div className="w-10 h-10 shrink-0">
                 <Image
                   src="/images/logo.png"
-                  alt="WinWin Store"
+                  alt="DELYKASTORE"
                   width={40}
                   height={40}
                   className="w-full h-full object-contain"
                 />
               </div>
               <h1 className="text-white font-black text-lg tracking-tight uppercase">
-                WinWin
+                DELYKASTORE
               </h1>
             </Link>
           </div>
@@ -161,7 +155,7 @@ const Sidebar = () => {
                 onClick={handleLogout}
                 className={`flex items-center px-4 py-2.5 rounded-lg transition-all duration-200 text-sm font-semibold tracking-wide text-red-400 hover:bg-darkBlue hover:text-red-300`}
               >
-                <Logout className="mr-3 text-[18px] shrink-0 text-red-400" />
+                <LogOut className="mr-3 text-[18px] shrink-0 text-red-400" />
                 <span>Logout</span>
               </div>
             </li>

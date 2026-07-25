@@ -25,7 +25,7 @@ import {
   Typography,
   Tooltip,
 } from "@mui/material";
-import { Visibility, Close } from "@mui/icons-material";
+import { Eye as Visibility, X as Close } from "lucide-react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import Skeleton from "react-loading-skeleton";
 import "react-loading-skeleton/dist/skeleton.css";

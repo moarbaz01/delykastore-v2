@@ -82,18 +82,18 @@ export async function POST(req: Request) {
       await sendEmail(
         process.env.NODEMAIL_USER!,
         email,
-        "Welcome to Win Win Top-Up - Verify Your Account",
+        "Welcome to DELYKASTORE - Verify Your Account",
         `
         <div style="font-family: sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #eee; border-radius: 10px;">
           <h2 style="color: #ff962d; text-align: center;">Verify Your Email</h2>
           <p>Hi ${name},</p>
-          <p>Thank you for joining Win Win Top-Up! Please use the following code to verify your account. This code will expire in 10 minutes.</p>
+          <p>Thank you for joining DELYKASTORE! Please use the following code to verify your account. This code will expire in 10 minutes.</p>
           <div style="background: #f4f4f4; padding: 20px; text-align: center; font-size: 32px; font-weight: bold; letter-spacing: 5px; color: #252F45; border-radius: 8px; margin: 20px 0;">
             ${otp}
           </div>
           <p>If you didn't request this, you can safely ignore this email.</p>
           <hr style="border: none; border-top: 1px solid #eee; margin: 20px 0;" />
-          <p style="font-size: 12px; color: #888; text-align: center;">© 2026 Win Win Top-Up. All rights reserved.</p>
+          <p style="font-size: 12px; color: #888; text-align: center;">© 2026 DELYKASTORE. All rights reserved.</p>
         </div>
         `
       );

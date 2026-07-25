@@ -14,7 +14,7 @@ function getOtpEmailHtml(otp: string): string {
   return `
     <div style="font-family: Arial, sans-serif; max-width: 480px; margin: 0 auto; background: #110e19; color: #ffffff; border-radius: 12px; overflow: hidden;">
       <div style="background: linear-gradient(135deg, #ff962d 0%, #ff7a00 100%); padding: 24px; text-align: center;">
-        <h1 style="margin: 0; font-size: 24px; color: #ffffff;">Win Win Top-Up</h1>
+        <h1 style="margin: 0; font-size: 24px; color: #ffffff;">DELYKASTORE</h1>
       </div>
       <div style="padding: 32px 24px; text-align: center;">
         <h2 style="color: #ffffff; margin-bottom: 8px;">Password Reset OTP</h2>
@@ -25,7 +25,7 @@ function getOtpEmailHtml(otp: string): string {
         <p style="color: #a0a0a0; margin-top: 24px; font-size: 13px;">If you didn't request this, you can safely ignore this email.</p>
       </div>
       <div style="background: #252F45; padding: 16px; text-align: center;">
-        <p style="color: #a0a0a0; margin: 0; font-size: 12px;">© ${new Date().getFullYear()} Win Win Top-Up. All rights reserved.</p>
+        <p style="color: #a0a0a0; margin: 0; font-size: 12px;">© ${new Date().getFullYear()} DELYKASTORE. All rights reserved.</p>
       </div>
     </div>
   `;
@@ -67,7 +67,7 @@ export async function POST(req: Request) {
       await sendEmail(
         process.env.NODEMAIL_USER!,
         email,
-        "Win Win Top-Up - Password Reset OTP",
+        "DELYKASTORE - Password Reset OTP",
         getOtpEmailHtml(otp),
       );
 

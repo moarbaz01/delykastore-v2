@@ -1,7 +1,7 @@
-"use client"; // Ensures that the component uses client-side rendering
+"use client";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Pagination, Autoplay, EffectFade, Navigation } from "swiper/modules";
-import "swiper/swiper-bundle.css"; // Make sure the Swiper CSS is imported
+import "swiper/swiper-bundle.css";
 import Image from "next/image";
 
 const SliderComponent = ({
@@ -17,44 +17,58 @@ const SliderComponent = ({
 }) => {
   return (
     <div className="relative z-0 w-full">
-      <div className="max-w-screen-xl mx-auto  md:px-0">
+      <div className="max-w-screen-xl mx-auto">
         <Swiper
-          spaceBetween={10} // Adjust space between slides
-          slidesPerView={1} // Only one slide per view
-          navigation={true} // Enable navigation buttons
-          centeredSlides={true} // Center the active slide
-          loop={true} // Loop through slides
+          spaceBetween={0}
+          slidesPerView={1}
+          navigation={false}
+          centeredSlides={true}
+          loop={true}
           autoplay={{
-            delay: 2000, // Auto play with 1 second delay
-            disableOnInteraction: false, // Ensures autoplay continues after user interaction
+            delay: 3500,
+            disableOnInteraction: false,
           }}
-          effect="fade" // Apply the fade effect
-          modules={[Pagination, Autoplay, Navigation, EffectFade]} // Import the fade effect module
+          effect="fade"
+          modules={[Pagination, Autoplay, Navigation, EffectFade]}
+          pagination={{
+            clickable: true,
+          }}
+          className="rounded-2xl overflow-hidden"
         >
           {banners &&
             banners[0]?.images.map((image, index) => (
               <SwiperSlide key={index}>
-                <Image
-                  src={image.url}
-                  alt="Zoland Store Banner 1"
-                  priority={true}
-                  width={1600} // Adjust for large screen resolution
-                  height={600} // Adjust height proportionally
-                  className="w-full max-h-[80vh] object-cover rounded-xl border border-gray-600" // Ensures image scaling with aspect ratio
-                />
+                <div className="relative w-full">
+                  <Image
+                    src={image.url}
+                    alt="DELYKASTORE Banner"
+                    priority={true}
+                    width={1600}
+                    height={600}
+                    className="w-full max-h-[75vh] object-cover"
+                  />
+                  {/* Bottom gradient overlay */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0D0B1A] via-transparent to-transparent opacity-60 pointer-events-none" />
+                  {/* Purple edge glow */}
+                  <div className="absolute inset-0 rounded-2xl ring-1 ring-purple-500/30 pointer-events-none" />
+                </div>
               </SwiperSlide>
             ))}
           {slides &&
             slides?.map((image, index) => (
               <SwiperSlide key={index}>
-                <Image
-                  src={image}
-                  alt="Zoland Store Banner 1"
-                  priority={true}
-                  width={1600} // Adjust for large screen resolution
-                  height={600} // Adjust height proportionally
-                  className="w-full max-h-[80vh] object-cover rounded-xl border border-gray-600" // Ensures image scaling with aspect ratio
-                />
+                <div className="relative w-full">
+                  <Image
+                    src={image}
+                    alt="DELYKASTORE Slide"
+                    priority={true}
+                    width={1600}
+                    height={600}
+                    className="w-full max-h-[75vh] object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#0D0B1A] via-transparent to-transparent opacity-60 pointer-events-none" />
+                  <div className="absolute inset-0 rounded-2xl ring-1 ring-purple-500/30 pointer-events-none" />
+                </div>
               </SwiperSlide>
             ))}
         </Swiper>

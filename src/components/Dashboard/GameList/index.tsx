@@ -12,7 +12,7 @@ import {
   InputAdornment,
   CardActionArea,
 } from "@mui/material";
-import SearchIcon from "@mui/icons-material/Search";
+import { Search as SearchIcon } from "lucide-react";
 
 interface Product {
   ID: number;

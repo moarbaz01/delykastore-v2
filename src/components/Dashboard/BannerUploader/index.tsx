@@ -56,7 +56,6 @@ export default function App() {
     updatedImages.splice(index, 1);
     const updatedSlider = { ...slider, images: updatedImages };
     setSlider(updatedSlider);
-    await handleSave(slider._id);
   };
 
   const handleReplaceImage = (index: number, newUrl: string) => {
@@ -71,6 +70,7 @@ export default function App() {
   const handleUploadImage = async (file: File, index: number) => {
     const formData = new FormData();
     formData.append("image", file);
+    formData.append("folder", "slider");
 
     try {
       setImageUploading(true);

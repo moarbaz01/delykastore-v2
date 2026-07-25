@@ -109,10 +109,10 @@ const theme = createTheme({
       styleOverrides: {
         containedPrimary: {
           backgroundColor: colors.primary,
-          color: "#000000",
+          color: "#ffffff",
           fontWeight: "bold",
           "&:hover": {
-            backgroundColor: "#e68524", // darker orange
+            backgroundColor: "#9333ea", // darker purple
           },
           "&:disabled": {
             backgroundColor: colors.secondary,

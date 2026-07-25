@@ -21,10 +21,10 @@ import {
 } from "@mui/material";
 import {
   Edit as EditIcon,
-  Delete as DeleteIcon,
-  Add,
-  Close,
-} from "@mui/icons-material";
+  Trash2 as DeleteIcon,
+  Plus as Add,
+  X as Close,
+} from "lucide-react";
 import toast from "react-hot-toast";
 import axios from "axios";
 import { randomHexColor } from "@/utils/hex";

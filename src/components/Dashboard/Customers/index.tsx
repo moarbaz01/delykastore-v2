@@ -23,7 +23,7 @@ import {
   Box,
   DialogActions,
 } from "@mui/material";
-import { Delete, Edit } from "@mui/icons-material";
+import { Trash2 as Delete, Edit } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useCreateCustomer, useDeleteCustomer } from "@/hooks/useCustomers";

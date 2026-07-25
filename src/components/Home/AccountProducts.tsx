@@ -1,4 +1,5 @@
-import GameComponent from "@/components/GameComponent";
+import GameCard from "@/components/ui/GameCard";
+import SectionHeader from "@/components/ui/SectionHeader";
 import { dbConnect } from "@/lib/database";
 import { Product } from "@/models/product.model";
 import { unstable_noStore } from "next/cache";
@@ -12,15 +13,19 @@ const AccountProducts = async () => {
   if (products.length === 0) return null;
 
   return (
-    <div className=" mx-4 md:mx-auto max-w-7xl mt-8 mb-6">
-      <div className="w-full bg-secondary border border-gray-600 p-4 rounded-lg ">
-        <div className=" font-extrabold flex items-center gap-2 text-xl">
-          <MdOutlineAccountCircle className="text-2xl" />
-          <span>PREMIUM ACCOUNTS</span>
-        </div>
-        <div className="grid grid-cols-3 md:grid-cols-3  items-center justify-center lg:grid-cols-4 md:gap-6 gap-4 mt-4">
+    <section className="mx-4 md:mx-auto max-w-7xl mt-8 mb-6">
+      <div
+        className="rounded-2xl md:p-6"
+
+      >
+        <SectionHeader
+          title="PREMIUM ACCOUNTS"
+          icon={<MdOutlineAccountCircle size={16} />}
+        />
+
+        <div className="grid grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
           {products.map((item) => (
-            <GameComponent
+            <GameCard
               key={item._id.toString()}
               _id={item._id.toString()}
               name={item.name}
@@ -33,7 +38,7 @@ const AccountProducts = async () => {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };
 

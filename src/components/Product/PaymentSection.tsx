@@ -16,37 +16,83 @@ const PaymentSection = ({
   const router = useRouter();
 
   return (
-    <div className="p-4 md:mb-0 mb-24 bg-secondary border border-gray-600 relative rounded-lg">
+    <div
+      className="p-4 md:mb-0 mb-24 rounded-2xl relative"
+      style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
+    >
       <Label text={"ទូទាត់ប្រាក់បានគ្រប់ធនាគារ"} number={4} />
-      <div className="w-full rounded-lg p-4 bg-card-bg border-[#6b5d4f] flex items-center justify-between mt-4">
-        <div className="flex items-center gap-4">
-          <Image
-            src="/images/aba.svg"
-            alt="KHQR Payment"
-            width={50}
-            height={50}
-            className="aspect-square"
-          />
+
+      {/* Payment method card */}
+      <div
+        className="rounded-xl p-4 flex items-center justify-between mt-4"
+        style={{ background: "#0D0B1A", border: "1px solid rgba(168,85,247,0.1)" }}
+      >
+        <div className="flex items-center gap-3">
+          <div
+            className="w-10 h-10 rounded-lg flex items-center justify-center"
+            style={{ background: "rgba(168,85,247,0.1)", border: "1px solid rgba(168,85,247,0.2)" }}
+          >
+            <Image
+              src="/images/aba.svg"
+              alt="ABA Payment"
+              width={28}
+              height={28}
+              className="aspect-square object-contain"
+            />
+          </div>
           <div>
-            <h1 className="font-bold">ABA KHQR</h1>
-            <p>ស្កៅនដើម្បីទូទាត់ជាមួយ App ត្រូវបាន</p>
+            <h3 className="font-bold text-sm text-white">ABA KHQR</h3>
+            <p className="text-xs text-gray-400">ស្កៅនដើម្បីទូទាត់ជាមួយ App ត្រូវបាន</p>
           </div>
         </div>
-        <p className="text-lg font-bold text-primary">${total}</p>
+        <span
+          className="text-sm font-bold"
+          style={{
+            background: "linear-gradient(135deg, #C084FC, #A855F7)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+            backgroundClip: "text",
+          }}
+        >
+          ${total}
+        </span>
       </div>
-      <div className="flex items-center pt-4 gap-4 mt-4">
-        <input
-          type="checkbox"
-          id="agree"
-          checked={isAgree}
-          onChange={(e) => setIsAgree(e.target.checked)}
-          className="w-4 h-4"
-        />
-        <label htmlFor="agree">
+
+      {/* Agreement checkbox */}
+      <div className="flex items-start gap-3 mt-4">
+        <div className="relative mt-0.5 shrink-0">
+          <input
+            type="checkbox"
+            id="agree"
+            checked={isAgree}
+            onChange={(e) => setIsAgree(e.target.checked)}
+            className="sr-only"
+          />
+          <div
+            onClick={() => setIsAgree(!isAgree)}
+            className="w-5 h-5 rounded-md cursor-pointer flex items-center justify-center transition-all duration-200"
+            style={{
+              background: isAgree
+                ? "linear-gradient(135deg, #7B2FBE, #A855F7)"
+                : "transparent",
+              border: isAgree
+                ? "1px solid #A855F7"
+                : "1px solid rgba(168,85,247,0.3)",
+            }}
+          >
+            {isAgree && (
+              <svg className="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+              </svg>
+            )}
+          </div>
+        </div>
+        <label htmlFor="agree" className="text-sm text-gray-300 cursor-pointer leading-relaxed">
           ខ្ញុំយល់ព្រំ
           <span
             onClick={() => router.push("/terms-and-conditions")}
-            className="text-primary font-bold ml-2 cursor-pointer"
+            className="font-semibold ml-1 transition-colors cursor-pointer hover:opacity-80"
+            style={{ color: "#A855F7" }}
           >
             លក្ខខណ្ឌ និង លេខខណ្ឌ
           </span>

@@ -22,7 +22,7 @@ import {
   DialogActions,
   Typography,
 } from "@mui/material";
-import { Delete, Edit, Close } from "@mui/icons-material";
+import { Trash2 as Delete, Edit, X as Close } from "lucide-react";
 import { Plus } from "lucide-react";
 import toast from "react-hot-toast";
 import { useAllProducts } from "@/hooks/useAllProducts";

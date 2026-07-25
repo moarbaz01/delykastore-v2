@@ -19,7 +19,7 @@ import {
     Button,
     IconButton,
 } from "@mui/material";
-import { Delete, Edit, Add } from "@mui/icons-material";
+import { Trash2 as Delete, Edit, Plus as Add } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Gift } from "@/types/main";
 

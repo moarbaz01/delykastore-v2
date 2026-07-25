@@ -3,7 +3,7 @@ import Loader from "@/components/Loader";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
-import Image from "next/image";
+import { CheckCircle, Download, ArrowLeft, Gift } from "lucide-react";
 
 const MyComponent = () => {
   const searchParams = useSearchParams();
@@ -17,12 +17,11 @@ const MyComponent = () => {
   const handleDownloadReceipt = () => {
     const receiptContent = `
       Transaction ID: ${transactionId}
-      Pack: ${decodeURI(pack)}
+      Pack: ${decodeURI(pack || "")}
       Price: ${price}
       User ID: ${userId}
       Zone ID: ${zoneId}
     `;
-
     const blob = new Blob([receiptContent], { type: "text/plain" });
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
@@ -35,74 +34,92 @@ const MyComponent = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="flex flex-col gap-4">
-        <div className="text-center bg-orange-500 p-2 shadow-lg rounded-lg">
-          <div className="bg-white rounded-lg ">
-            <Image
-              src="/images/logo.png"
-              alt="logo"
-              width={100}
-              height={100}
-              className="mx-auto"
-            />
-            <p className="text-orange-500 text-xl font-bold my-4">
-              ការបញ្ជាទិញរបស់អ្នក ទទួលបានជោគជ័យ
-            </p>
-            <table
-              cellSpacing={0}
-              cellPadding={10}
-              className="text-white font-extrabold text-lg  w-full"
-            >
-              <tbody>
-                <tr className="bg-orange-500 border-4 border-white">
-                  <td className="text-2xl ">តាមរយ:</td>
-                  <td>ABA KHQR</td>
-                </tr>
+    <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ background: "#0D0B1A" }}>
+      {/* Background glow */}
+      <div className="fixed top-1/3 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full blur-3xl pointer-events-none"
+        style={{ background: "rgba(34,197,94,0.08)" }} />
 
-                <tr className="bg-orange-500 border-4 border-white">
-                  <td className=" text-2xl">កញ្ចប់:</td>
-                  <td>{decodeURI(pack)}</td>
-                </tr>
-
-                <tr className="bg-orange-500 border-4 border-white">
-                  <td className="text-2xl">តម្លៃ:</td>
-                  <td>${price}</td>
-                </tr>
-                <tr className="bg-orange-500 border-4 border-white">
-                  <td className="text-2xl">លេខសម្គាល់:</td>
-                  <td>
-                    {userId}{" "}
-                    {zoneId && <span className="text-white">({zoneId})</span>}
-                  </td>
-                </tr>
-                <tr className="bg-orange-500 border-4 border-white">
-                  <td className="text-2xl">លេខវិក័យប័ត្រ:</td>
-                  <td>{transactionId}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-        <div className="flex justify-center gap-4">
-          <Link href="/">
-            <button className="px-6 py-3 bg-red-500 text-white font-semibold rounded-lg hover:bg-primary/80 transition duration-300">
-              ថយក្រោយ
-            </button>
-          </Link>
-          <button
-            onClick={handleDownloadReceipt}
-            className="px-6 py-3 bg-green-500 text-white font-semibold rounded-lg hover:bg-green-600 transition duration-300 flex items-center gap-2"
+      <div className="relative z-10 w-full max-w-md">
+        {/* Success card */}
+        <div
+          className="rounded-3xl p-8 text-center"
+          style={{
+            background: "#12102A",
+            border: "1px solid rgba(34,197,94,0.2)",
+            boxShadow: "0 25px 50px rgba(0,0,0,0.5), 0 0 40px rgba(34,197,94,0.08)",
+          }}
+        >
+          {/* Icon */}
+          <div
+            className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-5"
+            style={{ background: "rgba(34,197,94,0.15)", border: "2px solid rgba(34,197,94,0.3)" }}
           >
-            ទាញយក
-          </button>
-          {productId && transactionId && (
-            <Link href={`/spin?productid=${productId}&transactionid=${transactionId}`}>
-              <button className="px-6 py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600 transition duration-300">
-                បង្វិលឱកាស
+            <CheckCircle size={40} className="text-green-400" />
+          </div>
+
+          <h1 className="text-2xl font-bold text-white mb-2">Payment Successful!</h1>
+          <p className="text-green-400 text-sm font-medium mb-6">
+            ការបញ្ជាទិញរបស់អ្នក ទទួលបានជោគជ័យ
+          </p>
+
+          {/* Details */}
+          <div
+            className="rounded-2xl overflow-hidden text-left mb-6"
+            style={{ background: "#0D0B1A", border: "1px solid rgba(168,85,247,0.1)" }}
+          >
+            {[
+              { label: "Payment Method", value: "ABA KHQR" },
+              { label: "Package", value: decodeURI(pack || "") },
+              { label: "Price", value: `$${price}` },
+              {
+                label: "User ID",
+                value: `${userId || ""}${zoneId ? ` (${zoneId})` : ""}`,
+              },
+              { label: "Transaction ID", value: transactionId },
+            ].map((row, i) => (
+              <div
+                key={i}
+                className="flex justify-between items-center px-4 py-3"
+                style={{
+                  borderBottom: i < 4 ? "1px solid rgba(168,85,247,0.08)" : "none",
+                }}
+              >
+                <span className="text-xs text-gray-500 font-medium">{row.label}</span>
+                <span className="text-xs text-gray-200 font-semibold text-right max-w-[60%] truncate">{row.value}</span>
+              </div>
+            ))}
+          </div>
+
+          {/* Actions */}
+          <div className="flex flex-col gap-2.5">
+            <button
+              onClick={handleDownloadReceipt}
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-sm font-semibold transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:-translate-y-0.5"
+              style={{ background: "linear-gradient(135deg, #7B2FBE 0%, #A855F7 100%)" }}
+            >
+              <Download size={15} /> Download Receipt
+            </button>
+
+            {productId && transactionId && (
+              <Link href={`/spin?productid=${productId}&transactionid=${transactionId}`} className="block">
+                <button
+                  className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-sm font-semibold transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.3)]"
+                  style={{ background: "rgba(168,85,247,0.15)", border: "1px solid rgba(168,85,247,0.3)" }}
+                >
+                  <Gift size={15} /> Spin for Bonus
+                </button>
+              </Link>
+            )}
+
+            <Link href="/" className="block">
+              <button
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-gray-400 text-sm font-medium transition-all duration-200 hover:text-white"
+                style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.08)" }}
+              >
+                <ArrowLeft size={15} /> Back to Home
               </button>
             </Link>
-          )}
+          </div>
         </div>
       </div>
     </div>

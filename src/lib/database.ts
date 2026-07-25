@@ -1,38 +1,49 @@
+import dns from "node:dns";
 import mongoose from "mongoose";
 
-const MONGODB_URI = process.env.MONGO_URI!;
+dns.setServers(["8.8.8.8", "1.1.1.1"]);
+
+const MONGODB_URI = process.env.MONGO_URI;
+
 if (!MONGODB_URI) {
   throw new Error("MONGO_URI is not defined");
 }
 
-let cached = (global as any).mongoose;
+type MongooseCache = {
+  conn: typeof mongoose | null;
+  promise: Promise<typeof mongoose> | null;
+};
 
-if (!cached) {
-  cached = (global as any).mongoose = { conn: null, promise: null };
-}
+const globalForMongoose = globalThis as typeof globalThis & {
+  mongooseCache?: MongooseCache;
+};
+
+const cached =
+  globalForMongoose.mongooseCache ??
+  (globalForMongoose.mongooseCache = {
+    conn: null,
+    promise: null,
+  });
 
 export const dbConnect = async () => {
-  if (cached.conn) return cached.conn;
+  if (cached.conn) {
+    return cached.conn;
+  }
 
   if (!cached.promise) {
-    const opts = {
-      bufferCommands: false, // Prevent command buffering
-      serverSelectionTimeoutMS: 10000, // 10 seconds timeout
-      socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
+    cached.promise = mongoose.connect(MONGODB_URI, {
+      bufferCommands: false,
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 45000,
       tls: true,
-    };
-
-    cached.promise = mongoose
-      .connect(MONGODB_URI, opts)
-      .then((mongoose) => mongoose);
+    });
   }
 
   try {
     cached.conn = await cached.promise;
+    return cached.conn;
   } catch (error) {
     cached.promise = null;
     throw error;
   }
-
-  return cached.conn;
 };
