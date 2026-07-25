@@ -77,9 +77,6 @@ const GameCard = ({
             {name}
           </p>
           <div className="flex items-center justify-between mt-auto">
-            <p className="text-[13px] md:text-sm text-white font-black">
-              ${displayPrice}
-            </p>
             <div className="px-3 py-1 bg-gradient-to-r from-purple-600 to-primary rounded-lg text-[10px] md:text-xs font-bold text-white shadow-sm shadow-purple-500/20 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all">
               Top Up
             </div>
