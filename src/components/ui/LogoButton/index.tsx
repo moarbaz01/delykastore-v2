@@ -10,8 +10,8 @@ const LogoButton = () => {
       "/signup",
       "/forgot-password",
       "/product",
-      "/dashboard",
-    ].includes(pathname)
+    ].includes(pathname) ||
+    pathname.startsWith("/dashboard")
   )
     return null;
   return (

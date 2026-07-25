@@ -450,7 +450,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
       <h1 className="text-2xl font-bold text-white mb-6">
         {product ? "Edit Product" : "Create Product"}
       </h1>
-      <Paper className="p-6">
+      <Paper className="p-6 pb-28 relative">
         <form>
           {/* Type Select */}
           <div className="mb-4">
@@ -520,6 +520,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
                 {/* <MenuItem value="Garena Api">Garena Api</MenuItem> */}
                 <MenuItem value="TopUp Ghor Api"> Top-Up Ghor Api</MenuItem>
                 <MenuItem value="Bangla Api">Bangla Api</MenuItem>
+                <MenuItem value="Aluu Api">Aluu Api</MenuItem>
               </Select>
               {(formData.apiName === "Smile One Api" ||
                 formData.game === "mobilelegends") && (
@@ -975,14 +976,16 @@ const ProductForm = ({ product }: { product?: Product }) => {
           )}
 
           {/* Submit Button */}
-          <div className="mt-4">
+          <div className="fixed bottom-0 md:left-64 left-0 right-0 p-4 bg-gray-900/95 backdrop-blur-md border-t border-gray-700 z-[100] flex justify-end px-6 shadow-[0_-4px_20px_rgba(0,0,0,0.3)]">
             <Button
               disabled={loading}
               onClick={handleSubmit}
               color="primary"
               variant="contained"
+              size="large"
+              className="w-full md:w-auto font-bold px-8 py-2.5 bg-purple-600 hover:bg-purple-700"
             >
-              Submit
+              {loading ? "Submitting..." : (product ? "Update Product" : "Create Product")}
             </Button>
           </div>
         </form>

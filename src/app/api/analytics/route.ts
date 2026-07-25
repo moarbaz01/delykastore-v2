@@ -1,5 +1,4 @@
 export const dynamic = "force-dynamic";
-// dynamic component
 
 import { dbConnect } from "@/lib/database";
 import { Order } from "@/models/order.model";
@@ -18,39 +17,76 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    // Fix: Use cloned date instances
-    const now = new Date();
+    const searchParams = req.nextUrl.searchParams;
+    const range = searchParams.get("range") || "all_time";
 
+    const now = new Date();
+    let startDate: Date | null = null;
+    let endDate: Date | null = new Date(now);
+
+    switch (range) {
+      case "today":
+        startDate = new Date(now);
+        startDate.setHours(0, 0, 0, 0);
+        break;
+      case "yesterday":
+        startDate = new Date(now);
+        startDate.setDate(startDate.getDate() - 1);
+        startDate.setHours(0, 0, 0, 0);
+        endDate = new Date(now);
+        endDate.setDate(endDate.getDate() - 1);
+        endDate.setHours(23, 59, 59, 999);
+        break;
+      case "this_week":
+        startDate = new Date(now);
+        startDate.setDate(startDate.getDate() - startDate.getDay()); // Sunday start
+        startDate.setHours(0, 0, 0, 0);
+        break;
+      case "this_month":
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        break;
+      case "last_month":
+        startDate = new Date(now.getFullYear(), now.getMonth() - 1, 1);
+        endDate = new Date(now.getFullYear(), now.getMonth(), 0);
+        endDate.setHours(23, 59, 59, 999);
+        break;
+      case "all_time":
+      default:
+        startDate = null;
+        endDate = null;
+        break;
+    }
+
+    const dateMatch = startDate && endDate ? { createdAt: { $gte: startDate, $lte: endDate } } : {};
+
+    // Standard fixed bounds for original metrics (Today's Income / Monthly Income in top cards)
     const todayStart = new Date(now);
     todayStart.setHours(0, 0, 0, 0);
-
     const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
     const nextMonthStart = new Date(now.getFullYear(), now.getMonth() + 1, 1);
-
     const oneWeekAgo = new Date(now);
     oneWeekAgo.setDate(now.getDate() - 7);
-
     const sixMonthsAgo = new Date(now);
     sixMonthsAgo.setMonth(now.getMonth() - 6);
 
     // Basic counts
     const [orders, products, customers] = await Promise.all([
-      Order.countDocuments(),
-      Product.countDocuments({ isDeleted: { $ne: true } }),
-      User.countDocuments(),
+      Order.countDocuments(dateMatch),
+      Product.countDocuments({ isDeleted: { $ne: true }, ...dateMatch }),
+      User.countDocuments(dateMatch),
     ]);
 
     // Revenue calculations
     const revenueData = await Order.aggregate([
       {
-        $match: { status: "success" },
+        $match: { status: "success", ...dateMatch },
       },
       {
         $addFields: {
           convertedAmount: {
             $cond: [
               { $eq: [{ $type: "$amount" }, "string"] },
-              { $toDouble: { $trim: { input: "$amount" } } },
+              { $toDouble: { $trim: { input: "$amount", chars: " $" } } },
               "$amount",
             ],
           },
@@ -87,20 +123,21 @@ export async function GET(req: NextRequest) {
       },
     ]);
 
+    const weeklySalesMatch = range === "all_time" 
+      ? { status: "success", createdAt: { $gte: oneWeekAgo, $lt: now } }
+      : { status: "success", ...dateMatch };
+
     // Weekly sales data
     const weeklySales = await Order.aggregate([
       {
-        $match: {
-          status: "success",
-          createdAt: { $gte: oneWeekAgo, $lt: now },
-        },
+        $match: weeklySalesMatch,
       },
       {
         $addFields: {
           convertedAmount: {
             $cond: [
               { $eq: [{ $type: "$amount" }, "string"] },
-              { $toDouble: { $trim: { input: "$amount" } } },
+              { $toDouble: { $trim: { input: "$amount", chars: " $" } } },
               "$amount",
             ],
           },
@@ -116,20 +153,21 @@ export async function GET(req: NextRequest) {
       { $sort: { _id: 1 } },
     ]);
 
+    const monthlySalesMatch = range === "all_time" 
+      ? { status: "success", createdAt: { $gte: sixMonthsAgo, $lt: now } }
+      : { status: "success", ...dateMatch };
+
     // Monthly sales data
     const monthlySales = await Order.aggregate([
       {
-        $match: {
-          status: "success",
-          createdAt: { $gte: sixMonthsAgo, $lt: now },
-        },
+        $match: monthlySalesMatch,
       },
       {
         $addFields: {
           convertedAmount: {
             $cond: [
               { $eq: [{ $type: "$amount" }, "string"] },
-              { $toDouble: { $trim: { input: "$amount" } } },
+              { $toDouble: { $trim: { input: "$amount", chars: " $" } } },
               "$amount",
             ],
           },
@@ -147,6 +185,9 @@ export async function GET(req: NextRequest) {
 
     const orderStatusCounts = await Order.aggregate([
       {
+        $match: dateMatch
+      },
+      {
         $group: {
           _id: "$status",
           count: { $sum: 1 },
@@ -156,14 +197,14 @@ export async function GET(req: NextRequest) {
 
     const topProducts = await Order.aggregate([
       {
-        $match: { status: "success" },
+        $match: { status: "success", ...dateMatch },
       },
       {
         $addFields: {
           convertedAmount: {
             $cond: [
               { $eq: [{ $type: "$amount" }, "string"] },
-              { $toDouble: { $trim: { input: "$amount" } } },
+              { $toDouble: { $trim: { input: "$amount", chars: " $" } } },
               "$amount",
             ],
           },
@@ -207,11 +248,11 @@ export async function GET(req: NextRequest) {
     };
 
     return NextResponse.json(data, { status: 200 });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error fetching analytics:", error);
     return NextResponse.json(
       { message: "Failed to fetch analytics", error: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

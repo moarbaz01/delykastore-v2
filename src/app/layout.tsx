@@ -49,7 +49,7 @@ export default function RootLayout({
           <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/20 blur-[120px]" />
           <div className="absolute top-[40%] left-[60%] w-[30%] h-[30%] rounded-full bg-primary-light/20 blur-[100px]" />
         </div>
-        <div className="relative z-0">
+        <div className="relative z-0 flex flex-col min-h-screen">
           <Provider>
             <NextTopLoader color="#A855F7" showSpinner={false} />
             <Toaster
@@ -62,7 +62,9 @@ export default function RootLayout({
               }}
             />
             <Navbar />
-            {children}
+            <main className="flex-1 flex flex-col w-full">
+              {children}
+            </main>
             <Footer />
             <BottomNav />
             <LogoButton />

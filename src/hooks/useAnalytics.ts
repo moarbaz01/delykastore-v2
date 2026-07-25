@@ -22,11 +22,11 @@ export interface AnalyticsData {
   }>;
 }
 
-export const useAnalytics = () => {
+export const useAnalytics = (range: string = "all_time") => {
   return useQuery<AnalyticsData>({
-    queryKey: ["analytics"],
+    queryKey: ["analytics", range],
     queryFn: async () => {
-      const response = await axios.get("/api/analytics");
+      const response = await axios.get(`/api/analytics?range=${range}`);
       return response.data;
     },
   });

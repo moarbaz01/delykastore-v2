@@ -1,4 +1,5 @@
 import axios from "axios";
+import { createOrderLog } from "./orderLogs";
 
 export async function checkAluuAccount({
   game_path,
@@ -108,6 +109,111 @@ export async function checkAluuAccount({
     return {
       error: true,
       message: data?.message || "Failed to verify ID",
+    };
+  }
+}
+
+export function getAluuGameCode(game: string): string | null {
+  if (game === "pubg") return "pubgm";
+  if (game === "freefire") return "freefire_br";
+  if (game === "honorofkings") return "hok";
+  if (game === "mobilelegends") return "mlbb";
+  if (game === "genshinimpact") return "genshin";
+  if (game === "bloodstrike") return "bloodstrike";
+  return null;
+}
+
+export async function processAluuOrder(order: any) {
+  let payload: any = null;
+  try {
+    const apiKey = process.env.ALUU_API_KEY;
+    if (!apiKey) {
+      throw new Error("ALUU_API_KEY is missing in environment variables.");
+    }
+
+    const gameCode = getAluuGameCode(order.gameCredentials?.game || "");
+    if (!gameCode) {
+      throw new Error(`Unsupported game for Aluu API: ${order.gameCredentials?.game}`);
+    }
+
+    const proxyHost = process.env.ALUU_PROXY_HOST;
+    const proxyPort = process.env.ALUU_PROXY_PORT;
+    const proxyUsername = process.env.ALUU_PROXY_USERNAME;
+    const proxyPassword = process.env.ALUU_PROXY_PASSWORD;
+
+    const proxyConfig =
+      proxyHost && proxyPort
+        ? {
+            host: proxyHost,
+            port: parseInt(proxyPort, 10),
+            auth:
+              proxyUsername && proxyPassword
+                ? { username: proxyUsername, password: proxyPassword }
+                : undefined,
+            protocol: "http",
+          }
+        : undefined;
+
+    // We use the base URL for the webhook callback
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://delykastore.com";
+
+    payload = {
+      game: gameCode,
+      denom: order.costId,
+      userid: order.gameCredentials?.userId || "",
+      serverid: order.gameCredentials?.zoneId || "",
+      charname: "",
+      partner_webhook_url: `${baseUrl}/api/webhook/partner`,
+      partner_orderid: order.transactionId,
+    };
+
+    const response = await axios.post("https://aluu.in/api/v.1/create", payload, {
+      headers: {
+        "x-api-key": apiKey,
+        "Content-Type": "application/json",
+      },
+      proxy: proxyConfig,
+    });
+
+    const data = response.data;
+    if (data.success) {
+      await createOrderLog({
+        transactionId: order.transactionId,
+        orderId: order._id?.toString(),
+        provider: "Aluu API",
+        requestPayload: payload,
+        responsePayload: data,
+        status: "success",
+      });
+      return { status: 200, data: data.data };
+    } else {
+      await createOrderLog({
+        transactionId: order.transactionId,
+        orderId: order._id?.toString(),
+        provider: "Aluu API",
+        requestPayload: payload,
+        responsePayload: data,
+        status: "failed",
+        errorMessage: data.message || "Failed to create order on Aluu",
+      });
+      return { status: 400, error: data.message || "Failed to create order on Aluu" };
+    }
+  } catch (error: any) {
+    console.error("Aluu Order Creation Error:", error.response?.data || error.message);
+    
+    await createOrderLog({
+      transactionId: order.transactionId,
+      orderId: order._id?.toString(),
+      provider: "Aluu API",
+      requestPayload: payload || { error: "Failed before payload creation" },
+      responsePayload: error.response?.data || { message: error.message },
+      status: "failed",
+      errorMessage: error.response?.data?.message || error.message || "Failed to communicate with Aluu API",
+    });
+
+    return {
+      status: error.response?.status || 500,
+      error: error.response?.data?.message || "Failed to communicate with Aluu API",
     };
   }
 }

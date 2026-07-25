@@ -101,7 +101,7 @@ function AccountContent() {
   };
 
   if (status === "loading" || !session) {
-    return <Loader fullScreen />;
+    return <Loader />;
   }
 
   const orderCount = (session?.user as any)?.order?.length || 0;
@@ -219,7 +219,7 @@ function AccountContent() {
         {/* Profile Card */}
         <div className="bg-[#12102A] rounded-[24px] p-5 flex items-center gap-4 relative overflow-hidden shadow-lg border border-purple-500/10">
           <div className="w-16 h-16 rounded-full flex items-center justify-center text-white font-bold text-2xl uppercase overflow-hidden shrink-0 shadow-[0_0_15px_rgba(168,85,247,0.5)] border-2 border-purple-500/30"
-               style={{ background: "linear-gradient(135deg, #7B2FBE, #A855F7)" }}>
+            style={{ background: "linear-gradient(135deg, #7B2FBE, #A855F7)" }}>
             {session.user.image ? (
               <Image src={session.user.image} alt="Avatar" width={64} height={64} className="object-cover w-full h-full" />
             ) : (
@@ -277,7 +277,7 @@ function AccountContent() {
 
         {/* Logout Button */}
         <div className="bg-[#12102A] rounded-2xl overflow-hidden shadow-md border border-red-500/10">
-          <button 
+          <button
             onClick={() => signOut({ callbackUrl: "/login" })}
             className="w-full flex items-center px-5 py-4 hover:bg-red-500/5 transition-colors"
           >
@@ -307,7 +307,7 @@ function AccountContent() {
             <div className="p-6 text-center">
               <h3 className="text-lg font-bold text-white mb-2">Need Help?</h3>
               <p className="text-sm text-gray-400 mb-6">Reach out to our support team through your preferred channel.</p>
-              
+
               <div className="flex justify-center gap-4">
                 <a href="https://www.facebook.com/share/18FUJ1LddM/?mibextid=wwXIfr" target="_blank" rel="noreferrer" className="flex flex-col items-center gap-2 p-4 rounded-xl bg-white/5 hover:bg-white/10 transition-colors w-24">
                   <FaFacebook size={32} className="text-[#1877F2]" />
@@ -320,7 +320,7 @@ function AccountContent() {
               </div>
             </div>
             <div className="p-3 border-t border-white/5">
-              <button 
+              <button
                 onClick={() => setIsSupportModalOpen(false)}
                 className="w-full py-2.5 text-sm font-semibold text-gray-400 hover:text-white transition-colors"
               >
@@ -336,7 +336,7 @@ function AccountContent() {
 
 export default function AccountPage() {
   return (
-    <Suspense fallback={<Loader fullScreen />}>
+    <Suspense fallback={<Loader />}>
       <AccountContent />
     </Suspense>
   );

@@ -94,15 +94,6 @@ const Sidebar = () => {
         <div className="flex items-center justify-between p-6">
           <div className="flex items-center space-x-3">
             <Link href="/" className="flex items-center gap-3">
-              <div className="w-10 h-10 shrink-0">
-                <Image
-                  src="/images/logo.png"
-                  alt="DELYKASTORE"
-                  width={40}
-                  height={40}
-                  className="w-full h-full object-contain"
-                />
-              </div>
               <h1 className="text-white font-black text-lg tracking-tight uppercase">
                 DELYKASTORE
               </h1>

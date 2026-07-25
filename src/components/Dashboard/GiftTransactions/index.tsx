@@ -263,6 +263,17 @@ const GiftTransactions: React.FC<GiftTransactionsProps> = ({
                 />
             </div>
 
+            {/* Pagination */}
+            <TablePagination
+                component="div"
+                count={totalTransactions}
+                rowsPerPage={rowsPerPage}
+                page={page}
+                onPageChange={handleChangePage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                rowsPerPageOptions={[5, 10, 25]}
+            />
+
             {/* Table */}
             <TableContainer>
                 <Table>
@@ -374,16 +385,6 @@ const GiftTransactions: React.FC<GiftTransactionsProps> = ({
                 </Table>
             </TableContainer>
 
-            {/* Pagination */}
-            <TablePagination
-                component="div"
-                count={totalTransactions}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                rowsPerPageOptions={[5, 10, 25]}
-            />
         </div>
     );
 };

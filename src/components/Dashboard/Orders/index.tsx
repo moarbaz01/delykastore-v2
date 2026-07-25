@@ -319,6 +319,17 @@ const Orders: React.FC<OrdersProps> = ({
         />
       </div>
 
+      {/* Pagination */}
+      <TablePagination
+        component="div"
+        count={totalOrders}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[5, 10, 25]}
+      />
+
       {/* Table */}
       <TableContainer>
         <Table sx={{ minWidth: 1200 }}>
@@ -413,17 +424,6 @@ const Orders: React.FC<OrdersProps> = ({
           </TableBody>
         </Table>
       </TableContainer>
-
-      {/* Pagination */}
-      <TablePagination
-        component="div"
-        count={totalOrders}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
     </div>
   );
 };

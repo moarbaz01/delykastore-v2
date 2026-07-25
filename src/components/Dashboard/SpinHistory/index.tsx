@@ -207,6 +207,17 @@ const SpinHistory: React.FC<SpinHistoryProps> = ({
         />
       </div>
 
+      {/* Pagination */}
+      <TablePagination
+        component="div"
+        count={totalSpins}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[5, 10, 25]}
+      />
+
       {/* Table */}
       <TableContainer>
         <Table>
@@ -289,17 +300,6 @@ const SpinHistory: React.FC<SpinHistoryProps> = ({
           </TableBody>
         </Table>
       </TableContainer>
-
-      {/* Pagination */}
-      <TablePagination
-        component="div"
-        count={totalSpins}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
     </div>
   );
 };

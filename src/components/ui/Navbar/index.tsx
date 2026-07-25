@@ -124,9 +124,6 @@ const Navbar = () => {
               <button onClick={() => setShow(!show)} className="text-gray-300 hover:text-white">
                 <Search size={22} strokeWidth={2} />
               </button>
-              <Link href="/order-history" className="text-gray-300 hover:text-white">
-                <ShoppingCart size={22} strokeWidth={2} />
-              </Link>
             </div>
           </div>
 
@@ -148,7 +145,6 @@ const Navbar = () => {
                     {[
                       { label: "Home", href: "/", icon: Home },
                       { label: "Games", href: "/games", icon: Gamepad2 },
-                      { label: "Orders", href: "/order-history", icon: ClipboardList },
                       { label: "Profile", href: "/account", icon: UserIcon },
                     ].map((item) => {
                       const Icon = item.icon;
@@ -231,14 +227,6 @@ const Navbar = () => {
 
                       {/* Links */}
                       <div className="p-2 space-y-0.5">
-                        <Link
-                          href="/order-history"
-                          onClick={() => setIsDropdownOpen(false)}
-                          className="flex items-center gap-3 px-3 py-2.5 hover:bg-purple-500/10 rounded-xl transition-colors text-sm font-medium text-gray-200 group"
-                        >
-                          <ClipboardList size={16} className="text-purple-400 group-hover:text-purple-300" />
-                          Order History
-                        </Link>
                         <Link
                           href="/account"
                           onClick={() => setIsDropdownOpen(false)}

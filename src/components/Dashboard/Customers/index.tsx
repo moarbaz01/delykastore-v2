@@ -266,6 +266,17 @@ const Customers = ({ allCustomers }: { allCustomers: Customer[] }) => {
         </DialogActions>
       </Dialog>
 
+      {/* Pagination */}
+      <TablePagination
+        component="div"
+        count={filteredCustomers.length}
+        page={page - 1}
+        onPageChange={handleChangePage}
+        rowsPerPage={rowsPerPage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[5, 10, 25]}
+      />
+
       {/* Table */}
       <TableContainer>
         <Table
@@ -339,17 +350,6 @@ const Customers = ({ allCustomers }: { allCustomers: Customer[] }) => {
           </TableBody>
         </Table>
       </TableContainer>
-
-      {/* Pagination */}
-      <TablePagination
-        component="div"
-        count={filteredCustomers.length}
-        page={page - 1}
-        onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        rowsPerPageOptions={[5, 10, 25]}
-      />
     </div>
   );
 };

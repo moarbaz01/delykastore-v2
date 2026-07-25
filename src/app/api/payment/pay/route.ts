@@ -4,7 +4,6 @@ import { dbConnect } from "@/lib/database";
 import { gameOrderRequest } from "@/utils/smileone";
 import { Coupon } from "@/models/coupon.model";
 import { Account } from "@/models/account.model";
-import { ghorApiTopup } from "@/utils/unipin";
 import { GhorTopUp } from "@/utils/topupghor";
 import { createHmac } from "crypto";
 import "@/models/product.model";
@@ -108,13 +107,18 @@ export async function POST(req: Request) {
     }
 
     // Handle API orders
-
     if (order?.orderType === "API Order") {
       let orderResponse;
       const game = order?.gameCredentials?.game;
+      const apiName = (order?.product as any)?.apiName;
 
+      // Handle Aluu API
+      if (apiName === "Aluu Api") {
+        const { processAluuOrder } = require("@/utils/aluu");
+        orderResponse = await processAluuOrder(order);
+      }
       // If game is mobile legends
-      if (game === "mobilelegends") {
+      else if (game === "mobilelegends") {
         if (order.region === "brazil") {
           if ((order?.product as any)?.apiName === "TopUp Ghor Api") {
             orderResponse = await GhorTopUp(order as any, "86289");

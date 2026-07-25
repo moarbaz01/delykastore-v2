@@ -118,6 +118,17 @@ const Gifts: React.FC<GiftsProps> = ({
                 </Button>
             </div>
 
+            {/* Pagination */}
+            <TablePagination
+                component="div"
+                count={filteredGifts.length}
+                page={page}
+                onPageChange={handleChangePage}
+                rowsPerPage={rowsPerPage}
+                onRowsPerPageChange={handleChangeRowsPerPage}
+                rowsPerPageOptions={[5, 10, 25]}
+            />
+
             {/* Table */}
             <TableContainer>
                 <Table>
@@ -185,16 +196,6 @@ const Gifts: React.FC<GiftsProps> = ({
                 </Table>
             </TableContainer>
 
-            {/* Pagination */}
-            <TablePagination
-                component="div"
-                count={filteredGifts.length}
-                page={page}
-                onPageChange={handleChangePage}
-                rowsPerPage={rowsPerPage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                rowsPerPageOptions={[5, 10, 25]}
-            />
         </div>
     );
 };

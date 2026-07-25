@@ -128,6 +128,18 @@ const OrderLogs: React.FC<OrderLogsProps> = ({ logs, total, isLoading }) => {
         </FormControl>
       </div>
 
+      {/* Pagination */}
+      <TablePagination
+        component="div"
+        count={total}
+        rowsPerPage={rowsPerPage}
+        page={page}
+        onPageChange={handleChangePage}
+        onRowsPerPageChange={handleChangeRowsPerPage}
+        rowsPerPageOptions={[10, 25, 50]}
+        sx={{ color: "white" }}
+      />
+
       {/* Table */}
       <TableContainer>
         <Table sx={{ minWidth: 1000 }}>
@@ -247,17 +259,6 @@ const OrderLogs: React.FC<OrderLogsProps> = ({ logs, total, isLoading }) => {
           </TableBody>
         </Table>
       </TableContainer>
-
-      <TablePagination
-        component="div"
-        count={total}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        rowsPerPageOptions={[10, 25, 50]}
-        sx={{ color: "white" }}
-      />
 
       {/* Detail Modal */}
       <Dialog

@@ -58,9 +58,8 @@ function CustomSelect({
         <span>{selectedLabel}</span>
         <ChevronDown
           size={16}
-          className={`text-gray-400 transition-transform ${
-            isOpen ? "rotate-180" : ""
-          }`}
+          className={`text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""
+            }`}
         />
       </button>
 
@@ -73,11 +72,10 @@ function CustomSelect({
                 onChange(option.value);
                 setIsOpen(false);
               }}
-              className={`w-full text-left px-4 py-2 text-sm transition-colors ${
-                value === option.value
-                  ? "bg-primary/20 text-white font-medium"
-                  : "text-gray-300 hover:bg-white/5"
-              }`}
+              className={`w-full text-left px-4 py-2 text-sm transition-colors ${value === option.value
+                ? "bg-primary/20 text-white font-medium"
+                : "text-gray-300 hover:bg-white/5"
+                }`}
             >
               {option.label}
             </button>
@@ -123,9 +121,7 @@ function OrderHistoryContent() {
     }
   }, [status, router]);
 
-  if (status === "loading" || loading) {
-    return <Loader fullScreen />;
-  }
+
 
   const filterOptions = [
     { value: "all", label: "All Orders" },
@@ -168,133 +164,132 @@ function OrderHistoryContent() {
           <div className="space-y-3">
             {orders.map((order: any, index: number) => (
               <Reveal key={order._id} width="100%" delay={(index % 10) * 0.05}>
-              <div
-                className="bg-[#12102A] border border-purple-500/10 rounded-[16px] p-4 shadow-sm"
-              >
-                <div className="flex items-start gap-4">
-                  {/* Product Image */}
-                  <div className="w-14 h-14 rounded-xl bg-[#1A163B] border border-purple-500/20 flex-shrink-0 overflow-hidden flex justify-center items-center">
-                    {order.product?.image ? (
-                      <Image
-                        src={order.product.image}
-                        alt=""
-                        width={56}
-                        height={56}
-                        className="object-cover w-full h-full"
-                      />
-                    ) : (
-                      <PackageIcon size={20} className="text-purple-400/50" />
-                    )}
-                  </div>
-
-                  {/* Top Info */}
-                  <div className="flex-1 min-w-0">
-                    <div className="flex justify-between items-start mb-1">
-                      <h3 className="font-bold text-white text-[15px] truncate pr-2">
-                        {order.product?.name || "Product Name"}
-                      </h3>
-                      <p className="text-[15px] font-bold text-primary shrink-0">
-                        ${Number(order.amount).toFixed(2)}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-2 mb-2">
-                      <span
-                        className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${
-                          order.status === "success"
-                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
-                            : order.status === "failed"
-                            ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
-                            : "bg-amber-500/10 text-amber-400 border-amber-500/20"
-                        }`}
-                      >
-                        {order.status}
-                      </span>
-                      <span className="text-gray-400 text-xs">
-                        {new Date(order.createdAt).toLocaleDateString()}
-                      </span>
-                    </div>
-
-                    {/* Simple Details Section */}
-                    <div className="mt-3 bg-[#1A163B]/50 rounded-lg p-3 border border-purple-500/5">
-                      {order.product?.type === "account" ? (
-                        order.accountDetails ? (
-                          <div className="space-y-2">
-                            {/* Email */}
-                            <div className="flex items-center justify-between text-[13px]">
-                              <div className="flex items-center gap-2 text-gray-300 min-w-0">
-                                <Mail size={14} className="text-gray-400 shrink-0" />
-                                <span className="truncate">{order.accountDetails.email}</span>
-                              </div>
-                              <button
-                                onClick={() => handleCopy(order.accountDetails.email, order._id + "e")}
-                                className="text-gray-400 hover:text-primary transition-colors p-1"
-                              >
-                                {copiedId === order._id + "e" ? <Check size={14} /> : <Copy size={14} />}
-                              </button>
-                            </div>
-                            
-                            {/* Password */}
-                            <div className="flex items-center justify-between text-[13px]">
-                              <div className="flex items-center gap-2 text-gray-300 min-w-0">
-                                <Lock size={14} className="text-gray-400 shrink-0" />
-                                <span className="truncate font-mono">
-                                  {showPasswords[order._id] ? order.accountDetails.password : "••••••••"}
-                                </span>
-                              </div>
-                              <div className="flex items-center gap-1">
-                                <button
-                                  onClick={() => setShowPasswords(prev => ({ ...prev, [order._id]: !prev[order._id] }))}
-                                  className="text-gray-400 hover:text-primary transition-colors p-1"
-                                >
-                                  {showPasswords[order._id] ? <EyeOff size={14} /> : <Eye size={14} />}
-                                </button>
-                                <button
-                                  onClick={() => handleCopy(order.accountDetails.password, order._id + "p")}
-                                  className="text-gray-400 hover:text-primary transition-colors p-1"
-                                >
-                                  {copiedId === order._id + "p" ? <Check size={14} /> : <Copy size={14} />}
-                                </button>
-                              </div>
-                            </div>
-                          </div>
-                        ) : (
-                          <div className="text-xs text-rose-400">
-                            {new Date(order.expiresAt!) < new Date()
-                              ? "Details expired"
-                              : "Details not available"}
-                          </div>
-                        )
+                <div
+                  className="bg-[#12102A] border border-purple-500/10 rounded-[16px] p-4 shadow-sm"
+                >
+                  <div className="flex items-start gap-4">
+                    {/* Product Image */}
+                    <div className="w-14 h-14 rounded-xl bg-[#1A163B] border border-purple-500/20 flex-shrink-0 overflow-hidden flex justify-center items-center">
+                      {order.product?.image ? (
+                        <Image
+                          src={order.product.image}
+                          alt=""
+                          width={56}
+                          height={56}
+                          className="object-cover w-full h-full"
+                        />
                       ) : (
-                        // Game Topup Details
-                        <div className="flex flex-wrap gap-4 text-[13px] text-gray-300">
-                          <div className="flex items-center gap-2">
-                            <span className="text-gray-500">ID:</span>
-                            <span className="font-medium text-white">{order.gameCredentials?.userId || order.playerId || "N/A"}</span>
-                          </div>
-                          {order.gameCredentials?.zoneId && (
-                            <div className="flex items-center gap-2">
-                              <span className="text-gray-500">Zone:</span>
-                              <span className="font-medium text-white">{order.gameCredentials.zoneId}</span>
-                            </div>
-                          )}
-                        </div>
+                        <PackageIcon size={20} className="text-purple-400/50" />
                       )}
                     </div>
-                  </div>
-                </div>
 
-                {/* Optional Expiry Alert for accounts */}
-                {order.expiresAt && (
-                  <div className="mt-3 pt-3 border-t border-purple-500/10 flex items-center gap-1.5 text-[11px] text-gray-400">
-                    {new Date(order.expiresAt) < new Date() ? (
-                      <><XCircle size={12} className="text-rose-500" /> Expired</>
-                    ) : (
-                      <><Clock size={12} className="text-emerald-500" /> Active until {new Date(order.expiresAt).toLocaleDateString()}</>
-                    )}
+                    {/* Top Info */}
+                    <div className="flex-1 min-w-0">
+                      <div className="flex justify-between items-start mb-1">
+                        <h3 className="font-bold text-white text-[15px] truncate pr-2">
+                          {order.product?.name || "Product Name"}
+                        </h3>
+                        <p className="text-[15px] font-bold text-primary shrink-0">
+                          ${Number(order.amount).toFixed(2)}
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2 mb-2">
+                        <span
+                          className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded border ${order.status === "success"
+                            ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20"
+                            : order.status === "failed"
+                              ? "bg-rose-500/10 text-rose-400 border-rose-500/20"
+                              : "bg-amber-500/10 text-amber-400 border-amber-500/20"
+                            }`}
+                        >
+                          {order.status}
+                        </span>
+                        <span className="text-gray-400 text-xs">
+                          {new Date(order.createdAt).toLocaleDateString()}
+                        </span>
+                      </div>
+
+                      {/* Simple Details Section */}
+                      <div className="mt-3 bg-[#1A163B]/50 rounded-lg p-3 border border-purple-500/5">
+                        {order.product?.type === "account" ? (
+                          order.accountDetails ? (
+                            <div className="space-y-2">
+                              {/* Email */}
+                              <div className="flex items-center justify-between text-[13px]">
+                                <div className="flex items-center gap-2 text-gray-300 min-w-0">
+                                  <Mail size={14} className="text-gray-400 shrink-0" />
+                                  <span className="truncate">{order.accountDetails.email}</span>
+                                </div>
+                                <button
+                                  onClick={() => handleCopy(order.accountDetails.email, order._id + "e")}
+                                  className="text-gray-400 hover:text-primary transition-colors p-1"
+                                >
+                                  {copiedId === order._id + "e" ? <Check size={14} /> : <Copy size={14} />}
+                                </button>
+                              </div>
+
+                              {/* Password */}
+                              <div className="flex items-center justify-between text-[13px]">
+                                <div className="flex items-center gap-2 text-gray-300 min-w-0">
+                                  <Lock size={14} className="text-gray-400 shrink-0" />
+                                  <span className="truncate font-mono">
+                                    {showPasswords[order._id] ? order.accountDetails.password : "••••••••"}
+                                  </span>
+                                </div>
+                                <div className="flex items-center gap-1">
+                                  <button
+                                    onClick={() => setShowPasswords(prev => ({ ...prev, [order._id]: !prev[order._id] }))}
+                                    className="text-gray-400 hover:text-primary transition-colors p-1"
+                                  >
+                                    {showPasswords[order._id] ? <EyeOff size={14} /> : <Eye size={14} />}
+                                  </button>
+                                  <button
+                                    onClick={() => handleCopy(order.accountDetails.password, order._id + "p")}
+                                    className="text-gray-400 hover:text-primary transition-colors p-1"
+                                  >
+                                    {copiedId === order._id + "p" ? <Check size={14} /> : <Copy size={14} />}
+                                  </button>
+                                </div>
+                              </div>
+                            </div>
+                          ) : (
+                            <div className="text-xs text-rose-400">
+                              {new Date(order.expiresAt!) < new Date()
+                                ? "Details expired"
+                                : "Details not available"}
+                            </div>
+                          )
+                        ) : (
+                          // Game Topup Details
+                          <div className="flex flex-wrap gap-4 text-[13px] text-gray-300">
+                            <div className="flex items-center gap-2">
+                              <span className="text-gray-500">ID:</span>
+                              <span className="font-medium text-white">{order.gameCredentials?.userId || order.playerId || "N/A"}</span>
+                            </div>
+                            {order.gameCredentials?.zoneId && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-500">Zone:</span>
+                                <span className="font-medium text-white">{order.gameCredentials.zoneId}</span>
+                              </div>
+                            )}
+                          </div>
+                        )}
+                      </div>
+                    </div>
                   </div>
-                )}
-              </div>
+
+                  {/* Optional Expiry Alert for accounts */}
+                  {order.expiresAt && (
+                    <div className="mt-3 pt-3 border-t border-purple-500/10 flex items-center gap-1.5 text-[11px] text-gray-400">
+                      {new Date(order.expiresAt) < new Date() ? (
+                        <><XCircle size={12} className="text-rose-500" /> Expired</>
+                      ) : (
+                        <><Clock size={12} className="text-emerald-500" /> Active until {new Date(order.expiresAt).toLocaleDateString()}</>
+                      )}
+                    </div>
+                  )}
+                </div>
               </Reveal>
             ))}
           </div>
@@ -335,7 +330,7 @@ function OrderHistoryContent() {
 
 export default function OrderHistoryPage() {
   return (
-    <Suspense fallback={<Loader fullScreen />}>
+    <Suspense fallback={<Loader />}>
       <OrderHistoryContent />
     </Suspense>
   );

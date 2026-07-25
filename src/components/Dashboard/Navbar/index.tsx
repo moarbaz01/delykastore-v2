@@ -97,15 +97,6 @@ const Navbar = () => {
           <div className="w-[280px] h-full bg-secondary flex flex-col border-r border-darkBlue">
             <div className="flex justify-between items-center px-4 py-6 border-b border-darkBlue">
               <Link href="/dashboard" className="flex items-center gap-3">
-                <div className="w-10 h-10 shrink-0">
-                  <Image
-                    src="/images/logo.png"
-                    alt="DELYKASTORE"
-                    width={40}
-                    height={40}
-                    className="w-full h-full object-contain"
-                  />
-                </div>
                 <h1 className="text-white font-black text-lg tracking-tight uppercase">
                   DELYKASTORE
                 </h1>

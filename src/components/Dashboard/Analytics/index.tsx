@@ -19,6 +19,9 @@ import {
   List,
   ListItem,
   ListItemText,
+  Select,
+  MenuItem,
+  FormControl,
 } from "@mui/material";
 import {
   BarChart,
@@ -40,7 +43,8 @@ import {
 import { useAnalytics } from "@/hooks/useAnalytics";
 
 const Analytics = () => {
-  const { data, isLoading, error } = useAnalytics();
+  const [dateRange, setDateRange] = React.useState("all_time");
+  const { data, isLoading, error } = useAnalytics(dateRange);
 
   const analyticsData = data || {
     orders: null,
@@ -105,9 +109,25 @@ const Analytics = () => {
 
   return (
     <div className="md:pl-72 md:py-6 md:px-6 px-4 min-h-screen text-white">
-      <h1 className="text-2xl font-bold text-gray-100 mb-6">
-        Analytics Dashboard
-      </h1>
+      <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <h1 className="text-2xl font-bold text-gray-100">
+          Analytics Dashboard
+        </h1>
+        <FormControl variant="outlined" size="small" sx={{ minWidth: 200, bgcolor: '#1f2937', borderRadius: 1 }}>
+          <Select
+            value={dateRange}
+            onChange={(e) => setDateRange(e.target.value)}
+            sx={{ color: 'white', '.MuiOutlinedInput-notchedOutline': { borderColor: '#4b5563' }, '&:hover .MuiOutlinedInput-notchedOutline': { borderColor: '#9ca3af' }, '.MuiSvgIcon-root': { color: 'white' } }}
+          >
+            <MenuItem value="all_time">All Time</MenuItem>
+            <MenuItem value="today">Today</MenuItem>
+            <MenuItem value="yesterday">Yesterday</MenuItem>
+            <MenuItem value="this_week">This Week</MenuItem>
+            <MenuItem value="this_month">This Month</MenuItem>
+            <MenuItem value="last_month">Last Month</MenuItem>
+          </Select>
+        </FormControl>
+      </div>
 
       {/* Overview Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
