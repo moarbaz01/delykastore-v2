@@ -9,7 +9,6 @@ export default function Home() {
       <div className="pt-2 px-4 md:pt-4">
         <Banner />
       </div>
-      <Marquee />
       <TrendingGames />
       <AccountProducts />
     </>
