@@ -71,14 +71,19 @@ const GameCard = ({
           )}
         </div>
 
-        {/* Info at the bottom (Not overlapping) */}
-        <div className="p-3 flex flex-col justify-end">
-          <p className="text-sm font-bold text-white leading-tight truncate mb-1">
+        {/* Info at the bottom */}
+        <div className="p-3 flex flex-col justify-end h-full">
+          <p className="text-sm font-bold text-white leading-tight truncate mb-2">
             {name}
           </p>
-          <p className="text-[13px] md:text-sm text-white font-black">
-            ${displayPrice}
-          </p>
+          <div className="flex items-center justify-between mt-auto">
+            <p className="text-[13px] md:text-sm text-white font-black">
+              ${displayPrice}
+            </p>
+            <div className="px-3 py-1 bg-gradient-to-r from-purple-600 to-primary rounded-lg text-[10px] md:text-xs font-bold text-white shadow-sm shadow-purple-500/20 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all">
+              Top Up
+            </div>
+          </div>
         </div>
       </div>
     </Link>
