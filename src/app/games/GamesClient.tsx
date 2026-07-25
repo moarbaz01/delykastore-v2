@@ -65,7 +65,7 @@ export default function GamesClient({ products }: { products: ProductType[] }) {
           ) : (
             <div className="py-20 flex flex-col items-center justify-center text-center">
               <Search size={48} className="text-purple-500/20 mb-4" />
-              <p className="text-gray-400 font-medium">No games found matching "{searchTerm}"</p>
+              <p className="text-gray-400 font-medium">No games found matching &quot;{searchTerm}&quot;</p>
             </div>
           )}
         </div>

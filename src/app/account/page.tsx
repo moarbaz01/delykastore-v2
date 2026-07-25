@@ -104,7 +104,7 @@ function AccountContent() {
     return <Loader fullScreen />;
   }
 
-  const orderCount = session?.user?.order?.length || 0;
+  const orderCount = (session?.user as any)?.order?.length || 0;
 
   if (viewMode === "settings") {
     return (

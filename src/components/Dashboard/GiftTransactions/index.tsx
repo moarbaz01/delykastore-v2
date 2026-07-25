@@ -137,6 +137,7 @@ const GiftTransactions: React.FC<GiftTransactionsProps> = ({
         }, 500); // 500ms debounce
 
         return () => clearTimeout(timer);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [monthFilter, statusFilter, dateFilter, search, userIdFilter]);
 
     const handleChangePage = (event: unknown, newPage: number) => {

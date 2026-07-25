@@ -31,7 +31,7 @@ const TermsAndConditions = () => {
                 Introduction
               </h2>
               <p className="pl-7">
-                Welcome to <strong className="text-white">DELYKASTORE</strong> ("we", "us", "our"). These Terms and Conditions govern your use of our website. By accessing or using our services, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use the Site.
+                Welcome to <strong className="text-white">DELYKASTORE</strong> (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;). These Terms and Conditions govern your use of our website. By accessing or using our services, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use the Site.
               </p>
             </section>
 
@@ -42,7 +42,7 @@ const TermsAndConditions = () => {
                 Purchases & Orders
               </h2>
               <p className="pl-7 mb-3">
-                You (hereafter referred to as "buyer" and "user") agree to all orders placed on our platform. 
+                You (hereafter referred to as &quot;buyer&quot; and &quot;user&quot;) agree to all orders placed on our platform. 
               </p>
               <ul className="list-disc list-inside pl-7 space-y-2">
                 <li>All purchases made through the Site are <strong className="text-white">final and non-refundable</strong>. This includes, but is not limited to, digital goods, game top-ups, subscriptions, and virtual currency.</li>

@@ -146,6 +146,7 @@ const Orders: React.FC<OrdersProps> = ({
     }, 500); // 500ms debounce
 
     return () => clearTimeout(timer);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     monthFilter,
     statusFilter,

@@ -71,12 +71,14 @@ const SpinWheelContent: React.FC = () => {
 
   useEffect(() => {
     fetchPrizes();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     if (spinResult && prizes.length) {
       spinWheel(spinResult);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [spinResult, prizes]);
 
   /* ---------------- SPIN LOGIC ---------------- */

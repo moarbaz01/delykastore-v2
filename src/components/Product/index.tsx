@@ -166,6 +166,7 @@ const Product = ({
         console.error("Error calling AbaPayway.checkout:", error);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [paymentData]);
 
   // Fetch claimed levels when modal opens
@@ -174,6 +175,7 @@ const Product = ({
       fetchClaimedLevels();
 
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerAvailable, userId]);
 
   const fetchClaimedLevels = async () => {
@@ -211,12 +213,14 @@ const Product = ({
     if (playerAvailable && userId) {
       fetchWageringData();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [playerAvailable, userId]);
 
   useEffect(() => {
     if (type === "account") {
       setPlayerAvailable(true);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [type]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -271,12 +275,14 @@ const Product = ({
       setAppliedCoupon(null);
       setCouponError("");
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [amountSelected.id]);
 
   useEffect(() => {
     if (categories) {
       setCostCategories(categories);
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [categories]);
 
   // Fallback

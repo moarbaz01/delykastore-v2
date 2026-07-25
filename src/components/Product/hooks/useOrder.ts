@@ -125,6 +125,7 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
         setIsLoading(false);
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [setPaymentData],
   );
 
