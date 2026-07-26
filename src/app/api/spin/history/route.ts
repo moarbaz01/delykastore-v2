@@ -3,16 +3,17 @@ import { dbConnect } from "@/lib/database";
 import { SpinTransaction } from "@/models/spin.transaction.model";
 import { Order } from "@/models/order.model";
 import "@/models/product.model";
-import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
 
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
 
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const session = await getServerSession(authOptions);
 
     // If the user is not authenticated, return Unauthorized
-    if (!token) {
+    if (!session) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 

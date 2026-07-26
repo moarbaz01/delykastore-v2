@@ -3,14 +3,15 @@ import { dbConnect } from "@/lib/database";
 import { Order } from "@/models/order.model";
 import { Product } from "@/models/product.model";
 import { Account } from "@/models/account.model";
-import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
 
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const session = await getServerSession(authOptions);
 
-    if (!token) {
+    if (!session) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest) {
       amount: costItem.price,
       costId: costId,
       status: "pending",
-      user: token.id,
+      user: session.user.id,
       method: "test_bypass"
     });
 

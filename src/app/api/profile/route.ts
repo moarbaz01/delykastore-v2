@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/database";
 import { User } from "@/models/user.model";
-import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
 import { z } from "zod";
 
 const updateProfileSchema = z.object({
@@ -12,13 +13,13 @@ const updateProfileSchema = z.object({
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET! });
+    const session = await getServerSession(authOptions);
 
-    if (!token || !token.id) {
+    if (!session || !session.id) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
-    const user = await User.findById(token.id).select(
+    const user = await User.findById(session.user.id).select(
       "name email role authProvider telegramId createdAt isBlocked"
     );
 
@@ -36,9 +37,9 @@ export async function GET(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     await dbConnect();
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET! });
+    const session = await getServerSession(authOptions);
 
-    if (!token || !token.id) {
+    if (!session || !session.id) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -49,7 +50,7 @@ export async function PUT(req: NextRequest) {
     if (parsedData.email) {
       const existing = await User.findOne({
         email: parsedData.email,
-        _id: { $ne: token.id },
+        _id: { $ne: session.user.id },
       });
       if (existing) {
         return NextResponse.json(
@@ -59,7 +60,7 @@ export async function PUT(req: NextRequest) {
       }
     }
 
-    const updated = await User.findByIdAndUpdate(token.id, parsedData, {
+    const updated = await User.findByIdAndUpdate(session.user.id, parsedData, {
       new: true,
     }).select("name email role authProvider telegramId");
 

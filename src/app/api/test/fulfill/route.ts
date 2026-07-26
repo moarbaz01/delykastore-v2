@@ -3,7 +3,8 @@ import { dbConnect } from "@/lib/database";
 import { Order } from "@/models/order.model";
 import { Account } from "@/models/account.model";
 import { Coupon } from "@/models/coupon.model";
-import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
 
 // Separate logic for test fulfillment to avoid touching production payment flow
 async function fulfillTestOrder(order: any) {
@@ -103,8 +104,8 @@ export async function POST(req: NextRequest) {
     await dbConnect();
 
     // Security check: Only authenticated users can trigger test fulfillment
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET! });
-    if (!token) {
+    const session = await getServerSession(authOptions);
+    if (!session) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -124,7 +125,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Verify order belongs to the user (or user is admin)
-    if (order.user.toString() !== token.id && token.role !== "admin") {
+    if (order.user.toString() !== session.user.id && session.user?.role !== "admin") {
       return NextResponse.json(
         { message: "Unauthorized order access" },
         { status: 403 },

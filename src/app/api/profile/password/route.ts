@@ -1,7 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/database";
 import { User } from "@/models/user.model";
-import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 
@@ -17,16 +18,16 @@ const changePasswordSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET! });
+    const session = await getServerSession(authOptions);
 
-    if (!token || !token.id) {
+    if (!session || !session.id) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const body = await req.json();
     const parsedData = changePasswordSchema.parse(body);
 
-    const user = await User.findById(token.id).select("+password");
+    const user = await User.findById(session.user.id).select("+password");
 
     if (!user) {
       return NextResponse.json({ message: "User not found" }, { status: 404 });

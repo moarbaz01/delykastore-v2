@@ -6,15 +6,13 @@ import { Account } from "@/models/account.model";
 import { decryptData } from "@/utils/encryption";
 import { createHmac } from "crypto";
 import { NextResponse } from "next/server";
-import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
 
 export async function POST(req: Request) {
   try {
     await dbConnect();
-    const token = await getToken({
-      req: req as any,
-      secret: process.env.NEXTAUTH_SECRET,
-    });
+    const session = await getServerSession(authOptions);
     const { payload } = await req.json();
     let orderParams;
     try {
@@ -44,7 +42,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ message: "Invalid Product" }, { status: 400 });
     }
 
-    if (isValidProduct.type === "account" && !token) {
+    if (isValidProduct.type === "account" && !session) {
       return NextResponse.json(
         { message: "Please login to buy account products" },
         { status: 401 },
@@ -53,7 +51,7 @@ export async function POST(req: Request) {
 
     // For account orders, always use the server-side token ID as the user.
     // Never trust the user ID from the client payload.
-    const resolvedUser = isValidProduct.type === "account" ? token?.id : user;
+    const resolvedUser = isValidProduct.type === "account" ? session.user?.id : user;
 
     const isValidCost = isValidProduct?.cost?.find((cost) => {
       return cost.id === costId;

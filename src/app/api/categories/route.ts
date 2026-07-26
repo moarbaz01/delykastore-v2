@@ -1,7 +1,8 @@
 import { dbConnect } from "@/lib/database";
 import { CostCategory } from "@/models/costcategory.model";
 import mongoose from "mongoose";
-import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: Request) {
@@ -33,10 +34,10 @@ export async function GET(req: Request) {
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const session = await getServerSession(authOptions);
 
     // If the user is not authenticated, return Unauthorized
-    if (!token) {
+    if (!session) {
       return NextResponse.json({ message: "Unauthorized" });
     }
 
@@ -66,10 +67,10 @@ export async function POST(req: NextRequest) {
 export async function PUT(req: NextRequest) {
   try {
     await dbConnect();
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const session = await getServerSession(authOptions);
 
     // If the user is not authenticated, return Unauthorized
-    if (!token) {
+    if (!session) {
       return NextResponse.json({ message: "Unauthorized" });
     }
 
@@ -103,10 +104,10 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     await dbConnect();
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const session = await getServerSession(authOptions);
 
     // If the user is not authenticated, return Unauthorized
-    if (!token) {
+    if (!session) {
       return NextResponse.json({ message: "Unauthorized" });
     }
 
