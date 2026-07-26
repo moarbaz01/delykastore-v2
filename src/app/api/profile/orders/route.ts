@@ -2,14 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/database";
 import { Order } from "@/models/order.model";
 import { User } from "@/models/user.model";
-import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
 
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET! });
+    const session = await getServerSession(authOptions);
 
-    if (!token || !token.id) {
+    if (!session || !session.user?.id) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -20,7 +21,7 @@ export async function GET(req: NextRequest) {
     const search = searchParams.get("search");
     const skip = (page - 1) * limit;
 
-    const query: any = { user: token.id };
+    const query: any = { user: session.user.id };
     if (statusFilter && statusFilter !== "all") {
       query.status = statusFilter;
     } else {

@@ -4,16 +4,17 @@ import { dbConnect } from "@/lib/database";
 import { Order } from "@/models/order.model";
 import { Product } from "@/models/product.model";
 import { User } from "@/models/user.model";
-import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
 
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const session = await getServerSession(authOptions);
 
-    if (!token || token.role !== "admin") {
+    if (!session || session.user?.role !== "admin") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
