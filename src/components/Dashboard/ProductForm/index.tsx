@@ -10,11 +10,12 @@ import {
   MenuItem,
   SelectChangeEvent,
 } from "@mui/material";
-import { Plus as Add, Trash2 as Delete } from "lucide-react";
+import { Plus as Add, Trash2 as Delete, Upload } from "lucide-react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { useQuery } from "@tanstack/react-query";
 
 interface CostItem {
   id: string;
@@ -45,6 +46,7 @@ interface Product {
   stock: boolean;
   spinActive: boolean;
   spinCostIds: string[];
+  isTesting: boolean;
 }
 
 const ProductForm = ({ product }: { product?: Product }) => {
@@ -76,6 +78,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
     stock: product?.stock || false,
     spinActive: product?.spinActive || false,
     spinCostIds: product?.spinCostIds || [],
+    isTesting: product?.isTesting || false,
   });
 
   const [imagePreviews, setImagePreviews] = useState<{ [key: number]: string }>(
@@ -90,6 +93,15 @@ const ProductForm = ({ product }: { product?: Product }) => {
   const [costCategories, setCostCategories] = useState<
     { name: string; _id: string, type: string }[]
   >([]);
+
+  const { data: aluuGamesData, isLoading: isAluuGamesLoading } = useQuery({
+    queryKey: ["aluu-games"],
+    queryFn: async () => {
+      const response = await axios.get("/api/aluu/games");
+      return response.data?.data as { Name: string; gamecode: string }[];
+    },
+    enabled: formData.apiName === "Aluu Api",
+  });
 
   // Initialize previews from existing data
   useEffect(() => {
@@ -244,6 +256,63 @@ const ProductForm = ({ product }: { product?: Product }) => {
     }));
   };
 
+  const handleImportCSV = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const text = event.target?.result as string;
+      const lines = text.split("\\n").filter((line) => line.trim() !== "");
+      if (lines.length <= 1) {
+        toast.error("CSV is empty or invalid");
+        return;
+      }
+      
+      const newCosts: CostItem[] = [];
+      
+      // Skip header (index 0)
+      for (let i = 1; i < lines.length; i++) {
+        // Regex to split by comma but ignore commas inside quotes
+        const row = lines[i].match(/(".*?"|[^",\\s]+)(?=\\s*,|\\s*$)/g) || lines[i].split(",");
+        const cleanRow = row.map((item) => item.replace(/(^"|"$)/g, "").trim());
+        
+        if (cleanRow.length >= 3) {
+          const id = cleanRow[0] || "";
+          const amount = cleanRow[1] || "";
+          const price = cleanRow[2] || "";
+          const durationDays = cleanRow[3] || "";
+          const category = cleanRow[4] || "no_category";
+          const note = cleanRow[5] || "";
+          
+          if (id && price) {
+            newCosts.push({
+              id,
+              amount,
+              price,
+              durationDays,
+              category,
+              note,
+              image: null
+            });
+          }
+        }
+      }
+
+      if (newCosts.length > 0) {
+        setFormData((prev) => ({
+          ...prev,
+          cost: [...prev.cost, ...newCosts]
+        }));
+        toast.success(`Imported ${newCosts.length} items successfully!`);
+      } else {
+        toast.error("No valid items found to import (missing ID or Price)");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = ""; // Reset input so the same file can be uploaded again
+  };
+
   const handleRemoveCost = (index: number) => {
     const updatedCosts = [...formData.cost];
     updatedCosts.splice(index, 1);
@@ -352,6 +421,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
     data.append("stock", formData.stock.toString());
     data.append("spinActive", formData.spinActive.toString());
     data.append("spinCostIds", JSON.stringify(formData.spinCostIds));
+    data.append("isTesting", JSON.stringify(formData.isTesting));
 
     // Upload banner if it's a new file
     if (formData.banner && typeof formData.banner !== "string") {
@@ -570,7 +640,27 @@ const ProductForm = ({ product }: { product?: Product }) => {
           )}
 
           {/* Game */}
-          {formData.type !== "account" && (
+          {formData.type !== "account" && formData.apiName === "Aluu Api" ? (
+            <Select
+              fullWidth
+              name="game"
+              value={formData.game}
+              onChange={handleSelectChange}
+              displayEmpty
+              sx={{ margin: "16px 0" }}
+            >
+              <MenuItem value="">Select ALUU Game</MenuItem>
+              {isAluuGamesLoading ? (
+                <MenuItem disabled>Loading games...</MenuItem>
+              ) : (
+                aluuGamesData?.map((g) => (
+                  <MenuItem key={g.gamecode} value={g.gamecode}>
+                    {g.Name} ({g.gamecode})
+                  </MenuItem>
+                ))
+              )}
+            </Select>
+          ) : formData.type !== "account" && (
             <Select
               fullWidth
               name="game"
@@ -601,6 +691,18 @@ const ProductForm = ({ product }: { product?: Product }) => {
               />
             }
             label="In Stock"
+          />
+
+          {/* Testing Mode (Boolean) */}
+          <FormControlLabel
+            control={
+              <Checkbox
+                name="isTesting"
+                checked={formData.isTesting}
+                onChange={handleCheckboxChange}
+              />
+            }
+            label="Testing Mode (Hidden from public)"
           />
 
           {/* Spin Active (Boolean) */}
@@ -965,14 +1067,30 @@ const ProductForm = ({ product }: { product?: Product }) => {
             </div>
           ))}
           {!formData.isLink && (
-            <Button
-              onClick={handleAddCost}
-              color="primary"
-              variant="contained"
-              className="mb-4 bg-white"
-            >
-              Cost Item <Add />
-            </Button>
+            <div className="flex flex-wrap gap-2 mb-4">
+              <Button
+                onClick={handleAddCost}
+                color="primary"
+                variant="contained"
+                className="bg-white"
+              >
+                Cost Item <Add className="ml-1" size={18} />
+              </Button>
+              <Button
+                component="label"
+                color="info"
+                variant="outlined"
+                sx={{ borderColor: "#3B82F6", color: "#60A5FA", "&:hover": { borderColor: "#60A5FA" } }}
+              >
+                Import CSV <Upload className="ml-1" size={18} />
+                <input
+                  type="file"
+                  accept=".csv"
+                  hidden
+                  onChange={handleImportCSV}
+                />
+              </Button>
+            </div>
           )}
 
           {/* Submit Button */}

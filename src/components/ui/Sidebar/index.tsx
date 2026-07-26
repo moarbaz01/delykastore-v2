@@ -15,6 +15,7 @@ const Sidebar = ({ isOpen, onClose }: SidebarProps) => {
   const navItems = [
     { label: "Home", href: "/", icon: Home },
     { label: "Games", href: "/#games", icon: Gamepad2 },
+    { label: "Order History", href: "/order-history", icon: ClipboardList },
     { label: "Profile", href: "/account", icon: User },
   ];
 

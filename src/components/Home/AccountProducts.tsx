@@ -3,12 +3,26 @@ import SectionHeader from "@/components/ui/SectionHeader";
 import { dbConnect } from "@/lib/database";
 import { Product } from "@/models/product.model";
 import { unstable_noStore } from "next/cache";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
 import { MdOutlineAccountCircle } from "react-icons/md";
 
 const AccountProducts = async () => {
   unstable_noStore();
   await dbConnect();
-  const products = await Product.find({ type: "account", isDeleted: false }).lean();
+  const session = await getServerSession(authOptions);
+  const isAdmin = session?.user?.role === "admin";
+  
+  const filter: any = {
+    type: "account",
+    isDeleted: false,
+  };
+  
+  if (!isAdmin) {
+    filter.isTesting = { $ne: true };
+  }
+
+  const products = await Product.find(filter).lean();
 
   if (products.length === 0) return null;
 

@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { dbConnect } from "@/lib/database";
 import { User } from "@/models/user.model";
-import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
 import bcrypt from "bcrypt";
 // Zod schemas for request validation
 const createUserSchema = z.object({
@@ -31,13 +32,14 @@ export async function GET(req: NextRequest) {
     const userId = url.searchParams.get("id");
     const me = url.searchParams.get("me");
 
+    const session = await getServerSession(authOptions);
+
     if (me === "true") {
-      const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-      if (!token || !token.id) {
+      if (!session || !session.user || !session.user.id) {
         return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
       }
 
-      const user = await User.findById(token.id).select(
+      const user = await User.findById(session.user.id).select(
         "-password -order -payment -__v",
       );
       
@@ -49,8 +51,7 @@ export async function GET(req: NextRequest) {
     }
 
     // If not fetching 'me', the user MUST be an admin to query by ID or fetch all users
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
-    if (!token || token.role !== "admin") {
+    if (!session || session.user.role !== "admin") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -117,10 +118,10 @@ export async function POST(req: Request) {
 export async function PUT(req: NextRequest) {
   try {
     await dbConnect();
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const session = await getServerSession(authOptions);
 
     // If the user is not authenticated, return Unauthorized
-    if (!token) {
+    if (!session || !session.user) {
       return NextResponse.json({ message: "Unauthorized" });
     }
 
@@ -169,14 +170,14 @@ export async function PUT(req: NextRequest) {
 export async function DELETE(req: NextRequest) {
   try {
     await dbConnect();
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const session = await getServerSession(authOptions);
 
     // If the user is not authenticated, return Unauthorized
-    if (!token) {
+    if (!session || !session.user) {
       return NextResponse.json({ message: "Unauthorized" });
     }
 
-    if (token?.role !== "admin") {
+    if (session.user.role !== "admin") {
       return NextResponse.json({ message: "Unauthorized" });
     }
 

@@ -23,12 +23,9 @@ export async function GET(req: NextRequest) {
     const query: any = { user: token.id };
     if (statusFilter && statusFilter !== "all") {
       query.status = statusFilter;
+    } else {
+      query.status = { $ne: "pending" };
     }
-
-    // Note: To search by product name, we might need a more complex query if product is a reference.
-    // However, for now let's handle basic status filtering and allow the frontend to pass status.
-    // If search is provided, we might need to populate and then filter, or use an aggregation.
-    // For simplicity, let's implement status filtering first.
 
     const [ordersRaw, total] = await Promise.all([
       Order.find(query)

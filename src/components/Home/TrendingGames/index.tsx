@@ -4,14 +4,25 @@ import { dbConnect } from "@/lib/database";
 import { Product } from "@/models/product.model";
 import { unstable_noStore } from "next/cache";
 import { IoLogoGameControllerB } from "react-icons/io";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
 
 const TrendingGames = async () => {
   unstable_noStore();
   await dbConnect();
-  const products = await Product.find({
+  const session = await getServerSession(authOptions);
+  const isAdmin = session?.user?.role === "admin";
+  
+  const filter: any = {
     $or: [{ type: "topup" }, { type: { $exists: false } }],
     isDeleted: false,
-  }).lean();
+  };
+  
+  if (!isAdmin) {
+    filter.isTesting = { $ne: true };
+  }
+
+  const products = await Product.find(filter).lean();
 
   return (
     <section id="games" className="mx-4 md:mx-auto max-w-7xl mt-8 mb-6">

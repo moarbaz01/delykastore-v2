@@ -145,6 +145,7 @@ const Navbar = () => {
                     {[
                       { label: "Home", href: "/", icon: Home },
                       { label: "Games", href: "/games", icon: Gamepad2 },
+                      { label: "Order History", href: "/order-history", icon: ClipboardList },
                       { label: "Profile", href: "/account", icon: UserIcon },
                     ].map((item) => {
                       const Icon = item.icon;
@@ -193,10 +194,16 @@ const Navbar = () => {
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                     className="flex items-center gap-2 rounded-xl transition-all duration-200 border border-purple-500/20 px-2.5 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 hover:border-purple-500/40"
                   >
-                    <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-bold uppercase text-sm"
-                      style={{ background: "linear-gradient(135deg, #7B2FBE, #A855F7)" }}>
-                      {session.user?.name?.[0] || session.user?.email?.[0] || <UserIcon size={14} />}
-                    </div>
+                    {session.user?.image ? (
+                      <div className="w-7 h-7 rounded-lg overflow-hidden relative border border-purple-500/30">
+                        <Image src={session.user.image} alt="Profile" fill className="object-cover" sizes="28px" />
+                      </div>
+                    ) : (
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-bold uppercase text-sm"
+                        style={{ background: "linear-gradient(135deg, #7B2FBE, #A855F7)" }}>
+                        {session.user?.name?.[0] || session.user?.email?.[0] || <UserIcon size={14} />}
+                      </div>
+                    )}
                     {isDropdownOpen ? (
                       <ChevronUp size={14} className="text-purple-300" />
                     ) : (
@@ -209,12 +216,18 @@ const Navbar = () => {
                       style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.2)" }}>
                       {/* User Info */}
                       <div className="p-4 border-b border-purple-500/10 flex items-center gap-3">
-                        <div
-                          className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-lg uppercase shadow-sm shrink-0"
-                          style={{ background: "linear-gradient(135deg, #7B2FBE, #A855F7)" }}
-                        >
-                          {session.user?.name?.[0] || session.user?.email?.[0] || <UserIcon size={20} />}
-                        </div>
+                        {session.user?.image ? (
+                          <div className="w-10 h-10 rounded-xl overflow-hidden relative shadow-sm shrink-0 border border-purple-500/30">
+                            <Image src={session.user.image} alt="Profile" fill className="object-cover" sizes="40px" />
+                          </div>
+                        ) : (
+                          <div
+                            className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-lg uppercase shadow-sm shrink-0"
+                            style={{ background: "linear-gradient(135deg, #7B2FBE, #A855F7)" }}
+                          >
+                            {session.user?.name?.[0] || session.user?.email?.[0] || <UserIcon size={20} />}
+                          </div>
+                        )}
                         <div className="overflow-hidden">
                           <div className="font-semibold text-white text-sm truncate">
                             {session.user?.name || "User"}

@@ -4,9 +4,10 @@ import bcrypt from "bcrypt";
 export interface IUser extends Document {
   name: string;
   email?: string;
+  image?: string;
   password?: string;
   telegramId?: string;
-  authProvider: "email" | "telegram";
+  authProvider: "email" | "telegram" | "google";
   isDeleted: boolean;
   role: "user" | "admin";
   order: mongoose.Types.ObjectId[];
@@ -35,6 +36,9 @@ const userSchema = new Schema<IUser>(
       sparse: true,
       trim: true,
     },
+    image: {
+      type: String,
+    },
     password: {
       type: String,
       select: false,
@@ -46,7 +50,7 @@ const userSchema = new Schema<IUser>(
     },
     authProvider: {
       type: String,
-      enum: ["email", "telegram"],
+      enum: ["email", "telegram", "google"],
       default: "email",
     },
     isDeleted: {

@@ -1,4 +1,4 @@
-import { checkAluuAccount } from "@/utils/aluu";
+import { checkAluuAccount, getAluuGameCode } from "@/utils/aluu";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
@@ -11,21 +11,9 @@ export async function POST(req: Request) {
       );
     }
 
-    let game_path;
-
-    if (game === "pubg") {
-      game_path = "pubgm";
-    } else if (game === "freefire") {
-      game_path = "freefire_br";
-    } else if (game === "honorofkings") {
-      game_path = "hok";
-    } else if (game === "mobilelegends") {
-      game_path = "mlbb";
-    } else if (game === "genshinimpact") {
-      game_path = "genshin";
-    } else if (game === "bloodstrike") {
-      game_path = "bloodstrike";
-    } else {
+    const game_path = getAluuGameCode(game);
+    
+    if (!game_path) {
       return NextResponse.json({ error: "Invalid game" }, { status: 400 });
     }
 

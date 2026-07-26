@@ -11,6 +11,7 @@ export interface IProduct extends Document {
   isDeleted: boolean;
   apiName?: string;
   isApi: boolean;
+  isTesting: boolean;
   isLink?: boolean;
   link?: string;
   stock: boolean;
@@ -68,6 +69,10 @@ const productSchema = new Schema<IProduct>(
       type: String,
     },
     isApi: {
+      type: Boolean,
+      default: false,
+    },
+    isTesting: {
       type: Boolean,
       default: false,
     },

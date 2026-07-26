@@ -2,6 +2,7 @@ import Label from "./Label";
 
 interface UserIdSectionProps {
   game: string;
+  isApi?: boolean;
   userId: string;
   zoneId: string;
   message: string;
@@ -28,6 +29,7 @@ const inputFocusStyle = {
 
 const UserIdSection = ({
   game,
+  isApi,
   userId,
   zoneId,
   message,
@@ -108,7 +110,7 @@ const UserIdSection = ({
           </p>
         )}
 
-        {[
+        {(isApi || [
           "mobilelegends",
           "magicchess",
           "genshinimpact",
@@ -116,7 +118,7 @@ const UserIdSection = ({
           "freefire",
           "honorofkings",
           "bloodstrike",
-        ].includes(game) && (
+        ].includes(game)) && (
           <button
             type="submit"
             onClick={handleSubmitCheckRole}

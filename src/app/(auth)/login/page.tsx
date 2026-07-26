@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Eye, EyeOff, Loader2, Mail, Lock, ChevronLeft } from "lucide-react";
 import Loader from "@/components/ui/Loader";
 import toast from "react-hot-toast";
+import { FaGoogle } from "react-icons/fa";
 
 declare global {
   interface Window {
@@ -253,6 +254,15 @@ export default function LoginPage() {
             ) : (
               <div ref={tgRef} className="flex justify-center w-full" />
             )}
+
+            <button
+              onClick={() => signIn("google", { callbackUrl: "/" })}
+              className="mt-3 w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm text-gray-200 transition-all duration-300 hover:bg-white/10"
+              style={{ border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)" }}
+            >
+              <FaGoogle size={18} className="text-red-500" />
+              Continue with Google
+            </button>
 
             <p className="text-[10px] text-gray-500 text-center mt-4 max-w-[280px]">
               We only use your account to match your orders and rewards.

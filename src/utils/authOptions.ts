@@ -3,11 +3,18 @@ import { User } from "@/models/user.model";
 import { AuthOptions, Session } from "next-auth";
 import { JWT } from "next-auth/jwt";
 import CredentialsProvider from "next-auth/providers/credentials";
+import GoogleProvider from "next-auth/providers/google";
 import crypto from "crypto";
 import bcrypt from "bcrypt";
 
 export const authOptions: AuthOptions = {
   providers: [
+    // Google OAuth
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID!,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
+    }),
+    
     // Email + Password login (for both users and admins)
     CredentialsProvider({
       id: "credentials",
@@ -55,6 +62,7 @@ export const authOptions: AuthOptions = {
             authProvider: user.authProvider || "email",
             isVerified: !!user.isVerified,
             telegramId: user.telegramId || "",
+            image: user.image || "",
           };
         } catch (error: any) {
           console.error("Auth Error:", error.message);
@@ -132,9 +140,13 @@ export const authOptions: AuthOptions = {
           user = await User.create({
             telegramId: credentials.id,
             name: displayName || credentials.username || `TG_${credentials.id}`,
+            image: credentials.photo_url || "",
             authProvider: "telegram",
             role: "user",
           });
+        } else if (credentials.photo_url && user.image !== credentials.photo_url) {
+          user.image = credentials.photo_url;
+          await user.save();
         }
 
         if (user.isBlocked) {
@@ -152,6 +164,7 @@ export const authOptions: AuthOptions = {
           role: user.role,
           authProvider: "telegram",
           telegramId: credentials.id,
+          image: user.image || "",
         };
       },
     }),
@@ -166,7 +179,44 @@ export const authOptions: AuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET!,
   callbacks: {
-    async signIn({ user }: { user: any }): Promise<boolean> {
+    async signIn({ user, account, profile }: any): Promise<boolean> {
+      if (account?.provider === "google") {
+        await dbConnect();
+        try {
+          let existingUser = await User.findOne({ email: user.email });
+
+          if (!existingUser) {
+            existingUser = await User.create({
+              name: user.name || "Google User",
+              email: user.email,
+              image: user.image || "",
+              authProvider: "google",
+              isVerified: true,
+              role: "user",
+            });
+          } else if (existingUser.isBlocked) {
+            throw new Error("Account is blocked");
+          } else if (existingUser.isDeleted) {
+            throw new Error("Account has been deleted");
+          } else if (user.image && existingUser.image !== user.image) {
+            existingUser.image = user.image;
+            await existingUser.save();
+          }
+
+          // Mutate the user object so the jwt callback receives our DB values
+          user.id = existingUser._id.toString();
+          user.role = existingUser.role;
+          user.authProvider = existingUser.authProvider;
+          user.isVerified = existingUser.isVerified;
+          user.telegramId = existingUser.telegramId || "";
+          user.image = existingUser.image || user.image || "";
+          return true;
+        } catch (error: any) {
+          console.error("Google Auth Error:", error);
+          return false;
+        }
+      }
+
       if (!user) {
         throw new Error("Invalid credentials");
       }
@@ -192,12 +242,13 @@ export const authOptions: AuthOptions = {
         token.authProvider = user.authProvider;
         token.telegramId = user.telegramId;
         token.isVerified = user.isVerified;
+        token.image = user.image;
       }
 
       if (trigger === "update" && session) {
         if (session.name) token.name = session.name;
         if (session.email) token.email = session.email;
-        if (session.image) token.picture = session.image;
+        if (session.image) token.image = session.image;
       }
 
       return token;
@@ -218,6 +269,7 @@ export const authOptions: AuthOptions = {
         session.user.authProvider = token.authProvider;
         session.user.telegramId = token.telegramId;
         session.user.isVerified = token.isVerified;
+        session.user.image = token.image;
       }
       return session;
     },

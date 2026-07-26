@@ -350,6 +350,7 @@ const Product = ({
             <Reveal width="100%" delay={0.1}>
               <UserIdSection
                 game={game}
+                isApi={isApi}
                 userId={userId}
                 zoneId={zoneId}
                 message={message}

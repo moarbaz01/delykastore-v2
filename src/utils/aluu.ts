@@ -120,7 +120,7 @@ export function getAluuGameCode(game: string): string | null {
   if (game === "mobilelegends") return "mlbb";
   if (game === "genshinimpact") return "genshin";
   if (game === "bloodstrike") return "bloodstrike";
-  return null;
+  return game;
 }
 
 export async function processAluuOrder(order: any) {

@@ -33,6 +33,7 @@ const productSchema = z.object({
   banner: z.any().optional(),
   game: z.string(),
   isApi: z.boolean().optional(),
+  isTesting: z.boolean().optional(),
   isLink: z.boolean().optional(),
   link: z.string().optional(),
   stock: z.boolean().optional(),
@@ -79,7 +80,7 @@ export async function POST(req: NextRequest) {
         rawData[key] = JSON.parse(value.toString());
       } else if (value instanceof File) {
         rawData[key] = value;
-      } else if (key === "isApi" || key === "stock" || key === "spinActive" || key === "isLink") {
+      } else if (key === "isApi" || key === "stock" || key === "spinActive" || key === "isLink" || key === "isTesting") {
         rawData[key] = value === "true";
       } else {
         rawData[key] = value;
@@ -295,7 +296,7 @@ export async function PUT(req: NextRequest) {
         rawData[key] = JSON.parse(value.toString());
       } else if (value instanceof File) {
         rawData[key] = value;
-      } else if (key === "isApi" || key === "stock" || key === "spinActive" || key === "isLink") {
+      } else if (key === "isApi" || key === "stock" || key === "spinActive" || key === "isLink" || key === "isTesting") {
         rawData[key] = value === "true";
       } else {
         rawData[key] = value;
