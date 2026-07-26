@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     await dbConnect();
     const session = await getServerSession(authOptions);
 
-    if (!session || !session.id) {
+    if (!session || !session.user?.id) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
@@ -39,7 +39,7 @@ export async function PUT(req: NextRequest) {
     await dbConnect();
     const session = await getServerSession(authOptions);
 
-    if (!session || !session.id) {
+    if (!session || !session.user?.id) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 

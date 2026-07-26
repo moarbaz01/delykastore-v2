@@ -20,7 +20,7 @@ export async function POST(req: NextRequest) {
     await dbConnect();
     const session = await getServerSession(authOptions);
 
-    if (!session || !session.id) {
+    if (!session || !session.user?.id) {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
