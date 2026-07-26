@@ -7,7 +7,11 @@ export async function middleware(req: NextRequest) {
 
   // 1. Protect Dashboard (Main Domain)
   if (pathname.startsWith("/dashboard")) {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET! });
+    const token = await getToken({ 
+      req, 
+      secret: process.env.NEXTAUTH_SECRET!,
+      secureCookie: process.env.NODE_ENV === "production"
+    });
     if (!token || token.role !== "admin") {
       url.pathname = "/login";
       return NextResponse.redirect(url);
@@ -18,7 +22,11 @@ export async function middleware(req: NextRequest) {
 
   // 3. Prevent Auth Pages when Logged In
   if (["/login", "/signup"].includes(pathname)) {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET! });
+    const token = await getToken({ 
+      req, 
+      secret: process.env.NEXTAUTH_SECRET!,
+      secureCookie: process.env.NODE_ENV === "production"
+    });
     if (token) {
       url.pathname = token.role === "admin" ? "/dashboard" : "/";
       return NextResponse.redirect(url);
