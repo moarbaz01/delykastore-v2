@@ -1,6 +1,7 @@
 import { dbConnect } from "@/lib/database";
 import { Order } from "@/models/order.model";
-import { getToken } from "next-auth/jwt";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/utils/authOptions";
 import { NextRequest, NextResponse } from "next/server";
 import "@/models/product.model";
 
@@ -9,11 +10,10 @@ export const dynamic = "force-dynamic";
 export async function GET(req: NextRequest) {
   try {
     await dbConnect();
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+    const session = await getServerSession(authOptions);
 
-    // If the user is not authenticated, return Unauthorized
-    if (!token) {
-      return NextResponse.json({ message: "Unauthorized" });
+    if (!session || session.user?.role !== "admin") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
     const { searchParams } = new URL(req.url);
 
