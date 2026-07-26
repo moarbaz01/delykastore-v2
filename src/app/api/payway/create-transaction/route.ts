@@ -185,6 +185,7 @@ export async function POST(req: Request) {
       payment_option: "abapay_khqr",
       return_url: encodedReturnUrl || "",
       cancel_url: cancel_url || "",
+      skip_success_page: 1,
       continue_success_url: continue_success_url || "",
       return_deeplink: "",
       currency: "USD",

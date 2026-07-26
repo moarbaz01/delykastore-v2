@@ -96,6 +96,13 @@ const PaymentForm: React.FC<PaymentFormProps> = ({ paymentData, formRef }) => {
                 value={paymentData.custom_fields}
               />
             )}
+            {paymentData.skip_success_page && (
+              <input
+                type="hidden"
+                name="skip_success_page"
+                value={paymentData.skip_success_page}
+              />
+            )}
             {paymentData.return_params && (
               <input
                 type="hidden"
