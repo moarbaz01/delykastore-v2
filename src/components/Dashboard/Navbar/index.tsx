@@ -43,6 +43,7 @@ const menuGroups = [
     title: "Configs",
     links: [
       { href: "/dashboard/game-list", label: "Api Game List", icon: FaGamepad },
+      { href: "/dashboard/aluu-packages", label: "ALUU Packages", icon: FaGamepad },
       { href: "/dashboard/balance", label: "Balance", icon: FaWallet },
     ],
   },
