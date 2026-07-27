@@ -263,7 +263,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
     const reader = new FileReader();
     reader.onload = (event) => {
       const text = event.target?.result as string;
-      const lines = text.split("\\n").filter((line) => line.trim() !== "");
+      const lines = text.split(/\r\n|\n|\r/).filter((line) => line.trim() !== "");
       if (lines.length <= 1) {
         toast.error("CSV is empty or invalid");
         return;
