@@ -51,7 +51,8 @@ export async function POST(req: Request) {
 
     // For account orders, always use the server-side token ID as the user.
     // Never trust the user ID from the client payload.
-    const resolvedUser = isValidProduct.type === "account" ? session.user?.id : user;
+    const resolvedUser =
+      isValidProduct.type === "account" ? session.user?.id : user;
 
     const isValidCost = isValidProduct?.cost?.find((cost) => {
       return cost.id === costId;
@@ -189,6 +190,7 @@ export async function POST(req: Request) {
       custom_fields: "",
       return_params: "",
       payout: "",
+      skip_success_page: "1",
       lifetime: "",
       additional_params: "",
       google_pay_token: "",
