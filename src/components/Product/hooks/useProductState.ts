@@ -20,9 +20,13 @@ export const useProductState = (game: string, region?: string) => {
   });
 
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(() => 
+    typeof window !== "undefined" ? localStorage.getItem(`${game}${region}-username`) || "" : ""
+  );
   const [errorMessage, setErrorMessage] = useState("");
-  const [playerAvailable, setPlayerAvailable] = useState(false);
+  const [playerAvailable, setPlayerAvailable] = useState(() => 
+    typeof window !== "undefined" ? !!localStorage.getItem(`${game}${region}-username`) : false
+  );
   const [isAgree, setIsAgree] = useState(true);
   const [paymentData, setPaymentData] = useState(null);
   const [costCategories, setCostCategories] = useState([]);

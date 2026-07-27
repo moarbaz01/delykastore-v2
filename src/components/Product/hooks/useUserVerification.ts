@@ -24,6 +24,7 @@ export const useUserVerification = (
           setMessage(playerName);
           setErrorMessage("");
           localStorage.setItem(`${game}${region}-userid`, userId);
+          localStorage.setItem(`${game}${region}-username`, playerName);
           if (zoneId) {
             localStorage.setItem(`${game}${region}-zoneid`, zoneId);
           }
@@ -93,6 +94,7 @@ export const useUserVerification = (
           setPlayerAvailable(true);
           setMessage(data.username);
           localStorage.setItem(`${game}${region}-userid`, userId);
+          localStorage.setItem(`${game}${region}-username`, data.username);
           if (zoneId) {
             localStorage.setItem(`${game}${region}-zoneid`, zoneId);
           }
