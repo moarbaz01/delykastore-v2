@@ -42,8 +42,8 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: res.message }, { status: 400 });
     }
     
-    // 3. Save successful result to cache for 10 minutes
-    setCachedResult(cacheKey, res, 600);
+    // 3. Save successful result to cache for 24 hours (86400 seconds)
+    setCachedResult(cacheKey, res, 86400);
     
     return NextResponse.json(res);
   } catch (error) {

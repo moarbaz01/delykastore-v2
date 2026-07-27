@@ -70,9 +70,9 @@ export async function POST(req: Request) {
     );
     console.log(res.data);
 
-    // 3. Save successful result to cache for 10 minutes
+    // 3. Save successful result to cache for 24 hours (86400 seconds)
     if (res.data && res.data.status === 200) {
-      setCachedResult(cacheKey, res.data, 600); // 10 minutes
+      setCachedResult(cacheKey, res.data, 86400); // 24 hours
     }
 
     return NextResponse.json(res.data, { status: 200 });
