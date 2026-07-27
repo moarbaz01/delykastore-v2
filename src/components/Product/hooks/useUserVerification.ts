@@ -8,7 +8,7 @@ export const useUserVerification = (
   setErrorMessage: (value: string) => void,
 ) => {
   const checkUserAccount = useCallback(
-    async (game: string, userId: string, zoneId: string) => {
+    async (game: string, userId: string, zoneId: string, region?: string) => {
       try {
         setLoading(true);
         const res = await axios.post("/api/verify-user-account", {
@@ -23,6 +23,10 @@ export const useUserVerification = (
           setPlayerAvailable(true);
           setMessage(playerName);
           setErrorMessage("");
+          localStorage.setItem(`${game}${region}-userid`, userId);
+          if (zoneId) {
+            localStorage.setItem(`${game}${region}-zoneid`, zoneId);
+          }
         } else {
           setPlayerAvailable(false);
           setMessage("");
@@ -61,7 +65,7 @@ export const useUserVerification = (
       }
 
       if (!region || region !== "brazil") {
-        await checkUserAccount(game, userId, zoneId);
+        await checkUserAccount(game, userId, zoneId, region);
         return;
       }
 
@@ -88,8 +92,10 @@ export const useUserVerification = (
         if (data.status === 200) {
           setPlayerAvailable(true);
           setMessage(data.username);
-          localStorage.setItem("getotopup-userId", userId);
-          localStorage.setItem("getotopup-zoneId", zoneId);
+          localStorage.setItem(`${game}${region}-userid`, userId);
+          if (zoneId) {
+            localStorage.setItem(`${game}${region}-zoneid`, zoneId);
+          }
           setErrorMessage("");
         } else {
           setErrorMessage(data.message);
