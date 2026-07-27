@@ -3,6 +3,7 @@ import z from "zod";
 import axios from "axios";
 import { generateSign } from "@/utils/hash";
 import { dbConnect } from "@/lib/database";
+import { checkRateLimit, getCachedResult, setCachedResult } from "@/utils/apiCache";
 
 const schema = z.object({
   zoneId: z.string(),
@@ -23,6 +24,24 @@ export async function POST(req: Request) {
     }
 
     const { zoneId, userId, product, productId } = result.data;
+    
+    // 1. Rate Limiting: 10 requests per minute per IP
+    const ip = req.headers.get("x-forwarded-for") || "unknown";
+    if (!checkRateLimit(ip, 10, 60)) {
+      return NextResponse.json(
+        { message: "Too many requests. Please wait a moment." },
+        { status: 429 }
+      );
+    }
+
+    // 2. Caching: Check if we recently fetched this exact ID
+    const cacheKey = `smileone_${product}_${userId}_${zoneId}`;
+    const cachedData = getCachedResult(cacheKey);
+    if (cachedData) {
+      console.log("Serving Smile.One check from memory cache:", cacheKey);
+      return NextResponse.json(cachedData, { status: 200 });
+    }
+
     console.log(zoneId, userId);
     const params = {
       uid: process.env.SMILE_ONE_UID!,
@@ -50,6 +69,11 @@ export async function POST(req: Request) {
       }
     );
     console.log(res.data);
+
+    // 3. Save successful result to cache for 10 minutes
+    if (res.data && res.data.status === 200) {
+      setCachedResult(cacheKey, res.data, 600); // 10 minutes
+    }
 
     return NextResponse.json(res.data, { status: 200 });
   } catch (error) {
