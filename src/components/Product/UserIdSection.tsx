@@ -97,10 +97,18 @@ const UserIdSection = ({
               {message}
             </p>
           ) : (
-            <p className="text-purple-300 rounded-xl text-sm p-2.5 my-1"
+            <div className="flex items-center justify-between rounded-xl p-3 my-1"
               style={{ background: "rgba(168,85,247,0.1)", border: "1px solid rgba(168,85,247,0.2)" }}>
-              USERNAME : {message}
-            </p>
+              <span className="text-purple-300 text-sm font-medium truncate pr-2">
+                USERNAME: {message}
+              </span>
+              <span className="flex items-center gap-1 text-green-400 text-[10px] sm:text-xs font-bold px-2 py-1 rounded bg-green-500/10 border border-green-500/20 whitespace-nowrap">
+                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
+                </svg>
+                VERIFIED
+              </span>
+            </div>
           ))}
 
         {errorMessage && (
