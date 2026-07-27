@@ -273,8 +273,8 @@ const ProductForm = ({ product }: { product?: Product }) => {
       
       // Skip header (index 0)
       for (let i = 1; i < lines.length; i++) {
-        // Regex to split by comma but ignore commas inside quotes
-        const row = lines[i].match(/(".*?"|[^",\\s]+)(?=\\s*,|\\s*$)/g) || lines[i].split(",");
+        // Split by comma but ignore commas inside quotes, preserving empty columns
+        const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
         const cleanRow = row.map((item) => item.replace(/(^"|"$)/g, "").trim());
         
         if (cleanRow.length >= 3) {
