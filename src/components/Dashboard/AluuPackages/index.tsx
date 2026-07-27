@@ -91,7 +91,7 @@ export default function AluuPackagesClient() {
     if (!sortedProducts.length) return;
 
     // Standard headers for DelykaStore Product Cost importing
-    const headers = ["id", "amount", "price", "durationDays", "category", "note", "image"];
+    const headers = ["id", "amount", "price", "note", "category"];
     
     const rows = sortedProducts.map((p) => {
       // Map ALUU fields to standard fields
@@ -99,10 +99,8 @@ export default function AluuPackagesClient() {
         p.Pack, // id
         `"${p.name.replace(/"/g, '""')}"`, // amount (quote to escape commas)
         p.price, // price
-        "", // durationDays
-        "no_category", // category
         "", // note
-        "" // image
+        "no_category", // category
       ].join(",");
     });
 

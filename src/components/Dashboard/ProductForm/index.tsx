@@ -281,16 +281,14 @@ const ProductForm = ({ product }: { product?: Product }) => {
           const id = cleanRow[0] || "";
           const amount = cleanRow[1] || "";
           const price = cleanRow[2] || "";
-          const durationDays = cleanRow[3] || "";
+          const note = cleanRow[3] || "";
           const category = cleanRow[4] || "no_category";
-          const note = cleanRow[5] || "";
           
           if (id && price) {
             newCosts.push({
               id,
               amount,
               price,
-              durationDays,
               category,
               note,
               image: null
