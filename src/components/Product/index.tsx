@@ -139,9 +139,9 @@ const Product = ({
   };
 
   const handleSubmitCheckRole = async (
-    e: React.SyntheticEvent<HTMLButtonElement>,
+    e?: React.SyntheticEvent<HTMLButtonElement>,
   ) => {
-    e.preventDefault();
+    if (e) e.preventDefault();
     await fetchCheckRole(userId, zoneId, game, region);
     if (userId) {
       localStorage.setItem(`${game}${region}-userid`, userId);
@@ -151,6 +151,25 @@ const Product = ({
       localStorage.setItem(`${game}${region}-zoneid`, zoneId);
     }
   };
+
+  useEffect(() => {
+    // Determine if the game requires a Zone ID
+    const requiresZoneId =
+      ["mobilelegends", "magicchess", "genshinimpact"].includes(game) ||
+      game.startsWith("mlbb");
+
+    // Check if required fields are filled
+    const canCheck = userId && (!requiresZoneId || zoneId);
+
+    if (canCheck) {
+      // Auto-trigger the check after the user stops typing for 1 second
+      const timer = setTimeout(() => {
+        handleSubmitCheckRole();
+      }, 1000);
+      return () => clearTimeout(timer);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [userId, zoneId, game, region]);
 
   const handleRemoveCoupon = () => {
     removeCouponUtil(setAppliedCoupon, setCouponCode, setCouponError);

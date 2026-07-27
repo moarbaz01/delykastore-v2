@@ -110,31 +110,11 @@ const UserIdSection = ({
           </p>
         )}
 
-        {(isApi || [
-          "mobilelegends",
-          "magicchess",
-          "genshinimpact",
-          "pubg",
-          "freefire",
-          "honorofkings",
-          "bloodstrike",
-        ].includes(game)) && (
-          <button
-            type="submit"
-            onClick={handleSubmitCheckRole}
-            disabled={loading}
-            className="w-full md:w-auto md:mx-auto px-8 py-2.5 rounded-full text-white text-sm font-semibold transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:-translate-y-0.5"
-            style={{ background: "linear-gradient(135deg, #7B2FBE 0%, #A855F7 100%)" }}
-          >
-            {loading ? (
-              <span className="flex items-center justify-center gap-2">
-                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                Loading...
-              </span>
-            ) : (
-              "ពិនិត្យ ឈ្មោះ"
-            )}
-          </button>
+        {loading && (
+          <div className="flex items-center justify-center gap-2 text-purple-300 text-sm mt-2">
+            <div className="w-4 h-4 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
+            កំពុងពិនិត្យឈ្មោះ...
+          </div>
         )}
       </form>
     </div>
