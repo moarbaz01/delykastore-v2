@@ -59,7 +59,7 @@ const UserIdSection = ({
           onBlur={(e) => Object.assign(e.target.style, inputStyle)}
         />
 
-        {["mobilelegends", "magicchess", "mlbb"].includes(game) && (
+        {(["mobilelegends", "magicchess"].includes(game) || game.startsWith("mlbb")) && (
           <input
             type="text"
             placeholder="SERVER ID"
