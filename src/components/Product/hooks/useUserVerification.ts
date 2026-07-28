@@ -60,7 +60,7 @@ export const useUserVerification = (
 
       if (game === "magicchess") {
         setPlayerAvailable(true);
-        setMessage("ត្រូវប្រាកដថាIDរបស់អ្នកត្រឹមត្រូវ");
+        setMessage("Please make sure your ID is correct");
         setErrorMessage("");
         return;
       }

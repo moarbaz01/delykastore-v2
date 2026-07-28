@@ -24,13 +24,13 @@ const CouponSection = ({
       className="p-4 rounded-2xl relative"
       style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
     >
-      <Label text={"អនុវត្តកូដកា"} number={appliedCoupon ? "✓" : "3"} />
+      <Label text={"Apply Coupon"} number={appliedCoupon ? "✓" : "3"} />
 
       <div className="mt-4 flex flex-col gap-2.5">
         <div className="flex gap-2">
           <input
             type="text"
-            placeholder="បញ្ចូលកូដកាត"
+            placeholder="Enter Coupon Code"
             value={couponCode}
             onChange={(e) => setCouponCode(e.target.value)}
             disabled={!!appliedCoupon}
@@ -54,7 +54,7 @@ const CouponSection = ({
               className="px-4 py-2 rounded-xl text-red-400 text-sm font-medium transition-all duration-200 hover:bg-red-500/10"
               style={{ border: "1px solid rgba(239,68,68,0.3)" }}
             >
-              លុបចោល
+              Remove
             </button>
           ) : (
             <button
@@ -66,7 +66,7 @@ const CouponSection = ({
               {isCheckingCoupon ? (
                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
               ) : (
-                "អនុវត្ត"
+                "Apply"
               )}
             </button>
           )}
@@ -86,12 +86,12 @@ const CouponSection = ({
           >
             <p className="font-bold text-green-400">
               {appliedCoupon.couponDetails?.type === "percentage"
-                ? `🎉 បញ្ចុះតម្លៃ ${appliedCoupon.discount}% ត្រូវបានអនុវត្ត!`
-                : `🎉 បញ្ចុះតម្លៃ $${appliedCoupon.discount} ត្រូវបានអនុវត្ត!`}
+                ? `🎉 ${appliedCoupon.discount}% discount applied!`
+                : `🎉 $${appliedCoupon.discount} discount applied!`}
             </p>
             {appliedCoupon.couponDetails?.minAmount && (
               <p className="text-green-400/70 text-xs mt-1">
-                មានសុពលភាពលើការបញ្ជាទិញលើសពី ${appliedCoupon.couponDetails.minAmount}
+                Valid on orders over ${appliedCoupon.couponDetails.minAmount}
               </p>
             )}
           </div>

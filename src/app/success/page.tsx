@@ -59,7 +59,7 @@ const MyComponent = () => {
 
           <h1 className="text-2xl font-bold text-white mb-2">Payment Successful!</h1>
           <p className="text-green-400 text-sm font-medium mb-6">
-            ការបញ្ជាទិញរបស់អ្នក ទទួលបានជោគជ័យ
+            Your order was successful
           </p>
 
           {/* Details */}

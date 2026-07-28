@@ -87,17 +87,17 @@ export default function GiftModal({
     const makeEntry = async () => {
         try {
             if (!data.userId) {
-                toast("តម្រូវឱ្យមាន ID របស់អ្នកប្រើប្រាស់");
+                toast("User ID is required");
                 return;
             }
 
             if (!data.productId) {
-                toast("តម្រូវឱ្យមាន ID ផលិតផល");
+                toast("Product ID is required");
                 return;
             }
 
             if (!selected) {
-                toast("សូមជ្រើសរើសរង្វាន់");
+                toast("Please select a reward");
                 return;
             }
 
@@ -113,15 +113,15 @@ export default function GiftModal({
             const response = res.data;
             if (!response.success) {
                 toast.error(
-                    response.message || "បរាជ័យក្នុងដំណើរការប្រតិបត្តិការណ៍រង្វាន់",
+                    response.message || "Failed to process reward transaction",
                 );
                 return;
             }
-            toast.success("ដំណើរការប្រតិបត្តិការណ៍រង្វាន់បានជោគជ័យ");
+            toast.success("Reward transaction processed successfully");
             onClose();
             window.location.reload();
         } catch (error) {
-            toast.error("បរាជ័យក្នុងដំណើរការប្រតិបត្តិការណ៍រង្វាន់");
+            toast.error("Failed to process reward transaction");
         } finally {
             setIsLoading(false);
         }
@@ -178,7 +178,7 @@ export default function GiftModal({
                             <div className="flex items-center gap-1.5">
                                 <FaTicketAlt className="text-primary text-xs" />
                                 <span className="text-xs font-semibold text-white">
-                                    ដំណើរការចំណាយ
+                                    Processing Payment
                                 </span>
                             </div>
                             <div className="flex items-center gap-2">
@@ -255,7 +255,7 @@ export default function GiftModal({
                     <div className="flex items-center gap-1 mb-2">
                         <FaTrophy className="text-primary text-xs" />
                         <span className="text-xs font-bold text-white">
-                            ជ្រើសរើសរង្វាន់របស់អ្នក
+                            Choose your reward
                         </span>
                     </div>
                     <div className="space-y-2 rounded-xl bg-card-bg p-4">
@@ -291,7 +291,7 @@ export default function GiftModal({
                         <div className="flex items-center gap-1 mb-1">
                             <FaStar className="text-accent text-xs" />
                             <span className="text-xs font-bold text-white">
-                                លក្ខណៈពិសេសរង្វាន់
+                                Reward features
                             </span>
                         </div>
                         <ul className="text-xs text-gray-300 space-y-1">
@@ -316,7 +316,7 @@ export default function GiftModal({
                         onClick={onClose}
                         className="flex-1 py-2 rounded-lg border-2 border-gray-600 font-semibold text-white hover:bg-gray-700/50 transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-1 text-sm"
                     >
-                        បោះបង់
+                        Cancel
                     </button>
                     <button
                         onClick={makeEntry}
@@ -337,12 +337,12 @@ export default function GiftModal({
                                     ) : (
                                         <FaUnlock className="text-xs" />
                                     )}
-                                    {isLoading ? "កំពុងដំណើរការ..." : "ទទួលយករង្វាន់"}
+                                    {isLoading ? "Processing..." : "Claim Reward"}
                                 </>
                             ) : (
                                 <>
                                     <FaLock className="text-xs" />
-                                    ចាក់សោ
+                                    Locked
                                 </>
                             )}
                         </span>
@@ -392,7 +392,7 @@ function PrizeOption({
                     <div>
                         <span className="font-bold text-sm text-white block">{amount}</span>
                         <span className="font-bold text-sm text-white block">
-                            កម្រិត : ${wagering}
+                            Level : ${wagering}
                         </span>
                     </div>
                 </div>
@@ -404,7 +404,7 @@ function PrizeOption({
                     <div className="flex flex-col items-end ">
                         {canClaim && !disabled && (
                             <div className="bg-green-500 absolute top-0 right-0 text-white text-xs font-bold px-2 py-0.5 rounded mb-1">
-                                ទាម្ទេញ
+                                Claim
                             </div>
                         )}
                         <span

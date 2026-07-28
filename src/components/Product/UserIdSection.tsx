@@ -56,7 +56,7 @@ const UserIdSection = ({
       className="p-4 rounded-2xl relative"
       style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
     >
-      <Label text={"បញ្ចូល អាយឌី"} number={1} />
+      <Label text={"Enter User ID"} number={1} />
       <form className="flex flex-col gap-3 mt-4">
         {showUserId && (
           <input
@@ -135,7 +135,7 @@ const UserIdSection = ({
         {loading && (
           <div className="flex items-center justify-center gap-2 text-purple-300 text-sm mt-2">
             <div className="w-4 h-4 border-2 border-purple-500/30 border-t-purple-500 rounded-full animate-spin" />
-            កំពុងពិនិត្យឈ្មោះ...
+            Checking Name...
           </div>
         )}
       </form>

@@ -3,32 +3,32 @@ import { FaShieldAlt, FaBolt, FaGift, FaTag, FaWallet } from "react-icons/fa";
 const features = [
   {
     icon: FaTag,
-    title: "តម្លៃសមរម្យ",
-    description: "តែងតែផ្តល់នូវផលិតផលដែលមានគុណភាពល្អ ក្នុងតម្លៃទាបបំផុតសម្រាប់ហ្គេមដែលមានទាំងអស់",
+    title: "Affordable Prices",
+    description: "We always provide high-quality products at the lowest prices for all available games.",
     color: "#A855F7",
   },
   {
     icon: FaWallet,
-    title: "ជម្រើសទូទាត់ប្រាក់",
-    description: "ជម្រើសទូទាត់ប្រាក់មានច្រើនប្រភេទឲ្យជ្រើសរើសមានដូចជា KHQR, WING, ABA, ACLEDA...",
+    title: "Payment Options",
+    description: "Multiple payment options available including KHQR, WING, ABA, ACLEDA...",
     color: "#8B5CF6",
   },
   {
     icon: FaGift,
-    title: "ការផ្តល់ជូនពិសេស",
-    description: "តែងតែមានការផ្តល់ជូនពិសេសៗទៅកាន់អតិថិជន ក៏ដូចជាមានការចាប់រង្វាន់រៀងរាល់ខែ",
+    title: "Special Offers",
+    description: "We always have special offers for our customers as well as monthly giveaways.",
     color: "#C084FC",
   },
   {
     icon: FaBolt,
-    title: "សេវាកម្មរហ័ស",
-    description: "សេវាកម្ម និងការដឹកជញ្ជូនឆាប់រហ័សរាល់ការជាវនូវគ្រប់ផលិតផល",
+    title: "Fast Service",
+    description: "Fast delivery and service for all product purchases.",
     color: "#A855F7",
   },
   {
     icon: FaShieldAlt,
-    title: "សុវត្តិភាព និង ទំនុកចិត្ត",
-    description: "ការរក្សាបាននូវសុត្ថិភាព និងទំនុកចិត្តខ្ពស់សម្រាប់គណនីផ្ទាល់ខ្លួនរបស់អ្នក",
+    title: "Security and Trust",
+    description: "Maintaining high security and trust for your personal account.",
     color: "#7C3AED",
   },
 ];
@@ -56,10 +56,10 @@ export default function WhyChooseUs() {
               backgroundClip: "text",
             }}
           >
-            ហេតុអ្វីត្រូវជ្រើសរើសយើង
+            Why Choose Us
           </h2>
           <p className="text-gray-400 text-base max-w-2xl mx-auto leading-relaxed">
-            យើងផ្តល់ជូននូវបទពិសោធន៍ល្បែងល្អបំផុតជាមួយនឹងលក្ខណៈពិសេស និងអត្ថប្រយោជន៍ដែលគ្មានអ្នកណាអាចប្រៀបផ្ទឹមបាន
+            We offer the best gaming experience with unmatched features and benefits
           </p>
         </div>
 

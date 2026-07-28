@@ -33,7 +33,7 @@ const PackageSection = ({
       className="p-4 rounded-2xl relative"
       style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
     >
-      <Label text={"ជ្រើសរើសកញ្ចប់"} number={2} />
+      <Label text={"Select Package"} number={2} />
       {groupedCost.map((item, index) => (
         <div key={index} className="mt-4">
           {item.category !== "no_category" && item.items.length !== 0 && (

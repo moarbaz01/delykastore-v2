@@ -28,10 +28,10 @@ const NotFound = () => {
         </div>
 
         <h2 className="text-2xl font-bold text-white mb-3">
-          អូ! រកមិនឃើញទំព័រ
+          Oops! Page not found
         </h2>
         <p className="text-gray-400 mb-8 max-w-sm mx-auto leading-relaxed">
-          យើងរកមិនឃើញទំព័រដែលអ្នកកំពុងស្វែងរក។ វាប្រហែលជាត្រូវបានផ្លាស់ទី ឬលុបចោល។
+          We couldn't find the page you're looking for. It might have been moved or deleted.
         </p>
 
         <Link
@@ -39,7 +39,7 @@ const NotFound = () => {
           className="inline-flex items-center gap-2 px-8 py-3 rounded-full text-white font-semibold transition-all duration-300 hover:shadow-[0_0_25px_rgba(168,85,247,0.5)] hover:-translate-y-1"
           style={{ background: "linear-gradient(135deg, #7B2FBE 0%, #A855F7 100%)" }}
         >
-          ← ត្រឡប់ទៅទំព័រដើម
+          ← Back to Home
         </Link>
       </div>
     </div>

@@ -20,7 +20,7 @@ const PaymentSection = ({
       className="p-4 md:mb-0 mb-24 rounded-2xl relative"
       style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
     >
-      <Label text={"ទូទាត់ប្រាក់បានគ្រប់ធនាគារ"} number={4} />
+      <Label text={"Payment Methods"} number={4} />
 
       {/* Payment method card */}
       <div
@@ -42,7 +42,7 @@ const PaymentSection = ({
           </div>
           <div>
             <h3 className="font-bold text-sm text-white">ABA KHQR</h3>
-            <p className="text-xs text-gray-400">ស្កៅនដើម្បីទូទាត់ជាមួយ App ត្រូវបាន</p>
+            <p className="text-xs text-gray-400">Scan to pay with any banking App</p>
           </div>
         </div>
         <span
@@ -88,13 +88,13 @@ const PaymentSection = ({
           </div>
         </div>
         <label htmlFor="agree" className="text-sm text-gray-300 cursor-pointer leading-relaxed">
-          ខ្ញុំយល់ព្រំ
+          I agree
           <span
             onClick={() => router.push("/terms-and-conditions")}
             className="font-semibold ml-1 transition-colors cursor-pointer hover:opacity-80"
             style={{ color: "#A855F7" }}
           >
-            លក្ខខណ្ឌ និង លេខខណ្ឌ
+            Terms and Conditions
           </span>
         </label>
       </div>

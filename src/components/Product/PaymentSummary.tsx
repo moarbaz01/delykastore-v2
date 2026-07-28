@@ -97,7 +97,7 @@ const PaymentSummary = ({
           ) : (
             <>
               <ShoppingCart size={18} />
-              បង់ ឥឡូវ
+              Pay Now
             </>
           )}
         </button>

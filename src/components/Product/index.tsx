@@ -286,7 +286,7 @@ const Product = ({
   const handleOpenGiftModal = () => {
     if (!gift || !gift.isActive) return;
     if (!userId || !playerAvailable) {
-      setErrorMessage("ចុចពិនិត្យឈ្មោះដើម្បីទទួលរង្វាន់");
+      setErrorMessage("Click check name to receive reward");
       return;
     }
     setShowGiftModal(true);
@@ -316,7 +316,7 @@ const Product = ({
   if (isDeleted) {
     return (
       <div className="w-full flex justify-center items-center">
-        <h1 className="text-2xl">រកមិនឃើញផលិតផល</h1>
+        <h1 className="text-2xl">Product not found</h1>
       </div>
     );
   }

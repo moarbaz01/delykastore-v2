@@ -200,14 +200,14 @@ const SpinWheel: React.FC = () => {
                 {/* Header */}
                 <div className="text-center mb-6 lg:mb-8">
                     <h1 className="text-2xl lg:text-4xl font-bold mb-2 text-primary">
-                        Lucky Spin / បង្វិលឱកាសឈ្នះរង្វាន់
+                        Lucky Spin
                     </h1>
                     <div className="flex justify-center gap-2 lg:gap-4 mt-4 flex-wrap">
                         <button className="px-3 lg:px-4 py-2 bg-secondary hover:bg-secondary/80 rounded-lg transition-colors flex items-center gap-2 text-sm lg:text-base">
                             <FaTimes /> Back to Home
                         </button>
                         <button className="px-3 lg:px-4 py-2 bg-card-bg hover:bg-card-bg/80 rounded-lg transition-colors flex items-center gap-2 text-sm lg:text-base">
-                            <FaGift /> Rules / ច្បាប់
+                            <FaGift /> Rules
                         </button>
                     </div>
                 </div>
@@ -277,7 +277,7 @@ const SpinWheel: React.FC = () => {
                                     disabled={isSpinning || remainingSpins <= 0}
                                     className="px-8 py-4 bg-primary hover:bg-primary/80 disabled:bg-gray-600 disabled:cursor-not-allowed rounded-xl font-bold text-lg transition-all transform hover:scale-105 active:scale-95 shadow-lg"
                                 >
-                                    {isSpinning ? 'Spinning...' : 'SPIN / បង្វិល'}
+                                    {isSpinning ? 'Spinning...' : 'SPIN'}
                                 </button>
 
                                 <div className="space-y-2">
@@ -320,7 +320,7 @@ const SpinWheel: React.FC = () => {
                     {/* Prizes List */}
                     <div className="bg-secondary rounded-2xl p-6 shadow-xl border border-gray-700">
                         <h2 className="text-xl font-bold mb-4 flex items-center gap-2">
-                            <FaGift /> Prizes / រង្វាន់
+                            <FaGift /> Prizes
                         </h2>
                         <div className="space-y-3  overflow-y-auto">
                             {prizes.map((prize) => (
@@ -347,7 +347,7 @@ const SpinWheel: React.FC = () => {
                         <div className="bg-secondary rounded-2xl p-6 shadow-xl border border-gray-700">
                             <div className="flex justify-between items-center mb-4">
                                 <h2 className="text-xl font-bold flex items-center gap-2">
-                                    <FaHistory /> Recent Spins / ប្រវត្តិបង្វិល
+                                    <FaHistory /> Recent Spins
                                 </h2>
                                 {recentSpins.length > 0 && (
                                     <button
