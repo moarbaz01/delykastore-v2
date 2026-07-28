@@ -15,7 +15,9 @@ const CostItem = ({ item, i, amountSelected, setAmountSelected }: any) => {
           price: item.price,
         })
       }
-      className={`h-full relative rounded-[16px] p-2.5 md:p-3.5 flex gap-2.5 md:gap-3.5 items-center transition-all duration-300 ${
+      className={`h-full relative rounded-[16px] px-2.5 md:px-3.5 pb-2.5 md:pb-3.5 ${
+        item.note ? "pt-5 md:pt-6" : "pt-2.5 md:pt-3.5"
+      } flex gap-2.5 md:gap-3.5 items-center transition-all duration-300 ${
         isDisabled 
           ? "cursor-not-allowed opacity-50 grayscale-[50%]" 
           : "cursor-pointer hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(168,85,247,0.15)]"
@@ -43,7 +45,7 @@ const CostItem = ({ item, i, amountSelected, setAmountSelected }: any) => {
       )}
 
       {/* Image Container with Glow */}
-      <div className="relative w-9 h-9 md:w-12 md:h-12 flex-shrink-0 flex items-center justify-center rounded-xl bg-purple-500/5 border border-purple-500/10 mt-1">
+      <div className={`relative w-9 h-9 md:w-12 md:h-12 flex-shrink-0 flex items-center justify-center rounded-xl bg-purple-500/5 border border-purple-500/10 ${!item.note && "mt-1"}`}>
         {/* Subtle background glow behind the image */}
         <div className="absolute inset-0 bg-primary/20 blur-md rounded-full -z-10"></div>
         {item.image ? (
@@ -60,7 +62,7 @@ const CostItem = ({ item, i, amountSelected, setAmountSelected }: any) => {
       </div>
 
       {/* Info Content */}
-      <div className="flex-1 min-w-0 flex flex-col justify-center mt-1">
+      <div className={`flex-1 min-w-0 flex flex-col justify-center ${!item.note && "mt-1"}`}>
         <p className="text-[11px] md:text-[13px] font-medium text-gray-200 line-clamp-2 pr-4 leading-tight">
           {item.amount || `${item.durationDays} Days`}
           {item.slots !== undefined && (
