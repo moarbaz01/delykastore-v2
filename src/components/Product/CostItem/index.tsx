@@ -15,7 +15,7 @@ const CostItem = ({ item, i, amountSelected, setAmountSelected }: any) => {
           price: item.price,
         })
       }
-      className={`relative rounded-[16px] p-2.5 md:p-3.5 flex gap-2.5 md:gap-3.5 items-center transition-all duration-300 ${
+      className={`h-full relative rounded-[16px] p-2.5 md:p-3.5 flex gap-2.5 md:gap-3.5 items-center transition-all duration-300 ${
         isDisabled 
           ? "cursor-not-allowed opacity-50 grayscale-[50%]" 
           : "cursor-pointer hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(168,85,247,0.15)]"
@@ -35,7 +35,7 @@ const CostItem = ({ item, i, amountSelected, setAmountSelected }: any) => {
       {/* Note badge */}
       {item.note && (
         <div
-          className="absolute top-0 left-0 px-2.5 py-1 text-[10px] font-black text-white rounded-br-xl rounded-tl-[15px] uppercase tracking-wider z-10 shadow-sm"
+          className="absolute top-0 left-0 px-2 md:px-2.5 py-0.5 md:py-1 text-[8px] md:text-[10px] font-black text-white rounded-br-xl rounded-tl-[15px] uppercase tracking-wider z-10 shadow-sm"
           style={{ background: "linear-gradient(135deg, #7B2FBE, #A855F7)" }}
         >
           {item.note}
@@ -61,7 +61,7 @@ const CostItem = ({ item, i, amountSelected, setAmountSelected }: any) => {
 
       {/* Info Content */}
       <div className="flex-1 min-w-0 flex flex-col justify-center mt-1">
-        <p className="text-[11px] md:text-[13px] font-medium text-gray-200 truncate pr-4">
+        <p className="text-[11px] md:text-[13px] font-medium text-gray-200 line-clamp-2 pr-4 leading-tight">
           {item.amount || `${item.durationDays} Days`}
           {item.slots !== undefined && (
             <span
