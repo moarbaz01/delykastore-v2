@@ -3,6 +3,9 @@ import Label from "./Label";
 interface UserIdSectionProps {
   game: string;
   isApi?: boolean;
+  requiresServerId?: boolean;
+  requiresUserId?: boolean;
+  requiresCharName?: boolean;
   userId: string;
   zoneId: string;
   message: string;
@@ -38,7 +41,16 @@ const UserIdSection = ({
   handleInputChange,
   setZoneId,
   handleSubmitCheckRole,
+  requiresServerId,
+  requiresUserId,
+  requiresCharName,
 }: UserIdSectionProps) => {
+  const showServerId = requiresServerId !== undefined 
+    ? requiresServerId 
+    : (["mobilelegends", "magicchess"].includes(game) || game.startsWith("mlbb"));
+    
+  const showUserId = requiresUserId !== undefined ? requiresUserId : true;
+
   return (
     <div
       className="p-4 rounded-2xl relative"
@@ -46,20 +58,22 @@ const UserIdSection = ({
     >
       <Label text={"បញ្ចូល អាយឌី"} number={1} />
       <form className="flex flex-col gap-3 mt-4">
-        <input
-          type="text"
-          placeholder="User ID"
-          onChange={handleInputChange}
-          value={userId}
-          name="userId"
-          autoComplete="on"
-          className={inputClass}
-          style={inputStyle}
-          onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
-          onBlur={(e) => Object.assign(e.target.style, inputStyle)}
-        />
+        {showUserId && (
+          <input
+            type="text"
+            placeholder="User ID"
+            onChange={handleInputChange}
+            value={userId}
+            name="userId"
+            autoComplete="on"
+            className={inputClass}
+            style={inputStyle}
+            onFocus={(e) => Object.assign(e.target.style, inputFocusStyle)}
+            onBlur={(e) => Object.assign(e.target.style, inputStyle)}
+          />
+        )}
 
-        {(["mobilelegends", "magicchess"].includes(game) || game.startsWith("mlbb")) && (
+        {showServerId && (
           <input
             type="text"
             placeholder="SERVER ID"

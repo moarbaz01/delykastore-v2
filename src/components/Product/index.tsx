@@ -40,6 +40,9 @@ const Product = ({
   categories,
   type,
   description,
+  requiresServerId,
+  requiresUserId,
+  requiresCharName,
 }: {
   name: string;
   description: string;
@@ -49,6 +52,9 @@ const Product = ({
   isDeleted: boolean;
   type: string;
   isApi: boolean;
+  requiresServerId?: boolean;
+  requiresUserId?: boolean;
+  requiresCharName?: boolean;
   stock: true;
   gift: {
     isActive: boolean;
@@ -154,14 +160,16 @@ const Product = ({
 
   useEffect(() => {
     // Determine if the game requires a Zone ID
-    const requiresZoneId =
-      ["mobilelegends", "magicchess", "genshinimpact"].includes(game) ||
-      game.startsWith("mlbb");
+    const reqZoneId = requiresServerId !== undefined 
+      ? requiresServerId 
+      : (["mobilelegends", "magicchess", "genshinimpact"].includes(game) || game.startsWith("mlbb"));
+
+    const reqUserId = requiresUserId !== undefined ? requiresUserId : true;
 
     // Check if required fields are filled
-    const canCheck = userId && (!requiresZoneId || zoneId);
+    const canCheck = (!reqUserId || userId) && (!reqZoneId || zoneId);
 
-    if (canCheck) {
+    if (canCheck && (userId || zoneId)) {
       // Auto-trigger the check after the user stops typing for 1 second
       const timer = setTimeout(() => {
         handleSubmitCheckRole();
@@ -368,6 +376,9 @@ const Product = ({
           {type !== "account" && (
             <Reveal width="100%" delay={0.1}>
               <UserIdSection
+                requiresServerId={requiresServerId}
+                requiresUserId={requiresUserId}
+                requiresCharName={requiresCharName}
                 game={game}
                 isApi={isApi}
                 userId={userId}

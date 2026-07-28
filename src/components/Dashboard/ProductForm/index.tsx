@@ -38,6 +38,9 @@ interface Product {
   region: string;
   game: string;
   apiName: string;
+  requiresServerId?: boolean;
+  requiresUserId?: boolean;
+  requiresCharName?: boolean;
   slides: (string | File)[];
   banner: string | File;
   image: string | File | null;
@@ -61,6 +64,9 @@ const ProductForm = ({ product }: { product?: Product }) => {
     region: product?.region || "",
     game: product?.game || "",
     apiName: product?.apiName || "",
+    requiresServerId: product?.requiresServerId || false,
+    requiresUserId: product?.requiresUserId || false,
+    requiresCharName: product?.requiresCharName || false,
     image: product?.image || null,
     isDeleted: product?.isDeleted || false,
     cost: product?.cost || [
@@ -406,6 +412,9 @@ const ProductForm = ({ product }: { product?: Product }) => {
     data.append("game", formData.type === "account" ? "Custom Game" : formData.game);
     if (formData.isApi) {
       data.append("apiName", formData.apiName);
+      data.append("requiresServerId", String(formData.requiresServerId));
+      data.append("requiresUserId", String(formData.requiresUserId));
+      data.append("requiresCharName", String(formData.requiresCharName));
       if (formData.game === "mobilelegends") {
         data.append("region", formData.region);
       } else {
@@ -607,6 +616,53 @@ const ProductForm = ({ product }: { product?: Product }) => {
                   </Select>
                 )}
             </>
+          )}
+
+          {/* Required Fields (Only for ALUU API) */}
+          {formData.type !== "account" && formData.isApi && formData.apiName === "Aluu Api" && (
+            <div className="mb-4 p-4 border border-gray-700 rounded-lg bg-gray-800/50">
+              <Typography variant="subtitle2" className="text-gray-300 mb-2">
+                ALUU API Required Fields
+              </Typography>
+              <div className="flex flex-col gap-2">
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="requiresUserId"
+                      checked={formData.requiresUserId}
+                      onChange={handleCheckboxChange}
+                      sx={{ color: "gray", "&.Mui-checked": { color: "#8b5cf6" } }}
+                    />
+                  }
+                  label="Requires User ID"
+                  className="text-gray-300"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="requiresServerId"
+                      checked={formData.requiresServerId}
+                      onChange={handleCheckboxChange}
+                      sx={{ color: "gray", "&.Mui-checked": { color: "#8b5cf6" } }}
+                    />
+                  }
+                  label="Requires Server ID (Zone ID)"
+                  className="text-gray-300"
+                />
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      name="requiresCharName"
+                      checked={formData.requiresCharName}
+                      onChange={handleCheckboxChange}
+                      sx={{ color: "gray", "&.Mui-checked": { color: "#8b5cf6" } }}
+                    />
+                  }
+                  label="Requires Character Name"
+                  className="text-gray-300"
+                />
+              </div>
+            </div>
           )}
 
           {/* isLink and Link Input (Only for account) */}
