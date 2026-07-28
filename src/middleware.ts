@@ -18,7 +18,18 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  // 2. Protect User Profile
+  // 2. Protect User Profile and Order History
+  if (pathname.startsWith("/account") || pathname.startsWith("/order-history")) {
+    const token = await getToken({ 
+      req, 
+      secret: process.env.NEXTAUTH_SECRET!,
+      secureCookie: process.env.NODE_ENV === "production"
+    });
+    if (!token) {
+      url.pathname = "/login";
+      return NextResponse.redirect(url);
+    }
+  }
 
   // 3. Prevent Auth Pages when Logged In
   if (["/login", "/signup"].includes(pathname)) {
