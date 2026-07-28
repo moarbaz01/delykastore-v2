@@ -9,6 +9,7 @@ import {
   Select,
   MenuItem,
   SelectChangeEvent,
+  Typography,
 } from "@mui/material";
 import { Plus as Add, Trash2 as Delete, Upload } from "lucide-react";
 import axios from "axios";
@@ -274,22 +275,22 @@ const ProductForm = ({ product }: { product?: Product }) => {
         toast.error("CSV is empty or invalid");
         return;
       }
-      
+
       const newCosts: CostItem[] = [];
-      
+
       // Skip header (index 0)
       for (let i = 1; i < lines.length; i++) {
         // Split by comma but ignore commas inside quotes, preserving empty columns
         const row = lines[i].split(/,(?=(?:(?:[^"]*"){2})*[^"]*$)/);
         const cleanRow = row.map((item) => item.replace(/(^"|"$)/g, "").trim());
-        
+
         if (cleanRow.length >= 3) {
           const id = cleanRow[0] || "";
           const amount = cleanRow[1] || "";
           const price = cleanRow[2] || "";
           const note = cleanRow[3] || "";
           const category = cleanRow[4] || "no_category";
-          
+
           if (id && price) {
             newCosts.push({
               id,
