@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: { params: { productId: string
 export default async function Page({ params }: { params: { productId: string } }) {
   await dbConnect();
 
-  let products = await ProductModel.findById(params.productId).lean() as any;
+  const products = await ProductModel.findById(params.productId).lean() as any;
 
   if (!products) {
     return (
