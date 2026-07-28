@@ -15,7 +15,7 @@ const CostItem = ({ item, i, amountSelected, setAmountSelected }: any) => {
           price: item.price,
         })
       }
-      className={`relative rounded-[16px] p-3.5 flex gap-3.5 items-center transition-all duration-300 ${
+      className={`relative rounded-[16px] p-2.5 md:p-3.5 flex gap-2.5 md:gap-3.5 items-center transition-all duration-300 ${
         isDisabled 
           ? "cursor-not-allowed opacity-50 grayscale-[50%]" 
           : "cursor-pointer hover:-translate-y-1 hover:shadow-[0_8px_20px_rgba(168,85,247,0.15)]"
@@ -43,7 +43,7 @@ const CostItem = ({ item, i, amountSelected, setAmountSelected }: any) => {
       )}
 
       {/* Image Container with Glow */}
-      <div className="relative w-12 h-12 flex-shrink-0 flex items-center justify-center rounded-xl bg-purple-500/5 border border-purple-500/10 mt-1">
+      <div className="relative w-9 h-9 md:w-12 md:h-12 flex-shrink-0 flex items-center justify-center rounded-xl bg-purple-500/5 border border-purple-500/10 mt-1">
         {/* Subtle background glow behind the image */}
         <div className="absolute inset-0 bg-primary/20 blur-md rounded-full -z-10"></div>
         {item.image ? (
@@ -52,16 +52,16 @@ const CostItem = ({ item, i, amountSelected, setAmountSelected }: any) => {
             alt="package image"
             width={32}
             height={32}
-            className="object-contain drop-shadow-md z-10"
+            className="object-contain w-6 h-6 md:w-8 md:h-8 drop-shadow-md z-10"
           />
         ) : (
-          <div className="w-8 h-8 rounded-full bg-purple-500/20" />
+          <div className="w-6 h-6 md:w-8 md:h-8 rounded-full bg-purple-500/20" />
         )}
       </div>
 
       {/* Info Content */}
       <div className="flex-1 min-w-0 flex flex-col justify-center mt-1">
-        <p className="text-[13px] font-medium text-gray-200 truncate pr-4">
+        <p className="text-[11px] md:text-[13px] font-medium text-gray-200 truncate pr-4">
           {item.amount || `${item.durationDays} Days`}
           {item.slots !== undefined && (
             <span
@@ -76,7 +76,7 @@ const CostItem = ({ item, i, amountSelected, setAmountSelected }: any) => {
           )}
         </p>
         <p 
-          className="font-black text-[17px] mt-0.5 tracking-tight"
+          className="font-black text-[14px] md:text-[17px] mt-0.5 tracking-tight"
           style={{
             background: "linear-gradient(to right, #ffffff, #C084FC)",
             WebkitBackgroundClip: "text",
