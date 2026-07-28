@@ -84,7 +84,7 @@ export async function POST(req: NextRequest) {
         rawData[key] = JSON.parse(value.toString());
       } else if (value instanceof File) {
         rawData[key] = value;
-      } else if (key === "isApi" || key === "stock" || key === "spinActive" || key === "isLink" || key === "isTesting") {
+      } else if (key === "isApi" || key === "stock" || key === "spinActive" || key === "isLink" || key === "isTesting" || key === "requiresServerId" || key === "requiresUserId" || key === "requiresCharName") {
         rawData[key] = value === "true";
       } else {
         rawData[key] = value;
@@ -300,7 +300,7 @@ export async function PUT(req: NextRequest) {
         rawData[key] = JSON.parse(value.toString());
       } else if (value instanceof File) {
         rawData[key] = value;
-      } else if (key === "isApi" || key === "stock" || key === "spinActive" || key === "isLink" || key === "isTesting") {
+      } else if (key === "isApi" || key === "stock" || key === "spinActive" || key === "isLink" || key === "isTesting" || key === "requiresServerId" || key === "requiresUserId" || key === "requiresCharName") {
         rawData[key] = value === "true";
       } else {
         rawData[key] = value;
