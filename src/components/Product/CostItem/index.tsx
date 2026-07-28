@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { getOptimizedUrl } from "@/utils/optimizeImage";
 
 const CostItem = ({ item, i, amountSelected, setAmountSelected }: any) => {
   const isSelected = amountSelected?.id === item.id;
@@ -50,10 +51,11 @@ const CostItem = ({ item, i, amountSelected, setAmountSelected }: any) => {
         <div className="absolute inset-0 bg-primary/20 blur-md rounded-full -z-10"></div>
         {item.image ? (
           <Image
-            src={item.image}
+            src={getOptimizedUrl(item.image, 128)}
             alt="package image"
             width={32}
             height={32}
+            unoptimized={true}
             className="object-contain w-6 h-6 md:w-8 md:h-8 drop-shadow-md z-10"
           />
         ) : (

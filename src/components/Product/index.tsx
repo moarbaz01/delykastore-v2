@@ -20,6 +20,7 @@ import GiftModal from "../ui/GiftModal";
 import axios from "axios";
 import { useUserWagering } from "@/hooks/useUserWagering";
 import { Reveal } from "../ui/Reveal";
+import { getOptimizedUrl } from "@/utils/optimizeImage";
 
 declare const AbaPayway: any;
 
@@ -342,11 +343,12 @@ const Product = ({
             {banner && (
               <div className="flex items-center gap-4 ">
                 <Image
-                  src={banner as string}
+                  src={getOptimizedUrl(banner as string, 800)}
                   alt={banner as string}
                   width={400}
                   height={400}
                   priority
+                  unoptimized={true}
                   className="rounded-lg w-full"
                 />
               </div>
