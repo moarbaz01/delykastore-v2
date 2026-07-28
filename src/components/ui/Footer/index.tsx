@@ -2,7 +2,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FaTelegram } from "react-icons/fa";
+import { FaTelegram, FaFacebook } from "react-icons/fa";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
@@ -28,14 +28,24 @@ const Footer = () => {
           {/* Left: Contact Us */}
           <div className="flex flex-col items-center md:items-start flex-1">
             <h4 className="text-sm font-bold text-purple-400 mb-3 tracking-wide">Contact Us</h4>
-            <Link
-              href="https://t.me/Delyy_kaa"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="w-10 h-10 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/40 hover:text-purple-300 transition-all duration-200 shadow-sm shadow-purple-500/10"
-            >
-              <FaTelegram size={20} />
-            </Link>
+            <div className="flex gap-3">
+              <Link
+                href="https://t.me/Delyy_kaa"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/40 hover:text-purple-300 transition-all duration-200 shadow-sm shadow-purple-500/10"
+              >
+                <FaTelegram size={20} />
+              </Link>
+              <Link
+                href="https://www.facebook.com/share/18FUJ1LddM/?mibextid=wwXIfr"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-10 h-10 rounded-full bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400 hover:bg-purple-500/20 hover:border-purple-500/40 hover:text-purple-300 transition-all duration-200 shadow-sm shadow-purple-500/10"
+              >
+                <FaFacebook size={20} />
+              </Link>
+            </div>
           </div>
 
           {/* Center: Payments */}
