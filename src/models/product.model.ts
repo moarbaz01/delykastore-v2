@@ -77,15 +77,12 @@ const productSchema = new Schema<IProduct>(
     },
     requiresServerId: {
       type: Boolean,
-      default: false,
     },
     requiresUserId: {
       type: Boolean,
-      default: false,
     },
     requiresCharName: {
       type: Boolean,
-      default: false,
     },
     isTesting: {
       type: Boolean,

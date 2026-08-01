@@ -47,7 +47,7 @@ const UserIdSection = ({
 }: UserIdSectionProps) => {
   const showServerId = requiresServerId !== undefined 
     ? requiresServerId 
-    : (["mobilelegends", "magicchess"].includes(game) || game.startsWith("mlbb"));
+    : (["mobilelegends", "magicchess", "genshinimpact"].includes(game.toLowerCase()) || game.toLowerCase().startsWith("mlbb"));
     
   const showUserId = requiresUserId !== undefined ? requiresUserId : true;
 
