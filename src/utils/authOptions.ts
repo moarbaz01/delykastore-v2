@@ -90,25 +90,24 @@ export const authOptions: AuthOptions = {
         }
 
         // Verify Telegram hash
-        const botToken = process.env.TELEGRAM_BOT_TOKEN;
+        const botToken = process.env.TELEGRAM_BOT_TOKEN?.trim();
         if (!botToken) {
           throw new Error("Telegram bot token not configured");
         }
 
         const secretKey = crypto.createHash("sha256").update(botToken).digest();
 
-        const dataCheckString = Object.keys(credentials)
+        const telegramFields = ["auth_date", "first_name", "id", "last_name", "photo_url", "username"];
+
+        const dataCheckString = telegramFields
           .filter(
             (key) =>
-              key !== "hash" &&
-              key !== "callbackUrl" &&
-              key !== "csrfToken" &&
-              key !== "redirect" &&
-              key !== "json" &&
-              credentials[key],
+              credentials[key] &&
+              credentials[key] !== "undefined" &&
+              credentials[key] !== "null"
           )
-          .sort()
           .map((key) => `${key}=${credentials[key]}`)
+          .sort()
           .join("\n");
 
         const hmac = crypto
