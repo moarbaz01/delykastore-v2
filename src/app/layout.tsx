@@ -43,11 +43,18 @@ export default function RootLayout({
       <body
         className={`${outfit.variable} ${battambang.variable} font-sans antialiased relative min-h-screen`}
       >
-        {/* Global Blurry Gradient Background */}
-        <div className="fixed inset-0 pointer-events-none -z-50 overflow-hidden bg-[#0D0B1A]">
-          <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] rounded-full bg-primary/30 blur-[120px]" />
-          <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] rounded-full bg-primary/20 blur-[120px]" />
-          <div className="absolute top-[40%] left-[60%] w-[30%] h-[30%] rounded-full bg-primary-light/20 blur-[100px]" />
+        {/* Global Gradient Background (Optimized for Safari Performance) */}
+        <div 
+          className="fixed inset-0 pointer-events-none -z-50"
+          style={{
+            backgroundColor: "#0D0B1A",
+            backgroundImage: `
+              radial-gradient(circle at 10% 10%, rgba(168, 85, 247, 0.15) 0%, transparent 40%),
+              radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.12) 0%, transparent 40%),
+              radial-gradient(circle at 75% 55%, rgba(192, 132, 252, 0.1) 0%, transparent 35%)
+            `
+          }}
+        >
         </div>
         <div className="relative z-0 flex flex-col min-h-screen">
           <Provider>
