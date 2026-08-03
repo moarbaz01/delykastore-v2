@@ -47,13 +47,20 @@ export async function POST(req: Request) {
         );
       }
 
-      const user = await User.findOne({ email, authProvider: "email" });
+      const user = await User.findOne({ email });
 
-      // Always return success to not leak whether the email exists
       if (!user) {
-        return NextResponse.json({
-          message: "If an account exists, an OTP has been sent.",
-        });
+        return NextResponse.json(
+          { message: "No account found with this email." },
+          { status: 404 }
+        );
+      }
+
+      if (user.authProvider !== "email") {
+        return NextResponse.json(
+          { message: "This account was created via Telegram. Please use Telegram to log in." },
+          { status: 400 }
+        );
       }
 
       const otp = generateOtp();
