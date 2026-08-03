@@ -154,24 +154,7 @@ export default function SignupPage() {
       {/* Content Area */}
       <div className="flex-1 flex flex-col md:flex-row w-full relative">
         
-        {/* Hero Image Section */}
-        <div className="relative w-full h-[35vh] md:flex-1 md:h-auto shrink-0">
-          <Image
-            src="/images/login_hero.png"
-            alt="Signup Hero"
-            fill
-            className="object-cover object-top md:object-center"
-            priority
-          />
-          <div 
-            className="absolute inset-0 z-10 pointer-events-none md:hidden" 
-            style={{ background: "linear-gradient(to bottom, rgba(13,11,26,0) 50%, rgba(13,11,26,1) 100%)" }}
-          />
-          <div 
-            className="hidden md:block absolute inset-0 z-10 pointer-events-none" 
-            style={{ background: "linear-gradient(to right, rgba(13,11,26,0) 60%, rgba(13,11,26,1) 100%)" }}
-          />
-        </div>
+
 
         {/* Signup Card Section */}
         <div className="flex-1 flex items-center justify-center px-4 -mt-12 md:mt-0 relative z-20 pb-8 md:py-8">
