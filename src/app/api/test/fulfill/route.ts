@@ -5,6 +5,7 @@ import { Account } from "@/models/account.model";
 import { Coupon } from "@/models/coupon.model";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
+import { sendTelegramNotification } from "@/utils/telegramNotifier";
 
 // Separate logic for test fulfillment to avoid touching production payment flow
 async function fulfillTestOrder(order: any) {
@@ -96,6 +97,11 @@ async function fulfillTestOrder(order: any) {
 
   console.log(`[Test Fulfill] Saving order ${order._id} with status: ${order.status}`);
   await order.save();
+
+  if (order.status === "success") {
+    await sendTelegramNotification(order, (order.product as any)?.name || "Unknown Product");
+  }
+
   return order;
 }
 

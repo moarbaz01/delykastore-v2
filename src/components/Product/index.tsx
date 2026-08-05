@@ -44,6 +44,8 @@ const Product = ({
   requiresServerId,
   requiresUserId,
   requiresCharName,
+  requiresUrlInput,
+  urlInputLabel,
 }: {
   name: string;
   description: string;
@@ -56,6 +58,8 @@ const Product = ({
   requiresServerId?: boolean;
   requiresUserId?: boolean;
   requiresCharName?: boolean;
+  requiresUrlInput?: boolean;
+  urlInputLabel?: string;
   stock: true;
   gift: {
     isActive: boolean;
@@ -96,6 +100,8 @@ const Product = ({
     setUserId,
     zoneId,
     setZoneId,
+    urlLink,
+    setUrlLink,
     amountSelected,
     setAmountSelected,
     loading,
@@ -156,6 +162,9 @@ const Product = ({
 
     if (zoneId) {
       localStorage.setItem(`${game}${region}-zoneid`, zoneId);
+    }
+    if (urlLink) {
+      localStorage.setItem(`${game}${region}-urllink`, urlLink);
     }
   };
 
@@ -246,10 +255,15 @@ const Product = ({
 
   useEffect(() => {
     if (type === "account") {
-      setPlayerAvailable(true);
+      // For accounts with url input, only enable if link is filled
+      if (requiresUrlInput) {
+        setPlayerAvailable(!!urlLink);
+      } else {
+        setPlayerAvailable(true);
+      }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type]);
+  }, [type, urlLink, requiresUrlInput]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -257,6 +271,7 @@ const Product = ({
     setMessage("");
     if (name === "userId") setUserId(value);
     else if (name === "zoneId") setZoneId(value);
+    else if (name === "urlLink") setUrlLink(value);
   };
 
   const handleCreateOrder = async () => {
@@ -268,6 +283,7 @@ const Product = ({
     await createOrderUtil({
       userId,
       zoneId,
+      urlLink,
       amountSelected,
       isAgree,
       stock,
@@ -324,7 +340,7 @@ const Product = ({
   return (
     <>
       <div
-        className={`grid max-w-screen-xl relative mx-auto gap-6 md:py-6 sm:px-4 px-4 items-start animate-fade-in ${slides.length === 0 && !banner
+        className={`grid max-w-screen-xl relative mx-auto gap-6 md:py-6 sm:px-4 px-4 items-start animate-fade-in ${slides?.length === 0 && !banner
           ? "grid-cols-1 justify-center"
           : "grid-cols-1 lg:grid-cols-3"
           }`}
@@ -405,6 +421,40 @@ const Product = ({
                 <p className="text-gray-300 whitespace-pre-wrap text-sm leading-relaxed break-words">
                   {description}
                 </p>
+              </div>
+            </Reveal>
+          )}
+
+          {type === "account" && requiresUrlInput && (
+            <Reveal width="100%" delay={0.1}>
+              <div
+                className="p-4 rounded-2xl relative"
+                style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
+              >
+                <form className="flex flex-col gap-3">
+                  <input
+                    type="text"
+                    placeholder={urlInputLabel || "Enter Profile Link"}
+                    onChange={handleInputChange}
+                    value={urlLink}
+                    name="urlLink"
+                    autoComplete="on"
+                    className="rounded-xl w-full text-white placeholder:text-gray-500 focus:outline-none py-2.5 px-4 text-sm transition-all duration-200"
+                    style={{
+                      background: "#0D0B1A",
+                      border: "1px solid rgba(168,85,247,0.2)",
+                    }}
+                    onFocus={(e) => {
+                      e.target.style.outline = "none";
+                      e.target.style.borderColor = "rgba(168,85,247,0.6)";
+                      e.target.style.boxShadow = "0 0 0 3px rgba(168,85,247,0.1)";
+                    }}
+                    onBlur={(e) => {
+                      e.target.style.borderColor = "rgba(168,85,247,0.2)";
+                      e.target.style.boxShadow = "none";
+                    }}
+                  />
+                </form>
               </div>
             </Reveal>
           )}

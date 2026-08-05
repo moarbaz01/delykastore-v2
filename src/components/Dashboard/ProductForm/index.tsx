@@ -42,6 +42,8 @@ interface Product {
   requiresServerId?: boolean;
   requiresUserId?: boolean;
   requiresCharName?: boolean;
+  requiresUrlInput?: boolean;
+  urlInputLabel?: string;
   slides: (string | File)[];
   banner: string | File;
   image: string | File | null;
@@ -68,6 +70,8 @@ const ProductForm = ({ product }: { product?: Product }) => {
     requiresServerId: product?.requiresServerId || false,
     requiresUserId: product?.requiresUserId || false,
     requiresCharName: product?.requiresCharName || false,
+    requiresUrlInput: product?.requiresUrlInput || false,
+    urlInputLabel: product?.urlInputLabel || "",
     image: product?.image || null,
     isDeleted: product?.isDeleted || false,
     cost: product?.cost || [
@@ -130,6 +134,14 @@ const ProductForm = ({ product }: { product?: Product }) => {
   ) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value, checked, type } = e.target;
+    setFormData((prev) => ({ 
+      ...prev, 
+      [name]: type === "checkbox" ? checked : value 
+    }));
   };
 
   const handleCheckboxChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -416,6 +428,9 @@ const ProductForm = ({ product }: { product?: Product }) => {
       data.append("requiresServerId", String(formData.requiresServerId));
       data.append("requiresUserId", String(formData.requiresUserId));
       data.append("requiresCharName", String(formData.requiresCharName));
+      data.append("requiresUrlInput", String(formData.requiresUrlInput));
+      if (formData.urlInputLabel) data.append("urlInputLabel", formData.urlInputLabel);
+      data.append("isTesting", String(formData.isTesting));
       if (formData.game === "mobilelegends") {
         data.append("region", formData.region);
       } else {
@@ -662,6 +677,36 @@ const ProductForm = ({ product }: { product?: Product }) => {
                   label="Requires Character Name"
                   className="text-gray-300"
                 />
+                <div className="flex items-center gap-3 bg-[#0D0B1A] p-4 rounded-xl border border-purple-500/10 hover:border-primary/50 transition-colors">
+                  <div className="relative flex items-center">
+                    <input
+                      type="checkbox"
+                      name="requiresUrlInput"
+                      checked={formData.requiresUrlInput}
+                      onChange={handleChange}
+                      className="w-5 h-5 rounded border-gray-600 bg-gray-700 text-primary focus:ring-primary focus:ring-offset-gray-800"
+                    />
+                  </div>
+                  <label className="text-sm font-medium text-gray-200 cursor-pointer flex-1">
+                    Requires URL/Link Input (e.g. TikTok Profile)
+                  </label>
+                </div>
+                
+                {formData.requiresUrlInput && (
+                  <div className="bg-[#0D0B1A] p-4 rounded-xl border border-purple-500/10">
+                    <label className="block text-sm font-medium text-gray-200 mb-2">
+                      URL Input Label
+                    </label>
+                    <input
+                      type="text"
+                      name="urlInputLabel"
+                      value={formData.urlInputLabel || ""}
+                      onChange={handleChange}
+                      placeholder="e.g. Enter TikTok Profile Link"
+                      className="w-full bg-[#12102A] text-white rounded-lg px-4 py-2 border border-purple-500/20 focus:border-primary outline-none text-sm"
+                    />
+                  </div>
+                )}
               </div>
             </div>
           )}
@@ -785,18 +830,15 @@ const ProductForm = ({ product }: { product?: Product }) => {
                   .filter((costItem) => costItem.id)
                   .sort((a, b) => parseFloat(a.price) - parseFloat(b.price))
                   .map((costItem, index) => (
-                    <FormControlLabel
-                      key={index}
-                      control={
-                        <Checkbox
-                          checked={formData.spinCostIds.includes(costItem.id)}
-                          onChange={(e) =>
-                            handleSpinCostChange(costItem.id, e.target.checked)
-                          }
-                        />
-                      }
-                      label={`${costItem.amount} - $${costItem.price}`}
-                    />
+                    <label key={index} className="flex items-center gap-2">
+                      <Checkbox
+                        checked={formData.spinCostIds.includes(costItem.id)}
+                        onChange={(e) =>
+                          handleSpinCostChange(costItem.id, e.target.checked)
+                        }
+                      />
+                      {`${costItem.amount} - $${costItem.price}`}
+                    </label>
                   ))}
               </div>
             </div>

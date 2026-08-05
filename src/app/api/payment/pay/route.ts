@@ -11,6 +11,7 @@ import axios from "axios";
 import { makePurchase } from "@/utils/bangla_api";
 import { SpinTransaction } from "@/models/spin.transaction.model";
 import { createOrderLog } from "@/utils/orderLogs";
+import { sendTelegramNotification } from "@/utils/telegramNotifier";
 
 const isValidTransaction = (trans) => {
   return (
@@ -265,6 +266,10 @@ export async function POST(req: Request) {
       }
     }
     await order.save();
+
+    if (order.status === "success") {
+      await sendTelegramNotification(order, (order.product as any)?.name || "Unknown Product");
+    }
 
     // Create spin transaction if costId is in spinCostIds and spinActive is true
     if (

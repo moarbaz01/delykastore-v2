@@ -34,9 +34,10 @@ interface Order {
   status: "pending" | "success" | "failed";
   orderType: string;
   gameCredentials?: {
-    zoneId?: string;
     userId?: string;
+    zoneId?: string;
     game?: string;
+    urlLink?: string;
   };
   failureReason?: string;
   amount: string;
@@ -199,9 +200,16 @@ const OrderView = ({ order }: { order: Order }) => {
                 <Grid item xs={4}>
                   <InfoRow label="Game" value={order.gameCredentials.game} />
                 </Grid>
-                <Grid item xs={4}>
-                  <InfoRow label="User ID" value={order.gameCredentials.userId} />
-                </Grid>
+                {order.gameCredentials?.userId && (
+                  <Grid item xs={4}>
+                    <InfoRow label="User ID" value={order.gameCredentials.userId} />
+                  </Grid>
+                )}
+                {order.gameCredentials?.urlLink && (
+                  <Grid item xs={4}>
+                    <InfoRow label="Link/URL" value={order.gameCredentials.urlLink} />
+                  </Grid>
+                )}
                 <Grid item xs={4}>
                   <InfoRow label="Zone ID" value={order.gameCredentials.zoneId} />
                 </Grid>

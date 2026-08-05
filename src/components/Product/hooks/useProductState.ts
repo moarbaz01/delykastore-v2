@@ -9,6 +9,10 @@ export const useProductState = (game: string, region?: string) => {
     localStorage.getItem(`${game}${region}-zoneid`)
   );
 
+  const [urlLink, setUrlLink] = useState(() =>
+    localStorage.getItem(`${game}${region}-urllink`) || ""
+  );
+
   const [amountSelected, setAmountSelected] = useState<{
     id: string;
     amount: string;
@@ -41,6 +45,8 @@ export const useProductState = (game: string, region?: string) => {
     setUserId,
     zoneId,
     setZoneId,
+    urlLink,
+    setUrlLink,
     amountSelected,
     setAmountSelected,
     loading,

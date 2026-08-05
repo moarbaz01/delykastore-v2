@@ -35,6 +35,7 @@ export async function POST(req: Request) {
       couponCode,
       isCouponApplied,
       user,
+      urlLink,
     } = orderParams;
 
     const isValidProduct = await Product.findById(productId);
@@ -99,7 +100,7 @@ export async function POST(req: Request) {
       orderDetails,
       orderType,
       region,
-      gameCredentials: { userId, zoneId, game },
+      gameCredentials: { userId, zoneId, game, urlLink },
       transactionId: tran_id,
       product: productId,
       amount: afterDiscountAmount,

@@ -13,6 +13,7 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
     async (params: {
       userId: string;
       zoneId: string;
+      urlLink?: string;
       amountSelected: {
         id: string;
         amount: string;
@@ -33,6 +34,7 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
       const {
         userId,
         zoneId,
+        urlLink,
         amountSelected,
         isAgree,
         stock,
@@ -96,6 +98,7 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
         orderType: isApi ? "API Order" : "Custom Order",
         userId: userId?.trim(),
         zoneId: zoneId?.trim(),
+        urlLink: urlLink?.trim(),
         game,
         region,
         productId: _id,

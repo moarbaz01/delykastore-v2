@@ -15,6 +15,8 @@ export interface IProduct extends Document {
   requiresUserId?: boolean;
   requiresCharName?: boolean;
   isTesting: boolean;
+  requiresUrlInput?: boolean;
+  urlInputLabel?: string;
   isLink?: boolean;
   link?: string;
   stock: boolean;
@@ -87,6 +89,13 @@ const productSchema = new Schema<IProduct>(
     isTesting: {
       type: Boolean,
       default: false,
+    },
+    requiresUrlInput: {
+      type: Boolean,
+      default: false,
+    },
+    urlInputLabel: {
+      type: String,
     },
     isLink: {
       type: Boolean,

@@ -7,6 +7,7 @@ export interface IOrder extends Document {
     userId?: string;
     zoneId?: string;
     game?: string;
+    urlLink?: string;
   };
   region?: string;
   orderType: string;
@@ -48,6 +49,9 @@ const orderSchema = new Schema<IOrder>(
         type: String,
       },
       game: {
+        type: String,
+      },
+      urlLink: {
         type: String,
       },
     },

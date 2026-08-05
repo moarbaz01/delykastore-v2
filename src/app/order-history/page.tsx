@@ -273,6 +273,14 @@ function OrderHistoryContent() {
                                 <span className="font-medium text-white">{order.gameCredentials.zoneId}</span>
                               </div>
                             )}
+                            {order.gameCredentials?.urlLink && (
+                              <div className="flex items-center gap-2">
+                                <span className="text-gray-500">URL/Link:</span>
+                                <span className="font-medium text-white truncate max-w-[200px]" title={order.gameCredentials.urlLink}>
+                                  {order.gameCredentials.urlLink}
+                                </span>
+                              </div>
+                            )}
                           </div>
                         )}
                       </div>
