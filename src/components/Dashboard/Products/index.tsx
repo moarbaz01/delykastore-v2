@@ -105,6 +105,7 @@ const Products = ({ allProducts, brProductsList, phProductsList }) => {
             <MenuItem value="all">All Types</MenuItem>
             <MenuItem value="topup">Top-Up</MenuItem>
             <MenuItem value="account">Premium Account</MenuItem>
+            <MenuItem value="digital-service">Digital Service</MenuItem>
           </Select>
         </FormControl>
       </div>
