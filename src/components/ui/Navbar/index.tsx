@@ -20,19 +20,35 @@ import {
   Gamepad2,
 } from "lucide-react";
 
+import { useQuery } from "@tanstack/react-query";
+
 const Navbar = () => {
   const { data: session } = useSession();
   const pathname = usePathname();
-  const [products, setProducts] = useState([]);
   const [show, setShow] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeSearchTab, setActiveSearchTab] = useState<"all" | "topup" | "account" | "digital-service">("all");
-  const [filterProducts, setFilterProducts] = useState(products);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isNavDropdownOpen, setIsNavDropdownOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const searchRef = useRef<HTMLDivElement>(null);
+
+  const { data: products = [] } = useQuery({
+    queryKey: ["navbar-products"],
+    queryFn: async () => {
+      const res = await axios.get("/api/product");
+      return res.data || [];
+    },
+    staleTime: 5 * 60 * 1000, // Cache for 5 minutes
+  });
+
+  const filterProducts = products.filter((product: any) => {
+    const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+    const pType = product.type || "topup";
+    const matchesTab = activeSearchTab === "all" || pType === activeSearchTab;
+    return matchesSearch && matchesTab;
+  });
 
   useEffect(() => {
     const handleScroll = () => setScrolled(window.scrollY > 20);
@@ -55,32 +71,6 @@ const Navbar = () => {
     };
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, []);
-
-  useEffect(() => {
-    const temp = products;
-    const filteredProducts = temp?.filter((product: any) => {
-      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const pType = product.type || "topup";
-      const matchesTab = activeSearchTab === "all" || pType === activeSearchTab;
-      return matchesSearch && matchesTab;
-    });
-    setFilterProducts(filteredProducts);
-  }, [searchQuery, products, activeSearchTab]);
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await axios.get("/api/product");
-        if (res.status === 200) {
-          setProducts(res.data);
-          setFilterProducts(res.data);
-        }
-      } catch {
-        setProducts([]);
-      }
-    };
-    fetchProducts();
   }, []);
 
   const closeSearch = () => {

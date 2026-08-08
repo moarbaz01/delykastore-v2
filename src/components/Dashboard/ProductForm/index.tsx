@@ -10,6 +10,8 @@ import {
   MenuItem,
   SelectChangeEvent,
   Typography,
+  FormControl,
+  InputLabel,
 } from "@mui/material";
 import { Plus as Add, Trash2 as Delete, Upload } from "lucide-react";
 import axios from "axios";
@@ -723,54 +725,43 @@ const ProductForm = ({ product }: { product?: Product }) => {
           {/* Requires URL Input (Only for digital-service) */}
           {formData.type === "digital-service" && (
             <div className="mb-4 flex flex-col gap-4">
-              <div className="flex flex-col gap-4 mt-2">
-                <div className="flex items-center gap-3 bg-[#0D0B1A] p-4 rounded-xl border border-purple-500/10 hover:border-primary/50 transition-colors">
-                  <div className="relative flex items-center">
-                    <input
-                      type="checkbox"
-                      name="requiresUrlInput"
-                      checked={formData.requiresUrlInput}
-                      onChange={handleChange}
-                      className="w-5 h-5 rounded border-gray-600 bg-gray-700 text-primary focus:ring-primary focus:ring-offset-gray-800"
-                    />
-                  </div>
-                  <label className="text-sm font-medium text-gray-200 cursor-pointer flex-1">
-                    Requires URL/Link Input (e.g. TikTok Profile)
-                  </label>
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="requiresUrlInput"
+                    checked={formData.requiresUrlInput}
+                    onChange={handleCheckboxChange}
+                  />
+                }
+                label="Requires URL/Link Input (e.g. TikTok Profile)"
+              />
+              {formData.requiresUrlInput && (
+                <div className="flex flex-col gap-4">
+                  <TextField
+                    fullWidth
+                    name="urlInputLabel"
+                    label="URL Input Label"
+                    value={formData.urlInputLabel || ""}
+                    onChange={handleInputChange}
+                    placeholder="e.g. Enter TikTok Profile Link"
+                    variant="outlined"
+                    sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
+                  />
+                  <FormControl fullWidth variant="outlined" sx={{ backgroundColor: "#1F2937" }}>
+                    <InputLabel id="urlInputType-label">Input Type</InputLabel>
+                    <Select
+                      labelId="urlInputType-label"
+                      name="urlInputType"
+                      value={formData.urlInputType || "text"}
+                      onChange={handleInputChange as any}
+                      label="Input Type"
+                    >
+                      <MenuItem value="text">Text (Any input)</MenuItem>
+                      <MenuItem value="url">URL (Must be a valid link)</MenuItem>
+                    </Select>
+                  </FormControl>
                 </div>
-                
-                {formData.requiresUrlInput && (
-                  <div className="bg-[#0D0B1A] p-4 rounded-xl border border-purple-500/10 flex flex-col gap-4">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-200 mb-2">
-                        URL Input Label
-                      </label>
-                      <input
-                        type="text"
-                        name="urlInputLabel"
-                        value={formData.urlInputLabel || ""}
-                        onChange={handleChange}
-                        placeholder="e.g. Enter TikTok Profile Link"
-                        className="w-full bg-[#12102A] text-white rounded-lg px-4 py-2 border border-purple-500/20 focus:border-primary outline-none text-sm"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-200 mb-2">
-                        Input Type
-                      </label>
-                      <select
-                        name="urlInputType"
-                        value={formData.urlInputType || "text"}
-                        onChange={handleChange as any}
-                        className="w-full bg-[#12102A] text-white rounded-lg px-4 py-2 border border-purple-500/20 focus:border-primary outline-none text-sm appearance-none"
-                      >
-                        <option value="text">Text (Any input)</option>
-                        <option value="url">URL (Must be a valid link)</option>
-                      </select>
-                    </div>
-                  </div>
-                )}
-              </div>
+              )}
             </div>
           )}
 
