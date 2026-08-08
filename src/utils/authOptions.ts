@@ -82,6 +82,9 @@ export const authOptions: AuthOptions = {
         username: { label: "Username", type: "text" },
         photo_url: { label: "Photo URL", type: "text" },
         auth_date: { label: "Auth Date", type: "text" },
+        language_code: { label: "Language Code", type: "text" },
+        is_premium: { label: "Is Premium", type: "text" },
+        allows_write_to_pm: { label: "Allows Write To PM", type: "text" },
         hash: { label: "Hash", type: "text" },
       },
       async authorize(credentials) {
@@ -97,19 +100,19 @@ export const authOptions: AuthOptions = {
 
         const secretKey = crypto.createHash("sha256").update(botToken).digest();
 
-        const telegramFields = ["auth_date", "first_name", "id", "last_name", "photo_url", "username"];
-
-        const dataCheckString = telegramFields
+        // Dynamically get all keys from credentials except hash
+        const dataCheckString = Object.keys(credentials)
           .filter(
             (key) =>
+              key !== "hash" &&
               credentials[key] !== undefined &&
               credentials[key] !== null &&
               credentials[key] !== "undefined" &&
               credentials[key] !== "null" &&
               credentials[key] !== ""
           )
-          .map((key) => `${key}=${credentials[key]}`)
           .sort()
+          .map((key) => `${key}=${credentials[key]}`)
           .join("\n");
 
         const hmac = crypto
