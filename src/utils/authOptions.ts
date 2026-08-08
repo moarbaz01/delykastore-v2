@@ -254,11 +254,13 @@ export const authOptions: AuthOptions = {
       user,
       trigger,
       session,
+      account,
     }: {
       token: JWT;
       user?: any;
       trigger?: string;
       session?: any;
+      account?: any;
     }): Promise<JWT> {
       if (user) {
         token.id = user.id;
@@ -269,6 +271,16 @@ export const authOptions: AuthOptions = {
         token.telegramId = user.telegramId;
         token.isVerified = user.isVerified;
         token.image = user.image;
+
+        if (user.role === "admin") {
+          import("@/utils/telegramNotifier").then(({ sendAdminLoginAlert }) => {
+            sendAdminLoginAlert(
+              user.email || user.name || "Unknown",
+              user.name || "Admin",
+              account?.provider || user.authProvider || "Credentials"
+            );
+          });
+        }
       }
 
       if (trigger === "update" && session) {
