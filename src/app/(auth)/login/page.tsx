@@ -46,6 +46,7 @@ export default function LoginPage() {
     if (!botUsername || !tgRef.current) return;
 
     window.TelegramLoginCallback = async (data: any) => {
+      // same as before
       setIsTgLoading(true);
       try {
         const result = await signIn("telegram", { ...data, redirect: false });
@@ -67,19 +68,15 @@ export default function LoginPage() {
       }
     };
 
-    if (!document.getElementById("telegram-widget-script")) {
-      const script = document.createElement("script");
-      script.id = "telegram-widget-script";
-      script.src = "https://telegram.org/js/telegram-widget.js?22";
-      script.setAttribute("data-telegram-login", botUsername);
-      script.async = true;
-      
-      // Create a hidden container for the widget to initialize without showing
-      const hiddenDiv = document.createElement("div");
-      hiddenDiv.style.display = "none";
-      hiddenDiv.appendChild(script);
-      document.body.appendChild(hiddenDiv);
-    }
+    const script = document.createElement("script");
+    script.src = "https://telegram.org/js/telegram-widget.js?22";
+    script.setAttribute("data-telegram-login", botUsername);
+    script.setAttribute("data-size", "large");
+    script.setAttribute("data-onauth", "TelegramLoginCallback(user)");
+    script.setAttribute("data-request-access", "write");
+    script.async = true;
+    tgRef.current.innerHTML = "";
+    tgRef.current.appendChild(script);
   }, [router]);
 
   const handleTelegramLogin = () => {
@@ -254,15 +251,18 @@ export default function LoginPage() {
                 Connecting to Telegram...
               </div>
             ) : (
-              <button
-                type="button"
-                onClick={handleTelegramLogin}
-                className="mt-1 w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm text-gray-200 transition-all duration-300 hover:bg-white/10"
-                style={{ border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)" }}
-              >
-                <FaTelegramPlane size={20} className="text-[#54A9EB]" />
-                Log in with Telegram
-              </button>
+              <>
+                <div ref={tgRef} className="absolute opacity-0 pointer-events-none" />
+                <button
+                  type="button"
+                  onClick={handleTelegramLogin}
+                  className="mt-1 w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm text-gray-200 transition-all duration-300 hover:bg-white/10"
+                  style={{ border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)" }}
+                >
+                  <FaTelegramPlane size={20} className="text-[#54A9EB]" />
+                  Log in with Telegram
+                </button>
+              </>
             )}
 
             <button
