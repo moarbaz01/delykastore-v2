@@ -125,7 +125,23 @@ export const authOptions: AuthOptions = {
           console.error("Received hash:", credentials.hash);
           console.error("Calculated HMAC:", hmac);
           console.error("Data check string:", dataCheckString);
-          console.error("Check if TELEGRAM_BOT_TOKEN matches NEXT_PUBLIC_TELEGRAM_BOT_USERNAME");
+          
+          try {
+            await dbConnect();
+            const mongoose = require("mongoose");
+            const DebugLog = mongoose.models.DebugLog || mongoose.model("DebugLog", new mongoose.Schema({ data: Object }, { strict: false, timestamps: true }));
+            await DebugLog.create({
+              event: "TELEGRAM_AUTH_FAILED",
+              received_hash: credentials.hash,
+              computed_hmac: hmac,
+              bot_token_prefix: botToken.substring(0, 5) + "...",
+              dataCheckString: dataCheckString,
+              raw_credentials: credentials
+            });
+          } catch (e) {
+            console.error("Failed to log to MongoDB", e);
+          }
+          
           throw new Error("Invalid Telegram authentication");
         }
 
