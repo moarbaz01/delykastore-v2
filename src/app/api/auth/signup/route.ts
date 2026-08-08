@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { dbConnect } from "@/lib/database";
 import { User } from "@/models/user.model";
+import { OtpVerification } from "@/models/otp.model";
 import bcrypt from "bcrypt";
 import validate from "deep-email-validator";
 import { sendEmail } from "@/utils/nodemailer";
@@ -44,9 +45,9 @@ export async function POST(req: Request) {
         );
       }
 
-      // 2. Check if user already exists and is verified
+      // 2. Check if user already exists
       const existingUser = await User.findOne({ email, authProvider: "email" });
-      if (existingUser && existingUser.isVerified) {
+      if (existingUser) {
         return NextResponse.json(
           { message: "An account with this email already exists" },
           { status: 400 }
@@ -54,29 +55,14 @@ export async function POST(req: Request) {
       }
 
       const otp = generateOtp();
-      const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
       const hashedPassword = await bcrypt.hash(password, 10);
 
-      if (existingUser) {
-        // Update unverified user
-        existingUser.name = name;
-        existingUser.password = hashedPassword;
-        existingUser.signupOtp = otp;
-        existingUser.signupOtpExpiry = otpExpiry;
-        await existingUser.save();
-      } else {
-        // Create new unverified user
-        await User.create({
-          name,
-          email,
-          password: hashedPassword,
-          signupOtp: otp,
-          signupOtpExpiry: otpExpiry,
-          isVerified: false,
-          role: "user",
-          authProvider: "email",
-        });
-      }
+      // Upsert into OtpVerification
+      await OtpVerification.updateOne(
+        { email },
+        { email, name, password: hashedPassword, otp, createdAt: new Date() },
+        { upsert: true }
+      );
 
       // 3. Send OTP Email
       await sendEmail(
@@ -108,28 +94,33 @@ export async function POST(req: Request) {
         return NextResponse.json({ message: "Email and OTP are required" }, { status: 400 });
       }
 
-      const user = await User.findOne({ email, authProvider: "email" }).select("+signupOtp");
-      if (!user) {
-        return NextResponse.json({ message: "User not found" }, { status: 404 });
+      const otpEntry = await OtpVerification.findOne({ email });
+      if (!otpEntry) {
+        return NextResponse.json({ message: "OTP has expired or was not requested. Please request a new one." }, { status: 400 });
       }
 
-      if (user.isVerified) {
-        return NextResponse.json({ message: "Account is already verified" }, { status: 400 });
-      }
-
-      if (!user.signupOtp || !user.signupOtpExpiry || user.signupOtpExpiry < new Date()) {
-        return NextResponse.json({ message: "OTP has expired. Please request a new one." }, { status: 400 });
-      }
-
-      if (user.signupOtp !== otp) {
+      if (otpEntry.otp !== otp) {
         return NextResponse.json({ message: "Invalid verification code" }, { status: 400 });
       }
 
-      // Finalize Verification
-      user.isVerified = true;
-      user.signupOtp = undefined;
-      user.signupOtpExpiry = undefined;
-      await user.save();
+      // Check if user somehow exists already
+      const existingUser = await User.findOne({ email, authProvider: "email" });
+      if (existingUser) {
+        return NextResponse.json({ message: "Account is already verified" }, { status: 400 });
+      }
+
+      // Finalize Verification: Create the verified user
+      await User.create({
+        name: otpEntry.name,
+        email: otpEntry.email,
+        password: otpEntry.password,
+        isVerified: true,
+        role: "user",
+        authProvider: "email",
+      });
+
+      // Cleanup OTP
+      await OtpVerification.deleteOne({ email });
 
       return NextResponse.json({ message: "Account verified successfully! You can now log in." });
     }
