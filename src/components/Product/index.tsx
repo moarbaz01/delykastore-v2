@@ -279,7 +279,7 @@ const Product = ({
   };
 
   const handleCreateOrder = async () => {
-    if ((type === "account" || type === "digital-service") && !session) {
+    if (type === "account" && !session) {
       router.push("/login");
       return;
     }
@@ -477,6 +477,16 @@ const Product = ({
                     }}
                   />
                 </form>
+              </div>
+            </Reveal>
+          )}
+
+          {type === "digital-service" && !session && (
+            <Reveal width="100%" delay={0.15}>
+              <div className="p-3 mt-2 rounded-xl border border-amber-500/30 bg-amber-500/10 flex items-center gap-2">
+                <p className="text-sm text-amber-200">
+                  <span className="font-semibold text-amber-400">Guest Checkout:</span> Login if you want to track your order.
+                </p>
               </div>
             </Reveal>
           )}

@@ -48,7 +48,7 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
         appliedCoupon,
       } = params;
 
-      if ((type === "account" || type === "digital-service") && !session) {
+      if (type === "account" && !session) {
         toast.error("Please login");
         return;
       }

@@ -26,6 +26,7 @@ const Navbar = () => {
   const [products, setProducts] = useState([]);
   const [show, setShow] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
+  const [activeSearchTab, setActiveSearchTab] = useState<"all" | "topup" | "account" | "digital-service">("all");
   const [filterProducts, setFilterProducts] = useState(products);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isNavDropdownOpen, setIsNavDropdownOpen] = useState(false);
@@ -58,11 +59,14 @@ const Navbar = () => {
 
   useEffect(() => {
     const temp = products;
-    const filteredProducts = temp?.filter((product: any) =>
-      product.name.toLowerCase().includes(searchQuery.toLowerCase()),
-    );
+    const filteredProducts = temp?.filter((product: any) => {
+      const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const pType = product.type || "topup";
+      const matchesTab = activeSearchTab === "all" || pType === activeSearchTab;
+      return matchesSearch && matchesTab;
+    });
     setFilterProducts(filteredProducts);
-  }, [searchQuery, products]);
+  }, [searchQuery, products, activeSearchTab]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -304,6 +308,42 @@ const Navbar = () => {
                 />
                 <button onClick={closeSearch} className="text-gray-500 hover:text-white transition-colors">
                   <X size={18} />
+                </button>
+              </div>
+
+              {/* Tabs */}
+              <div className="flex overflow-x-auto hide-scrollbar gap-2 px-4 py-2 border-b border-purple-500/10">
+                <button
+                  onClick={() => setActiveSearchTab("all")}
+                  className={`px-3 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-colors ${
+                    activeSearchTab === "all" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+                  }`}
+                >
+                  All
+                </button>
+                <button
+                  onClick={() => setActiveSearchTab("topup")}
+                  className={`px-3 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-colors ${
+                    activeSearchTab === "topup" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+                  }`}
+                >
+                  Top-Up
+                </button>
+                <button
+                  onClick={() => setActiveSearchTab("account")}
+                  className={`px-3 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-colors ${
+                    activeSearchTab === "account" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+                  }`}
+                >
+                  Accounts
+                </button>
+                <button
+                  onClick={() => setActiveSearchTab("digital-service")}
+                  className={`px-3 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-colors ${
+                    activeSearchTab === "digital-service" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+                  }`}
+                >
+                  Digital Services
                 </button>
               </div>
 
