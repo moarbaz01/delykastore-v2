@@ -100,11 +100,11 @@ export const authOptions: AuthOptions = {
 
         const secretKey = crypto.createHash("sha256").update(botToken).digest();
 
-        // Dynamically get all keys from credentials except hash
+        const nextAuthFields = ["csrfToken", "callbackUrl", "json", "redirect", "hash"];
         const dataCheckString = Object.keys(credentials)
           .filter(
             (key) =>
-              key !== "hash" &&
+              !nextAuthFields.includes(key) &&
               credentials[key] !== undefined &&
               credentials[key] !== null &&
               credentials[key] !== "undefined" &&
