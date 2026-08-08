@@ -21,6 +21,12 @@ const giftTransactionSchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     await dbConnect();
+    const session = await getServerSession(authOptions);
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
     const body = await req.json();
 
     // Validate inputs
@@ -35,6 +41,10 @@ export async function POST(req: NextRequest) {
 
     // Validated Data
     const validatedData = result.data;
+
+    if (session.user.role !== "admin" && session.user.id !== validatedData.userId) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     // Got User Wagering
     const now = new Date();
@@ -182,7 +192,15 @@ export async function GET(req: NextRequest) {
 
     const { searchParams } = new URL(req.url);
     const id = searchParams.get("id");
-    const userId = searchParams.get("userId");
+    let userId = searchParams.get("userId");
+
+    if (session.user.role !== "admin") {
+      if (userId && userId !== session.user.id) {
+        return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+      }
+      userId = session.user.id;
+    }
+
     const giftId = searchParams.get("giftId");
     const status = searchParams.get("status");
     const limit = searchParams.get("limit");
@@ -285,7 +303,7 @@ export async function PUT(req: NextRequest) {
     await dbConnect();
     const session = await getServerSession(authOptions);
 
-    if (!session) {
+    if (!session || session.user?.role !== "admin") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 

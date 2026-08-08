@@ -10,7 +10,7 @@ export async function POST(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     // If the user is not authenticated, return Unauthorized
-    if (!session) {
+    if (!session || session.user?.role !== "admin") {
       return NextResponse.json({ message: "Unauthorized" });
     }
 
@@ -107,7 +107,7 @@ export async function PUT(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     // If the user is not authenticated, return Unauthorized
-    if (!session) {
+    if (!session || session.user?.role !== "admin") {
       return NextResponse.json({ message: "Unauthorized" });
     }
 
@@ -187,7 +187,7 @@ export async function GET(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     // If the user is not authenticated, return Unauthorized
-    if (!session) {
+    if (!session || session.user?.role !== "admin") {
       return NextResponse.json({ message: "Unauthorized" });
     }
 
@@ -256,7 +256,7 @@ export async function DELETE(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     // If the user is not authenticated, return Unauthorized
-    if (!session) {
+    if (!session || session.user?.role !== "admin") {
       return NextResponse.json({ message: "Unauthorized" });
     }
 

@@ -11,7 +11,7 @@ export async function PUT(req: NextRequest) {
     const session = await getServerSession(authOptions);
 
     // If the user is not authenticated, return Unauthorized
-    if (!session) {
+    if (!session || session.user?.role !== "admin") {
       return NextResponse.json({ message: "Unauthorized" });
     }
 
