@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Eye, EyeOff, Loader2, Mail, Lock, ChevronLeft } from "lucide-react";
 import Loader from "@/components/ui/Loader";
 import toast from "react-hot-toast";
-import { FaGoogle } from "react-icons/fa";
+import { FaGoogle, FaTelegramPlane } from "react-icons/fa";
 
 declare global {
   interface Window {
@@ -67,16 +67,30 @@ export default function LoginPage() {
       }
     };
 
-    const script = document.createElement("script");
-    script.src = "https://telegram.org/js/telegram-widget.js?22";
-    script.setAttribute("data-telegram-login", botUsername);
-    script.setAttribute("data-size", "large");
-    script.setAttribute("data-onauth", "TelegramLoginCallback(user)");
-    script.setAttribute("data-request-access", "write");
-    script.async = true;
-    tgRef.current.innerHTML = "";
-    tgRef.current.appendChild(script);
+    if (!document.getElementById("telegram-widget-script")) {
+      const script = document.createElement("script");
+      script.id = "telegram-widget-script";
+      script.src = "https://telegram.org/js/telegram-widget.js?22";
+      script.async = true;
+      document.body.appendChild(script);
+    }
   }, [router]);
+
+  const handleTelegramLogin = () => {
+    if ((window as any).Telegram && (window as any).Telegram.Login) {
+      (window as any).Telegram.Login.auth(
+        { bot_id: "8565003158", request_access: "write" },
+        (data: any) => {
+          if (!data) return;
+          if ((window as any).TelegramLoginCallback) {
+            (window as any).TelegramLoginCallback(data);
+          }
+        }
+      );
+    } else {
+      toast.error("Telegram login is still loading, please try again in a moment.");
+    }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -234,7 +248,15 @@ export default function LoginPage() {
                 Connecting to Telegram...
               </div>
             ) : (
-              <div ref={tgRef} className="flex justify-center w-full" />
+              <button
+                type="button"
+                onClick={handleTelegramLogin}
+                className="mt-1 w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm text-gray-200 transition-all duration-300 hover:bg-white/10"
+                style={{ border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)" }}
+              >
+                <FaTelegramPlane size={20} className="text-[#54A9EB]" />
+                Log in with Telegram
+              </button>
             )}
 
             <button
