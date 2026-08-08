@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useMemo, useState } from "react";
+import Label from "./Label";
 import Image from "next/image";
 import SliderComponent from "../Home/Banner/Component";
 import PaymentForm from "./PaymentForm";
@@ -431,7 +432,8 @@ const Product = ({
                 className="p-4 rounded-2xl relative"
                 style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
               >
-                <form className="flex flex-col gap-3">
+                <Label text={urlInputLabel || "Enter Profile Link"} number={1} />
+                <form className="flex flex-col gap-3 mt-4">
                   <input
                     type="text"
                     placeholder={urlInputLabel || "Enter Profile Link"}
