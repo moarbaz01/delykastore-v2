@@ -39,6 +39,7 @@ const productSchema = z.object({
   requiresCharName: z.boolean().optional(),
   requiresUrlInput: z.boolean().optional(),
   urlInputLabel: z.string().optional(),
+  urlInputType: z.string().optional(),
   isTesting: z.boolean().optional(),
   isLink: z.boolean().optional(),
   link: z.string().optional(),

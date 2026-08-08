@@ -16,12 +16,11 @@ import { useOrder } from "./hooks/useOrder";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { calculateTotal } from "./utils/productUtils";
-import GiftBox from "../ui/Gift";
 import GiftModal from "../ui/GiftModal";
 import axios from "axios";
-import { useUserWagering } from "@/hooks/useUserWagering";
 import { Reveal } from "../ui/Reveal";
 import { getOptimizedUrl } from "@/utils/optimizeImage";
+import toast from "react-hot-toast";
 
 declare const AbaPayway: any;
 
@@ -47,6 +46,7 @@ const Product = ({
   requiresCharName,
   requiresUrlInput,
   urlInputLabel,
+  urlInputType,
 }: {
   name: string;
   description: string;
@@ -61,6 +61,7 @@ const Product = ({
   requiresCharName?: boolean;
   requiresUrlInput?: boolean;
   urlInputLabel?: string;
+  urlInputType?: string;
   stock: true;
   gift: {
     isActive: boolean;
@@ -171,8 +172,8 @@ const Product = ({
 
   useEffect(() => {
     // Determine if the game requires a Zone ID
-    const reqZoneId = requiresServerId !== undefined 
-      ? requiresServerId 
+    const reqZoneId = requiresServerId !== undefined
+      ? requiresServerId
       : (["mobilelegends", "magicchess", "genshinimpact"].includes(game) || game.startsWith("mlbb"));
 
     const reqUserId = requiresUserId !== undefined ? requiresUserId : true;
@@ -279,6 +280,15 @@ const Product = ({
     if (type === "account" && !session) {
       router.push("/login");
       return;
+    }
+
+    if (requiresUrlInput && urlInputType === "url" && urlLink) {
+      try {
+        new URL(urlLink);
+      } catch (e) {
+        toast.error("Please enter a valid URL.");
+        return;
+      }
     }
 
     await createOrderUtil({
@@ -443,7 +453,7 @@ const Product = ({
                 <Label text={formattedUrlLabel} number={1} />
                 <form className="flex flex-col gap-3 mt-4">
                   <input
-                    type="text"
+                    type={urlInputType || "text"}
                     placeholder={formattedUrlLabel}
                     onChange={handleInputChange}
                     value={urlLink}

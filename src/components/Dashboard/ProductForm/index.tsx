@@ -44,6 +44,7 @@ interface Product {
   requiresCharName?: boolean;
   requiresUrlInput?: boolean;
   urlInputLabel?: string;
+  urlInputType?: string;
   slides: (string | File)[];
   banner: string | File;
   image: string | File | null;
@@ -72,6 +73,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
     requiresCharName: product?.requiresCharName || false,
     requiresUrlInput: product?.requiresUrlInput || false,
     urlInputLabel: product?.urlInputLabel || "",
+    urlInputType: product?.urlInputType || "text",
     image: product?.image || null,
     isDeleted: product?.isDeleted || false,
     cost: product?.cost || [
@@ -439,6 +441,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
     if (formData.type === "account") {
       data.append("requiresUrlInput", String(formData.requiresUrlInput));
       if (formData.urlInputLabel) data.append("urlInputLabel", formData.urlInputLabel);
+      if (formData.urlInputType) data.append("urlInputType", formData.urlInputType);
     }
     
     if (formData.image) {
@@ -728,18 +731,34 @@ const ProductForm = ({ product }: { product?: Product }) => {
                 </div>
                 
                 {formData.requiresUrlInput && (
-                  <div className="bg-[#0D0B1A] p-4 rounded-xl border border-purple-500/10">
-                    <label className="block text-sm font-medium text-gray-200 mb-2">
-                      URL Input Label
-                    </label>
-                    <input
-                      type="text"
-                      name="urlInputLabel"
-                      value={formData.urlInputLabel || ""}
-                      onChange={handleChange}
-                      placeholder="e.g. Enter TikTok Profile Link"
-                      className="w-full bg-[#12102A] text-white rounded-lg px-4 py-2 border border-purple-500/20 focus:border-primary outline-none text-sm"
-                    />
+                  <div className="bg-[#0D0B1A] p-4 rounded-xl border border-purple-500/10 flex flex-col gap-4">
+                    <div>
+                      <label className="block text-sm font-medium text-gray-200 mb-2">
+                        URL Input Label
+                      </label>
+                      <input
+                        type="text"
+                        name="urlInputLabel"
+                        value={formData.urlInputLabel || ""}
+                        onChange={handleChange}
+                        placeholder="e.g. Enter TikTok Profile Link"
+                        className="w-full bg-[#12102A] text-white rounded-lg px-4 py-2 border border-purple-500/20 focus:border-primary outline-none text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-sm font-medium text-gray-200 mb-2">
+                        Input Type
+                      </label>
+                      <select
+                        name="urlInputType"
+                        value={formData.urlInputType || "text"}
+                        onChange={handleChange as any}
+                        className="w-full bg-[#12102A] text-white rounded-lg px-4 py-2 border border-purple-500/20 focus:border-primary outline-none text-sm appearance-none"
+                      >
+                        <option value="text">Text (Any input)</option>
+                        <option value="url">URL (Must be a valid link)</option>
+                      </select>
+                    </div>
                   </div>
                 )}
               </div>
