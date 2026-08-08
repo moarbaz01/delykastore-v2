@@ -83,6 +83,11 @@ export async function GET(req: NextRequest) {
 export async function POST(req: Request) {
   try {
     await dbConnect();
+    const session = await getServerSession(authOptions);
+
+    if (!session || session.user.role !== "admin") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
 
     const body = await req.json();
     const parsedData = createUserSchema.parse(body);
@@ -120,9 +125,9 @@ export async function PUT(req: NextRequest) {
     await dbConnect();
     const session = await getServerSession(authOptions);
 
-    // If the user is not authenticated, return Unauthorized
-    if (!session || !session.user) {
-      return NextResponse.json({ message: "Unauthorized" });
+    // Only admins can update users
+    if (!session || session.user.role !== "admin") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
     const url = new URL(req.url);
