@@ -176,7 +176,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
             newData.game = "Custom Game";
           } else if (value === "digital-service") {
             newData.isApi = false;
-            newData.game = "Digital Service";
+            newData.game = "";
           } else {
             newData.game = "";
           }
@@ -766,7 +766,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
           )}
 
           {/* Game */}
-          {formData.type !== "account" && formData.apiName === "Aluu Api" ? (
+          {formData.type !== "account" && formData.type !== "digital-service" && formData.apiName === "Aluu Api" ? (
             <Select
               fullWidth
               name="game"
@@ -786,7 +786,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
                 ))
               )}
             </Select>
-          ) : formData.type !== "account" && (
+          ) : formData.type !== "account" && formData.type !== "digital-service" && (
             <Select
               fullWidth
               name="game"
@@ -832,7 +832,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
           />
 
           {/* Spin Active (Boolean) */}
-          {formData.type !== "account" && (
+          {formData.type !== "account" && formData.type !== "digital-service" && (
             <FormControlLabel
               control={
                 <Checkbox
@@ -846,7 +846,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
           )}
 
           {/* Spin Cost IDs Selector */}
-          {formData.type !== "account" && formData.spinActive && (
+          {formData.type !== "account" && formData.type !== "digital-service" && formData.spinActive && (
             <div className="mb-4">
               <label className="block mb-2 text-white">
                 Select Cost IDs for Spin

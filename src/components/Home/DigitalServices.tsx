@@ -12,12 +12,12 @@ const DigitalServices = async () => {
   await dbConnect();
   const session = await getServerSession(authOptions);
   const isAdmin = session?.user?.role === "admin";
-  
+
   const filter: any = {
     type: "digital-service",
     isDeleted: false,
   };
-  
+
   if (!isAdmin) {
     filter.isTesting = { $ne: true };
   }
