@@ -677,6 +677,37 @@ const ProductForm = ({ product }: { product?: Product }) => {
                   label="Requires Character Name"
                   className="text-gray-300"
                 />
+              </div>
+            </div>
+          )}
+
+          {/* isLink and Link Input (Only for account) */}
+          {formData.type === "account" && (
+            <div className="mb-4 flex flex-col gap-4">
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    name="isLink"
+                    checked={formData.isLink}
+                    onChange={handleCheckboxChange}
+                  />
+                }
+                label="Is Link (Direct Redirect)"
+              />
+              {formData.isLink && (
+                <TextField
+                  fullWidth
+                  name="link"
+                  label="Direct Link URL"
+                  value={formData.link}
+                  onChange={handleInputChange}
+                  margin="normal"
+                  variant="outlined"
+                  sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
+                />
+              )}
+              
+              <div className="flex flex-col gap-4 mt-2">
                 <div className="flex items-center gap-3 bg-[#0D0B1A] p-4 rounded-xl border border-purple-500/10 hover:border-primary/50 transition-colors">
                   <div className="relative flex items-center">
                     <input
@@ -708,34 +739,6 @@ const ProductForm = ({ product }: { product?: Product }) => {
                   </div>
                 )}
               </div>
-            </div>
-          )}
-
-          {/* isLink and Link Input (Only for account) */}
-          {formData.type === "account" && (
-            <div className="mb-4">
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    name="isLink"
-                    checked={formData.isLink}
-                    onChange={handleCheckboxChange}
-                  />
-                }
-                label="Is Link (Direct Redirect)"
-              />
-              {formData.isLink && (
-                <TextField
-                  fullWidth
-                  name="link"
-                  label="Direct Link URL"
-                  value={formData.link}
-                  onChange={handleInputChange}
-                  margin="normal"
-                  variant="outlined"
-                  sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
-                />
-              )}
             </div>
           )}
 
