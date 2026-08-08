@@ -102,9 +102,11 @@ export const authOptions: AuthOptions = {
         const dataCheckString = telegramFields
           .filter(
             (key) =>
-              credentials[key] &&
+              credentials[key] !== undefined &&
+              credentials[key] !== null &&
               credentials[key] !== "undefined" &&
-              credentials[key] !== "null"
+              credentials[key] !== "null" &&
+              credentials[key] !== ""
           )
           .map((key) => `${key}=${credentials[key]}`)
           .sort()
@@ -116,6 +118,11 @@ export const authOptions: AuthOptions = {
           .digest("hex");
 
         if (hmac !== credentials.hash) {
+          console.error("Telegram Auth Failed!");
+          console.error("Received hash:", credentials.hash);
+          console.error("Calculated HMAC:", hmac);
+          console.error("Data check string:", dataCheckString);
+          console.error("Check if TELEGRAM_BOT_TOKEN matches NEXT_PUBLIC_TELEGRAM_BOT_USERNAME");
           throw new Error("Invalid Telegram authentication");
         }
 
