@@ -52,7 +52,8 @@ export const authOptions: AuthOptions = {
           }
 
           if (user.role === "admin") {
-            const otp = credentials?.otp;
+            const rawOtp = credentials?.otp;
+            const otp = (!rawOtp || rawOtp === "undefined") ? "" : rawOtp;
 
             if (!otp) {
               // Generate and send OTP

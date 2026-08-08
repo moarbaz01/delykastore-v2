@@ -105,7 +105,7 @@ export default function LoginPage() {
         redirect: false,
         email,
         password,
-        otp: showOtp ? otp : undefined,
+        otp: showOtp ? otp : "",
       });
 
       if (result?.error) {
