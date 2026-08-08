@@ -2,15 +2,15 @@ import { useState, useRef } from "react";
 
 export const useProductState = (game: string, region?: string) => {
   const [userId, setUserId] = useState(() =>
-    localStorage.getItem(`${game}${region}-userid`)
+    typeof window !== "undefined" ? localStorage.getItem(`${game}${region}-userid`) : null
   );
 
   const [zoneId, setZoneId] = useState(() =>
-    localStorage.getItem(`${game}${region}-zoneid`)
+    typeof window !== "undefined" ? localStorage.getItem(`${game}${region}-zoneid`) : null
   );
 
   const [urlLink, setUrlLink] = useState(() =>
-    localStorage.getItem(`${game}${region}-urllink`) || ""
+    typeof window !== "undefined" ? localStorage.getItem(`${game}${region}-urllink`) || "" : ""
   );
 
   const [amountSelected, setAmountSelected] = useState<{
