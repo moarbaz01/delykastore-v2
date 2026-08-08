@@ -65,11 +65,13 @@ const CostItem = ({ item, i, amountSelected, setAmountSelected }: any) => {
 
       {/* Info Content */}
       <div className={`flex-1 min-w-0 flex flex-col justify-center ${!item.note && "mt-1"}`}>
-        <p className="text-[11px] md:text-[13px] font-medium text-gray-200 line-clamp-2 pr-4 leading-tight">
-          {item.amount || `${item.durationDays} Days`}
+        <div className="pr-4 flex flex-col items-start gap-1">
+          <p className="text-[11px] md:text-[13px] font-medium text-gray-200 line-clamp-2 leading-tight">
+            {item.amount || `${item.durationDays} Days`}
+          </p>
           {item.slots !== undefined && (
             <span
-              className={`text-[10px] font-bold uppercase ml-2 px-1.5 py-0.5 rounded ${
+              className={`text-[9px] font-bold uppercase px-1.5 py-0.5 rounded ${
                 item.slots > 0 
                   ? "bg-purple-500/20 text-purple-300" 
                   : "bg-red-500/20 text-red-400"
@@ -78,7 +80,7 @@ const CostItem = ({ item, i, amountSelected, setAmountSelected }: any) => {
               {item.slots > 0 ? `${item.slots} Left` : "Out of Stock"}
             </span>
           )}
-        </p>
+        </div>
         <p 
           className="font-black text-[14px] md:text-[17px] mt-0.5 tracking-tight"
           style={{
