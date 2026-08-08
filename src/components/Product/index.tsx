@@ -16,6 +16,7 @@ import { useOrder } from "./hooks/useOrder";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { calculateTotal } from "./utils/productUtils";
+import GiftBox from "../ui/Gift";
 import GiftModal from "../ui/GiftModal";
 import axios from "axios";
 import { Reveal } from "../ui/Reveal";

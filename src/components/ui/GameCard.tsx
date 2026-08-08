@@ -6,7 +6,7 @@ interface GameCardProps {
   name: string;
   image: StaticImageData | string;
   stock?: boolean;
-  type: "account" | "topup";
+  type: "account" | "topup" | "digital-service";
   isLink?: boolean;
   link?: string;
   price?: string;

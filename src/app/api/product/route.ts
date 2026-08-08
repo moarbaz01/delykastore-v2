@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
     await dbConnect();
     const session = await getServerSession(authOptions);
 
-    if (!session) {
+    if (!session || session?.user?.role !== "admin") {
       return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
     }
 
