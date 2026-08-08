@@ -338,6 +338,14 @@ const Product = ({
       </div>
     );
   }
+  const hasStep1 = type !== "account" || (type === "account" && requiresUrlInput);
+  const stepPackage = hasStep1 ? 2 : 1;
+  const stepCoupon = hasStep1 ? 3 : 2;
+  const stepPayment = hasStep1 ? 4 : 3;
+
+  const urlLabelPrefix = urlInputLabel ? urlInputLabel.replace(/^Enter\s+/i, '') : "Profile Link";
+  const formattedUrlLabel = `Enter ${urlLabelPrefix}`;
+
   return (
     <>
       <div
@@ -432,11 +440,11 @@ const Product = ({
                 className="p-4 rounded-2xl relative"
                 style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
               >
-                <Label text={urlInputLabel || "Enter Profile Link"} number={1} />
+                <Label text={formattedUrlLabel} number={1} />
                 <form className="flex flex-col gap-3 mt-4">
                   <input
                     type="text"
-                    placeholder={urlInputLabel || "Enter Profile Link"}
+                    placeholder={formattedUrlLabel}
                     onChange={handleInputChange}
                     value={urlLink}
                     name="urlLink"
@@ -466,6 +474,7 @@ const Product = ({
               groupedCost={groupedCostState}
               amountSelected={amountSelected}
               setAmountSelected={setAmountSelected}
+              stepNumber={stepPackage}
             />
           </Reveal>
 
@@ -478,6 +487,7 @@ const Product = ({
               setCouponCode={setCouponCode}
               handleApplyCoupon={handleApplyCoupon}
               removeCoupon={handleRemoveCoupon}
+              stepNumber={stepCoupon}
             />
           </Reveal>
 
@@ -486,6 +496,7 @@ const Product = ({
               total={total}
               isAgree={isAgree}
               setIsAgree={setIsAgree}
+              stepNumber={stepPayment}
             />
           </Reveal>
 

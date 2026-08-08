@@ -8,6 +8,7 @@ interface CouponSectionProps {
   setCouponCode: (value: string) => void;
   handleApplyCoupon: () => void;
   removeCoupon: () => void;
+  stepNumber: number;
 }
 
 const CouponSection = ({
@@ -18,13 +19,14 @@ const CouponSection = ({
   setCouponCode,
   handleApplyCoupon,
   removeCoupon,
+  stepNumber,
 }: CouponSectionProps) => {
   return (
     <div
       className="p-4 rounded-2xl relative"
       style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
     >
-      <Label text={"Apply Coupon"} number={appliedCoupon ? "✓" : "3"} />
+      <Label text={"Apply Coupon"} number={appliedCoupon ? "✓" : stepNumber} />
 
       <div className="mt-4 flex flex-col gap-2.5">
         <div className="flex gap-2">

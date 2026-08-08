@@ -6,12 +6,14 @@ interface PaymentSectionProps {
   total: string;
   isAgree: boolean;
   setIsAgree: (value: boolean) => void;
+  stepNumber: number;
 }
 
 const PaymentSection = ({
   total,
   isAgree,
   setIsAgree,
+  stepNumber,
 }: PaymentSectionProps) => {
   const router = useRouter();
 
@@ -20,7 +22,7 @@ const PaymentSection = ({
       className="p-4 md:mb-0 mb-24 rounded-2xl relative"
       style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
     >
-      <Label text={"Payment Methods"} number={4} />
+      <Label text={"Payment Methods"} number={stepNumber} />
 
       {/* Payment method card */}
       <div
