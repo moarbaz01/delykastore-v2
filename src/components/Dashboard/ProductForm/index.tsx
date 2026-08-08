@@ -428,8 +428,6 @@ const ProductForm = ({ product }: { product?: Product }) => {
       data.append("requiresServerId", String(formData.requiresServerId));
       data.append("requiresUserId", String(formData.requiresUserId));
       data.append("requiresCharName", String(formData.requiresCharName));
-      data.append("requiresUrlInput", String(formData.requiresUrlInput));
-      if (formData.urlInputLabel) data.append("urlInputLabel", formData.urlInputLabel);
       data.append("isTesting", String(formData.isTesting));
       if (formData.game === "mobilelegends") {
         data.append("region", formData.region);
@@ -437,6 +435,12 @@ const ProductForm = ({ product }: { product?: Product }) => {
         data.append("region", "");
       }
     }
+    
+    if (formData.type === "account") {
+      data.append("requiresUrlInput", String(formData.requiresUrlInput));
+      if (formData.urlInputLabel) data.append("urlInputLabel", formData.urlInputLabel);
+    }
+    
     if (formData.image) {
       data.append("image", formData.image);
     }
