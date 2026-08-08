@@ -71,8 +71,14 @@ export default function LoginPage() {
       const script = document.createElement("script");
       script.id = "telegram-widget-script";
       script.src = "https://telegram.org/js/telegram-widget.js?22";
+      script.setAttribute("data-telegram-login", botUsername);
       script.async = true;
-      document.body.appendChild(script);
+      
+      // Create a hidden container for the widget to initialize without showing
+      const hiddenDiv = document.createElement("div");
+      hiddenDiv.style.display = "none";
+      hiddenDiv.appendChild(script);
+      document.body.appendChild(hiddenDiv);
     }
   }, [router]);
 
