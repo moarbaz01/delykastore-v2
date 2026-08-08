@@ -18,10 +18,14 @@ interface ProductType {
 
 export default function GamesClient({ products }: { products: ProductType[] }) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeTab, setActiveTab] = useState<"all" | "topup" | "account" | "digital-service">("all");
 
-  const filteredProducts = products.filter((product) =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredProducts = products.filter((product) => {
+    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase());
+    const pType = product.type || "topup";
+    const matchesTab = activeTab === "all" || pType === activeTab;
+    return matchesSearch && matchesTab;
+  });
 
   return (
     <main className="min-h-screen pt-6 pb-20 px-4 md:px-8 max-w-7xl mx-auto">
@@ -29,8 +33,8 @@ export default function GamesClient({ products }: { products: ProductType[] }) {
         <div className="rounded-2xl md:p-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6">
             <SectionHeader
-              title="ALL GAMES"
-              icon={<IoLogoGameControllerB size={16} />}
+              title="EXPLORE"
+              icon={<Search size={16} />}
             />
 
             <div className="relative w-full md:w-80">
@@ -45,6 +49,42 @@ export default function GamesClient({ products }: { products: ProductType[] }) {
                 className="w-full bg-[#12102A]/80 border border-purple-500/20 text-white text-sm rounded-full focus:ring-2 focus:ring-purple-500 focus:border-transparent block pl-10 p-2.5 transition-all outline-none placeholder-gray-500 shadow-[0_0_15px_rgba(168,85,247,0.1)]"
               />
             </div>
+          </div>
+
+          {/* Tabs */}
+          <div className="flex overflow-x-auto hide-scrollbar gap-2 mb-6 pb-2">
+            <button
+              onClick={() => setActiveTab("all")}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                activeTab === "all" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+              }`}
+            >
+              All
+            </button>
+            <button
+              onClick={() => setActiveTab("topup")}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                activeTab === "topup" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+              }`}
+            >
+              Top-Up
+            </button>
+            <button
+              onClick={() => setActiveTab("account")}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                activeTab === "account" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+              }`}
+            >
+              Premium Accounts
+            </button>
+            <button
+              onClick={() => setActiveTab("digital-service")}
+              className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
+                activeTab === "digital-service" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+              }`}
+            >
+              Digital Services
+            </button>
           </div>
 
           {filteredProducts.length > 0 ? (

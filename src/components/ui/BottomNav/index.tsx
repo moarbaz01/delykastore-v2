@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Gamepad2, ClipboardList, User } from "lucide-react";
+import { Home, Gamepad2, ClipboardList, User, Compass } from "lucide-react";
 
 const BottomNav = () => {
   const pathname = usePathname();
@@ -15,7 +15,7 @@ const BottomNav = () => {
 
   const navItems = [
     { label: "Home", href: "/", icon: Home, matchExact: true },
-    { label: "Games", href: "/games", icon: Gamepad2 },
+    { label: "Explore", href: "/games", icon: Compass },
     { label: "Orders", href: "/order-history", icon: ClipboardList },
     { label: "Profile", href: "/account", icon: User },
   ];
