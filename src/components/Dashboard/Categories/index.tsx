@@ -21,7 +21,7 @@ import toast from "react-hot-toast";
 interface Category {
   _id: string;
   name: string;
-  type?: "topup" | "account";
+  type?: "topup" | "account" | "digital-service";
 }
 
 export default function Categories({
@@ -31,7 +31,7 @@ export default function Categories({
 }) {
   const [categories, setCategories] = useState<Category[]>(initialCategories || []);
   const [newCategoryName, setNewCategoryName] = useState("");
-  const [newCategoryType, setNewCategoryType] = useState<"topup" | "account">("topup");
+  const [newCategoryType, setNewCategoryType] = useState<"topup" | "account" | "digital-service">("topup");
 
   // Add a new category
   const handleAddCategory = async () => {
@@ -66,7 +66,7 @@ export default function Categories({
     try {
       await axios.put(`/api/categories?id=${id}`, { name: newName, type: newType });
       setCategories((prev) =>
-        prev.map((cat) => (cat._id === id ? { ...cat, name: newName, type: newType as "topup" | "account" } : cat))
+        prev.map((cat) => (cat._id === id ? { ...cat, name: newName, type: newType as "topup" | "account" | "digital-service" } : cat))
       );
       toast.success("Category updated successfully.");
     } catch (error) {
@@ -106,11 +106,12 @@ export default function Categories({
           <Select
             fullWidth
             value={newCategoryType}
-            onChange={(e) => setNewCategoryType(e.target.value as "topup" | "account")}
+            onChange={(e) => setNewCategoryType(e.target.value as "topup" | "account" | "digital-service")}
             size="small"
           >
             <MenuItem value="topup">Top-Up</MenuItem>
             <MenuItem value="account">Premium Account</MenuItem>
+            <MenuItem value="digital-service">Digital Service</MenuItem>
           </Select>
           <Button
             onClick={handleAddCategory}
@@ -167,7 +168,7 @@ export default function Categories({
                         setCategories((prev) =>
                           prev.map((cat) =>
                             cat._id === category._id
-                              ? { ...cat, type: e.target.value as "topup" | "account" }
+                              ? { ...cat, type: e.target.value as "topup" | "account" | "digital-service" }
                               : cat
                           )
                         )
@@ -176,6 +177,7 @@ export default function Categories({
                     >
                       <MenuItem value="topup">Top-Up</MenuItem>
                       <MenuItem value="account">Premium Account</MenuItem>
+                      <MenuItem value="digital-service">Digital Service</MenuItem>
                     </Select>
                   </TableCell>
                   <TableCell>

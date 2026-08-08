@@ -2,7 +2,7 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 
 export interface ICostCategory extends Document {
   name: string;
-  type: "topup" | "account";
+  type: "topup" | "account" | "digital-service";
   createdAt: Date;
   updatedAt: Date;
 }
@@ -16,7 +16,7 @@ const costCategorySchema = new Schema<ICostCategory>(
     },
     type: {
       type: String,
-      enum: ["topup", "account"],
+      enum: ["topup", "account", "digital-service"],
       default: "topup",
     },
   },
