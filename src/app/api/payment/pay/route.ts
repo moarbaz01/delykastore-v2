@@ -267,7 +267,7 @@ export async function POST(req: Request) {
     }
     await order.save();
 
-    if (order.status === "success") {
+    if (order.status === "success" || (order.product as any)?.type === "digital-service") {
       await sendTelegramNotification(order, (order.product as any)?.name || "Unknown Product");
     }
 
