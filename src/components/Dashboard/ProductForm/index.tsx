@@ -172,6 +172,9 @@ const ProductForm = ({ product }: { product?: Product }) => {
           if (value === "account") {
             newData.isApi = false;
             newData.game = "Custom Game";
+          } else if (value === "digital-service") {
+            newData.isApi = false;
+            newData.game = "Digital Service";
           } else {
             newData.game = "";
           }
@@ -423,9 +426,9 @@ const ProductForm = ({ product }: { product?: Product }) => {
     data.append("type", formData.type || "topup");
     data.append("name", formData.name);
     data.append("description", formData.description);
-    data.append("isApi", JSON.stringify(formData.type === "account" ? false : formData.isApi));
-    data.append("game", formData.type === "account" ? "Custom Game" : formData.game);
-    if (formData.isApi) {
+    data.append("isApi", JSON.stringify(formData.type === "account" || formData.type === "digital-service" ? false : formData.isApi));
+    data.append("game", formData.type === "account" ? "Custom Game" : formData.type === "digital-service" ? "Digital Service" : formData.game);
+    if (formData.isApi && formData.type !== "account" && formData.type !== "digital-service") {
       data.append("apiName", formData.apiName);
       data.append("requiresServerId", String(formData.requiresServerId));
       data.append("requiresUserId", String(formData.requiresUserId));
@@ -438,7 +441,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
       }
     }
     
-    if (formData.type === "account") {
+    if (formData.type === "digital-service") {
       data.append("requiresUrlInput", String(formData.requiresUrlInput));
       if (formData.urlInputLabel) data.append("urlInputLabel", formData.urlInputLabel);
       if (formData.urlInputType) data.append("urlInputType", formData.urlInputType);
@@ -563,6 +566,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
             >
               <MenuItem value="topup">Top-Up (In-Game Currency)</MenuItem>
               <MenuItem value="account">Premium Account</MenuItem>
+              <MenuItem value="digital-service">Digital Service</MenuItem>
             </Select>
           </div>
 
@@ -591,7 +595,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
           />
 
           {/* Is API */}
-          {formData.type !== "account" && (
+          {formData.type !== "account" && formData.type !== "digital-service" && (
             <FormControlLabel
               control={
                 <Checkbox
@@ -605,7 +609,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
           )}
 
           {/* API Name (Select) */}
-          {formData.type !== "account" && formData.isApi && (
+          {formData.type !== "account" && formData.type !== "digital-service" && formData.isApi && (
             <>
               <Select
                 fullWidth
@@ -642,7 +646,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
           )}
 
           {/* Required Fields (Only for ALUU API) */}
-          {formData.type !== "account" && formData.isApi && formData.apiName === "Aluu Api" && (
+          {formData.type !== "account" && formData.type !== "digital-service" && formData.isApi && formData.apiName === "Aluu Api" && (
             <div className="mb-4 p-4 border border-gray-700 rounded-lg bg-gray-800/50">
               <Typography variant="subtitle2" className="text-gray-300 mb-2">
                 ALUU API Required Fields
@@ -713,7 +717,12 @@ const ProductForm = ({ product }: { product?: Product }) => {
                   sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
                 />
               )}
-              
+            </div>
+          )}
+
+          {/* Requires URL Input (Only for digital-service) */}
+          {formData.type === "digital-service" && (
+            <div className="mb-4 flex flex-col gap-4">
               <div className="flex flex-col gap-4 mt-2">
                 <div className="flex items-center gap-3 bg-[#0D0B1A] p-4 rounded-xl border border-purple-500/10 hover:border-primary/50 transition-colors">
                   <div className="relative flex items-center">

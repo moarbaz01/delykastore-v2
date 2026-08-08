@@ -16,7 +16,7 @@ import { z } from "zod";
 const productSchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().min(1, "Description is required"),
-  type: z.enum(["topup", "account"]).optional(),
+  type: z.enum(["topup", "account", "digital-service"]).optional(),
   region: z.string().optional(),
   apiName: z.string().optional(),
   cost: z.array(

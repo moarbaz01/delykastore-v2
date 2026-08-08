@@ -23,7 +23,7 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
       isAgree: boolean;
       stock: boolean;
       game: string;
-      type: "account" | "topup";
+      type: "account" | "topup" | "digital-service";
       isApi: boolean;
       playerAvailable: boolean;
       name: string;
@@ -48,7 +48,7 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
         appliedCoupon,
       } = params;
 
-      if (type === "account" && !session) {
+      if ((type === "account" || type === "digital-service") && !session) {
         toast.error("Please login");
         return;
       }

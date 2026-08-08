@@ -3,7 +3,7 @@ import mongoose, { Document, Model, Schema } from "mongoose";
 export interface IProduct extends Document {
   name: string;
   description: string;
-  type: "topup" | "account";
+  type: "topup" | "account" | "digital-service";
   game: string;
   slides: string[];
   banner?: string;
@@ -17,6 +17,7 @@ export interface IProduct extends Document {
   isTesting: boolean;
   requiresUrlInput?: boolean;
   urlInputLabel?: string;
+  urlInputType?: string;
   isLink?: boolean;
   link?: string;
   stock: boolean;
@@ -48,7 +49,7 @@ const productSchema = new Schema<IProduct>(
     },
     type: {
       type: String,
-      enum: ["topup", "account"],
+      enum: ["topup", "account", "digital-service"],
       default: "topup",
     },
     game: {
@@ -95,6 +96,9 @@ const productSchema = new Schema<IProduct>(
       default: false,
     },
     urlInputLabel: {
+      type: String,
+    },
+    urlInputType: {
       type: String,
     },
     isLink: {

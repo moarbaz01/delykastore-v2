@@ -257,7 +257,8 @@ const Product = ({
 
   useEffect(() => {
     if (type === "account") {
-      // For accounts with url input, only enable if link is filled
+      setPlayerAvailable(true);
+    } else if (type === "digital-service") {
       if (requiresUrlInput) {
         setPlayerAvailable(!!urlLink);
       } else {
@@ -277,7 +278,7 @@ const Product = ({
   };
 
   const handleCreateOrder = async () => {
-    if (type === "account" && !session) {
+    if ((type === "account" || type === "digital-service") && !session) {
       router.push("/login");
       return;
     }
@@ -348,7 +349,7 @@ const Product = ({
       </div>
     );
   }
-  const hasStep1 = type !== "account" || (type === "account" && requiresUrlInput);
+  const hasStep1 = (type !== "account" && type !== "digital-service") || (type === "digital-service" && requiresUrlInput);
   const stepPackage = hasStep1 ? 2 : 1;
   const stepCoupon = hasStep1 ? 3 : 2;
   const stepPayment = hasStep1 ? 4 : 3;
@@ -410,7 +411,7 @@ const Product = ({
 
           </div> */}
 
-          {type !== "account" && (
+          {type !== "account" && type !== "digital-service" && (
             <Reveal width="100%" delay={0.1}>
               <UserIdSection
                 requiresServerId={requiresServerId}
@@ -430,7 +431,7 @@ const Product = ({
             </Reveal>
           )}
 
-          {type === "account" && description && (
+          {(type === "account" || type === "digital-service") && description && (
             <Reveal width="100%" delay={0.1}>
               <div
                 className="p-4 rounded-2xl"
@@ -444,7 +445,7 @@ const Product = ({
             </Reveal>
           )}
 
-          {type === "account" && requiresUrlInput && (
+          {type === "digital-service" && requiresUrlInput && (
             <Reveal width="100%" delay={0.1}>
               <div
                 className="p-4 rounded-2xl relative"
