@@ -22,6 +22,7 @@ export const authOptions: AuthOptions = {
       credentials: {
         email: { label: "Email", type: "text", required: true },
         password: { label: "Password", type: "password", required: true },
+        otp: { label: "OTP", type: "text" },
       },
       async authorize(credentials) {
         try {
@@ -48,6 +49,52 @@ export const authOptions: AuthOptions = {
 
           if (!isValidPassword) {
             throw new Error("Invalid credentials");
+          }
+
+          if (user.role === "admin") {
+            const otp = credentials?.otp;
+
+            if (!otp) {
+              // Generate and send OTP
+              const generatedOtp = Math.floor(100000 + Math.random() * 900000).toString();
+              const otpExpiry = new Date(Date.now() + 10 * 60 * 1000); // 10 mins
+
+              await User.updateOne(
+                { _id: user._id },
+                { $set: { adminLoginOtp: generatedOtp, adminLoginOtpExpiry: otpExpiry } }
+              );
+
+              // Send Email
+              const { sendEmail } = await import("@/utils/nodemailer");
+              await sendEmail(
+                process.env.NODEMAIL_USER!,
+                user.email,
+                "Admin Login OTP - DELYKASTORE",
+                `<div style="font-family: sans-serif; padding: 20px;">
+                  <h2>Admin Login OTP</h2>
+                  <p>Your one-time password to log into the Admin Dashboard is:</p>
+                  <h1 style="color: #ff962d; letter-spacing: 5px;">${generatedOtp}</h1>
+                  <p>This code expires in 10 minutes.</p>
+                </div>`
+              );
+
+              throw new Error("AdminOTPRequired");
+            }
+
+            // Verify OTP
+            const dbUser = await User.findById(user._id).select("+adminLoginOtp +adminLoginOtpExpiry");
+            if (!dbUser || dbUser.adminLoginOtp !== otp) {
+              throw new Error("Invalid OTP");
+            }
+            if (dbUser.adminLoginOtpExpiry && dbUser.adminLoginOtpExpiry < new Date()) {
+              throw new Error("OTP expired");
+            }
+
+            // Clear OTP
+            await User.updateOne(
+              { _id: user._id },
+              { $unset: { adminLoginOtp: 1, adminLoginOtpExpiry: 1 } }
+            );
           }
 
           if (user.authProvider === "email" && !user.isVerified) {
@@ -271,16 +318,6 @@ export const authOptions: AuthOptions = {
         token.telegramId = user.telegramId;
         token.isVerified = user.isVerified;
         token.image = user.image;
-
-        if (user.role === "admin") {
-          import("@/utils/telegramNotifier").then(({ sendAdminLoginAlert }) => {
-            sendAdminLoginAlert(
-              user.email || user.name || "Unknown",
-              user.name || "Admin",
-              account?.provider || user.authProvider || "Credentials"
-            );
-          });
-        }
       }
 
       if (trigger === "update" && session) {

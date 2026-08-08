@@ -18,6 +18,8 @@ export interface IUser extends Document {
   signupOtpExpiry?: Date;
   resetOtp?: string;
   resetOtpExpiry?: Date;
+  adminLoginOtp?: string;
+  adminLoginOtpExpiry?: Date;
   createdAt: Date;
   updatedAt: Date;
   comparePassword: (enteredPassword: string) => Promise<boolean>;
@@ -94,6 +96,13 @@ const userSchema = new Schema<IUser>(
       select: false,
     },
     resetOtpExpiry: {
+      type: Date,
+    },
+    adminLoginOtp: {
+      type: String,
+      select: false,
+    },
+    adminLoginOtpExpiry: {
       type: Date,
     },
   },

@@ -26,6 +26,8 @@ export default function LoginPage() {
   const { data: session, status } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [otp, setOtp] = useState("");
+  const [showOtp, setShowOtp] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isTgLoading, setIsTgLoading] = useState(false);
@@ -103,10 +105,17 @@ export default function LoginPage() {
         redirect: false,
         email,
         password,
+        otp: showOtp ? otp : undefined,
       });
 
       if (result?.error) {
-        toast.error("Invalid email or password");
+        if (result.error === "AdminOTPRequired") {
+          setShowOtp(true);
+          toast.success("OTP sent to your admin email!");
+          setIsLoading(false);
+          return;
+        }
+        toast.error(result.error || "Invalid email or password");
         setIsLoading(false);
         return;
       }
@@ -223,6 +232,26 @@ export default function LoginPage() {
               </div>
             </div>
 
+            {/* OTP Input (Shown only if AdminOTPRequired) */}
+            {showOtp && (
+              <div
+                className="flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all duration-200 focus-within:border-purple-500"
+                style={inputBaseStyle}
+              >
+                <Lock size={18} className="text-gray-400 shrink-0" />
+                <input
+                  id="login-otp"
+                  type="text"
+                  required
+                  value={otp}
+                  onChange={(e) => setOtp(e.target.value)}
+                  placeholder="Enter 6-digit OTP"
+                  className="bg-transparent text-white text-sm w-full outline-none placeholder-gray-500"
+                  autoComplete="one-time-code"
+                />
+              </div>
+            )}
+
             {/* Submit */}
             <button
               id="login-submit"
@@ -232,7 +261,7 @@ export default function LoginPage() {
               style={{ background: "linear-gradient(135deg, #7B2FBE 0%, #A855F7 100%)" }}
             >
               {isLoading && <Loader2 size={16} className="animate-spin" />}
-              {isLoading ? "Signing in..." : "Login"}
+              {isLoading ? (showOtp ? "Verifying..." : "Signing in...") : (showOtp ? "Verify & Login" : "Login")}
             </button>
           </form>
 
