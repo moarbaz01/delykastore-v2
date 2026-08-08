@@ -268,7 +268,9 @@ export async function POST(req: Request) {
     await order.save();
 
     if (order.status === "success" || (order.product as any)?.type === "digital-service") {
-      await sendTelegramNotification(order, (order.product as any)?.name || "Unknown Product");
+      const costItem = (order.product as any)?.cost?.find((c: any) => c.id === order.costId);
+      const packageName = costItem ? (costItem.amount || costItem.note || "Selected Package") : undefined;
+      await sendTelegramNotification(order, (order.product as any)?.name || "Unknown Product", packageName);
     }
 
     // Create spin transaction if costId is in spinCostIds and spinActive is true

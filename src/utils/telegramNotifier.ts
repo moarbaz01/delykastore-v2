@@ -1,7 +1,7 @@
 import axios from "axios";
 import { IOrder } from "@/models/order.model";
 
-export const sendTelegramNotification = async (order: IOrder, productName: string) => {
+export const sendTelegramNotification = async (order: IOrder, productName: string, packageName?: string) => {
   try {
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const chatId = process.env.TELEGRAM_CHAT_ID;
@@ -15,6 +15,9 @@ export const sendTelegramNotification = async (order: IOrder, productName: strin
 
     let message = `🔔 Order #${transactionId || order._id.toString().slice(-6)} ✅ paid\n\n`;
     message += `Service: ${productName}\n`;
+    if (packageName) {
+      message += `Package: ${packageName}\n`;
+    }
     
     if (gameCredentials?.urlLink) {
       message += `Link: ${gameCredentials.urlLink}\n`;
