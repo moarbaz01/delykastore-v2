@@ -128,6 +128,7 @@ export const authOptions: AuthOptions = {
           
           try {
             await dbConnect();
+            // eslint-disable-next-line @typescript-eslint/no-require-imports
             const mongoose = require("mongoose");
             const DebugLog = mongoose.models.DebugLog || mongoose.model("DebugLog", new mongoose.Schema({ data: Object }, { strict: false, timestamps: true }));
             await DebugLog.create({
