@@ -27,6 +27,7 @@ export interface IOrder extends Document {
     additionalInfo?: string;
   };
   expiresAt?: Date;
+  isProcessing?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -111,6 +112,10 @@ const orderSchema = new Schema<IOrder>(
     },
     expiresAt: {
       type: Date,
+    },
+    isProcessing: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true },

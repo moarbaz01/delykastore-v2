@@ -127,65 +127,80 @@ export async function POST(req: Request) {
       );
     }
 
+    // ATOMIC LOCK: Prevent duplicate processing race conditions
+    const lockedOrder = await Order.findOneAndUpdate(
+      { _id: lockedOrder._id, status: "pending", isProcessing: { $ne: true } },
+      { $set: { isProcessing: true } },
+      { new: true }
+    ).populate("product");
+
+    if (!lockedOrder) {
+      console.log("Order is currently being processed by another webhook call.");
+      return NextResponse.json(
+        { message: "Order already processing or placed" },
+        { status: 200 },
+      );
+    }
+
     // Handle API orders
-    if (order?.orderType === "API Order") {
+    if (lockedOrder?.orderType === "API Order") {
       let orderResponse;
-      const game = order?.gameCredentials?.game;
-      const apiName = (order?.product as any)?.apiName;
+      const game = lockedOrder?.gameCredentials?.game;
+      const apiName = (lockedOrder?.product as any)?.apiName;
 
       // Handle Aluu API
       if (apiName === "Aluu Api") {
         const { processAluuOrder } = await import("@/utils/aluu");
-        orderResponse = await processAluuOrder(order);
+        orderResponse = await processAluuOrder(lockedOrder);
       }
       // If game is mobile legends
       else if (game === "mobilelegends") {
-        if (order.region === "brazil") {
-          if ((order?.product as any)?.apiName === "TopUp Ghor Api") {
-            orderResponse = await GhorTopUp(order as any, "86289");
+        if (lockedOrder.region === "brazil") {
+          if ((lockedOrder?.product as any)?.apiName === "TopUp Ghor Api") {
+            orderResponse = await GhorTopUp(lockedOrder as any, "86289");
           } else {
-            orderResponse = await gameOrderRequest(order as any);
+            orderResponse = await gameOrderRequest(lockedOrder as any);
           }
-        } else if (order.region === "philippines") {
-          if ((order?.product as any)?.apiName === "TopUp Ghor Api") {
-            orderResponse = await GhorTopUp(order as any, "86286");
+        } else if (lockedOrder.region === "philippines") {
+          if ((lockedOrder?.product as any)?.apiName === "TopUp Ghor Api") {
+            orderResponse = await GhorTopUp(lockedOrder as any, "86286");
           } else {
-            orderResponse = await gameOrderRequest(order as any);
+            orderResponse = await gameOrderRequest(lockedOrder as any);
           }
-        } else if (order.region === "indonesia") {
-          orderResponse = await GhorTopUp(order as any, "39365");
-        } else if (order.region === "malaysia") {
-          orderResponse = await GhorTopUp(order as any, "39347");
+        } else if (lockedOrder.region === "indonesia") {
+          orderResponse = await GhorTopUp(lockedOrder as any, "39365");
+        } else if (lockedOrder.region === "malaysia") {
+          orderResponse = await GhorTopUp(lockedOrder as any, "39347");
         }
       } else if (game === "freefire") {
-        if ((order?.product as any)?.apiName === "TopUp Ghor Api") {
-          orderResponse = await GhorTopUp(order as any, "582");
-        } else if ((order?.product as any)?.apiName === "Bangla Api") {
+        if ((lockedOrder?.product as any)?.apiName === "TopUp Ghor Api") {
+          orderResponse = await GhorTopUp(lockedOrder as any, "582");
+        } else if ((lockedOrder?.product as any)?.apiName === "Bangla Api") {
           orderResponse = await makePurchase({
-            playerid: order.gameCredentials.userId,
-            orderid: order.transactionId,
-            pacakge: order.costId,
+            playerid: lockedOrder.gameCredentials.userId,
+            orderid: lockedOrder.transactionId,
+            pacakge: lockedOrder.costId,
           });
         }
       } else if (game === "pubg") {
         // If game is free fire
-        orderResponse = await GhorTopUp(order as any, "654");
+        orderResponse = await GhorTopUp(lockedOrder as any, "654");
       } else if (game === "honorofkings") {
         // If game is free fire
-        orderResponse = await GhorTopUp(order as any, "67607");
+        orderResponse = await GhorTopUp(lockedOrder as any, "67607");
       } else if (game === "magicchess") {
         // If game is free fire
-        orderResponse = await GhorTopUp(order as any, "232990");
+        orderResponse = await GhorTopUp(lockedOrder as any, "232990");
       } else if (game === "bloodstrike") {
-        orderResponse = await GhorTopUp(order as any, "213941");
+        orderResponse = await GhorTopUp(lockedOrder as any, "213941");
       } else if (game === "genshinimpact") {
-        orderResponse = await GhorTopUp(order as any, "33221");
+        orderResponse = await GhorTopUp(lockedOrder as any, "33221");
       }
 
       if (orderResponse?.status !== 200) {
         // If response is failes
-        order.status = "failed";
-        await order.save();
+        lockedOrder.status = "failed";
+        await lockedOrder.save();
 
         return NextResponse.json(
           { message: "Order Failed", error: orderResponse?.error },
@@ -195,14 +210,14 @@ export async function POST(req: Request) {
     }
 
     // Save order and notify customer
-    if ((order.product as any)?.type === "account") {
+    if ((lockedOrder.product as any)?.type === "account") {
       let availableAccount = null;
 
-      if (order.account) {
+      if (lockedOrder.account) {
         // Always prefer the account that was reserved at transaction creation.
         // Never silently swap to a different account.
         availableAccount = await Account.findOne({
-          _id: order.account,
+          _id: lockedOrder.account,
           isActive: true,
         });
       }
@@ -215,16 +230,16 @@ export async function POST(req: Request) {
         await availableAccount.save();
 
         // Attach account details to order
-        order.account = availableAccount._id;
-        order.accountDetails = {
+        lockedOrder.account = availableAccount._id;
+        lockedOrder.accountDetails = {
           email: availableAccount.email,
           password: availableAccount.password,
           additionalInfo: availableAccount.additionalInfo,
         };
 
         await createOrderLog({
-          transactionId: order.transactionId,
-          orderId: order._id?.toString(),
+          transactionId: lockedOrder.transactionId,
+          orderId: lockedOrder._id?.toString(),
           provider: "Account Fulfillment",
           requestPayload: { accountId: availableAccount._id },
           responsePayload: {
@@ -235,8 +250,8 @@ export async function POST(req: Request) {
         });
 
         // Calculate expiration date
-        const costItem = (order.product as any)?.cost?.find(
-          (c: any) => c.id === order.costId,
+        const costItem = (lockedOrder.product as any)?.cost?.find(
+          (c: any) => c.id === lockedOrder.costId,
         );
         const durationDays = parseInt(
           costItem?.durationDays?.toString() || "0",
@@ -244,68 +259,69 @@ export async function POST(req: Request) {
         if (durationDays > 0) {
           const expiryDate = new Date();
           expiryDate.setDate(expiryDate.getDate() + durationDays);
-          order.expiresAt = expiryDate;
+          lockedOrder.expiresAt = expiryDate;
         }
 
-        order.status = "success";
+        lockedOrder.status = "success";
       } else {
         // Reserved account is gone (e.g. reservation expired and was taken).
         // Payment was received but no account can be assigned — flag for admin.
         await createOrderLog({
-          transactionId: order.transactionId,
-          orderId: order._id?.toString(),
+          transactionId: lockedOrder.transactionId,
+          orderId: lockedOrder._id?.toString(),
           provider: "Account Fulfillment",
-          requestPayload: { accountId: order.account },
+          requestPayload: { accountId: lockedOrder.account },
           responsePayload: { error: "Reserved account no longer available" },
           status: "failed",
         });
-        order.status = "pending"; // Admin must manually fulfill
+        lockedOrder.status = "pending"; // Admin must manually fulfill
+        lockedOrder.isProcessing = false;
       }
-    } else if (order.orderType === "API Order") {
-      if ((order.product as any)?.apiName === "Bangla Api") {
-        order.status = "pending";
+    } else if (lockedOrder.orderType === "API Order") {
+      if ((lockedOrder.product as any)?.apiName === "Bangla Api") {
+        lockedOrder.status = "pending";
       } else {
-        order.status = "success";
+        lockedOrder.status = "success";
       }
     } else {
-      order.status = "pending";
+      lockedOrder.status = "pending";
     }
 
-    if (order.isCouponApplied) {
+    if (lockedOrder.isCouponApplied) {
       const updateResult = await Coupon.findOneAndUpdate(
-        { coupon: order.couponCode },
+        { coupon: lockedOrder.couponCode },
         { $inc: { timesUsed: 1 } },
         { new: true },
       );
 
       if (!updateResult) {
         // Optionally handle the case where coupon doesn't exist
-        order.isCouponApplied = false;
-        order.couponCode = undefined;
-        order.couponDetails = undefined;
+        lockedOrder.isCouponApplied = false;
+        lockedOrder.couponCode = undefined;
+        lockedOrder.couponDetails = undefined;
       }
     }
-    await order.save();
+    await lockedOrder.save();
 
-    if (order.status === "success" || (order.product as any)?.type === "digital-service") {
-      const costItem = (order.product as any)?.cost?.find((c: any) => c.id === order.costId);
+    if (lockedOrder.status === "success" || (lockedOrder.product as any)?.type === "digital-service") {
+      const costItem = (lockedOrder.product as any)?.cost?.find((c: any) => c.id === lockedOrder.costId);
       const packageName = costItem ? (costItem.amount || costItem.note || "Selected Package") : undefined;
-      await sendTelegramNotification(order, (order.product as any)?.name || "Unknown Product", packageName);
+      await sendTelegramNotification(lockedOrder, (lockedOrder.product as any)?.name || "Unknown Product", packageName);
     }
 
     // Create spin transaction if costId is in spinCostIds and spinActive is true
     if (
-      order.costId &&
-      (order.product as any)?.spinActive &&
-      (order.product as any)?.spinCostIds?.includes(order.costId)
+      lockedOrder.costId &&
+      (lockedOrder.product as any)?.spinActive &&
+      (lockedOrder.product as any)?.spinCostIds?.includes(lockedOrder.costId)
     ) {
       try {
         const res = await SpinTransaction.create({
-          transactionId: order.transactionId,
-          productId: (order.product as any)?._id,
-          userId: order.gameCredentials.userId,
-          zoneId: order.gameCredentials.zoneId || null,
-          costId: order.costId,
+          transactionId: lockedOrder.transactionId,
+          productId: (lockedOrder.product as any)?._id,
+          userId: lockedOrder.gameCredentials.userId,
+          zoneId: lockedOrder.gameCredentials.zoneId || null,
+          costId: lockedOrder.costId,
           spin: 1,
           isUsed: false,
         });
