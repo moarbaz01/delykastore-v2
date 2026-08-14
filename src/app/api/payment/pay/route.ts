@@ -79,6 +79,16 @@ export async function POST(req: Request) {
 
     const checkValidTrans = await checkTransaction(tran_id);
     console.log("valid", checkValidTrans);
+    
+    // Log the incoming ABA Webhook and validation result for debugging
+    await createOrderLog({
+      transactionId: tran_id,
+      orderId: orderId,
+      provider: "abapay_webhook",
+      requestPayload: data,
+      responsePayload: checkValidTrans || { error: "checkTransaction failed" },
+      status: "pending", // This is just a debug log
+    });
     if (!checkValidTrans) {
       return NextResponse.json(
         { message: "Transaction not found" },
