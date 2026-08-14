@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
     const { status, uid, trx, orderid } = body;
 
     // 1️⃣ Basic payload validation
-    if (!status || !uid || !trx || !orderid) {
+    if (!status || !orderid) {
       await OrderLog.create({
         transactionId: orderid || "unknown",
         provider: "bangla",
@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 3️⃣ Validate player ID
-    if (String(uid) !== String(order.gameCredentials?.userId)) {
+    if (uid && String(uid) !== String(order.gameCredentials?.userId)) {
       await OrderLog.create({
         transactionId: orderid,
         orderId: order._id,
