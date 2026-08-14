@@ -93,12 +93,7 @@ export async function POST(req: Request) {
       );
     }
 
-    if (checkValidTrans.data.apv !== apv) {
-      return NextResponse.json(
-        { message: "Transaction is not valid" },
-        { status: 400 },
-      );
-    }
+    
 
     if (order.status === "success") {
       return NextResponse.json(
