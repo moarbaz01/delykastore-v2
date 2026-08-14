@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
     }
 
     // 3️⃣ Validate player ID
-    if (uid !== order.gameCredentials?.userId) {
+    if (String(uid) !== String(order.gameCredentials?.userId)) {
       await OrderLog.create({
         transactionId: orderid,
         orderId: order._id,
