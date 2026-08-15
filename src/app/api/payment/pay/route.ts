@@ -129,7 +129,7 @@ export async function POST(req: Request) {
 
     // ATOMIC LOCK: Prevent duplicate processing race conditions
     const lockedOrder = await Order.findOneAndUpdate(
-      { _id: lockedOrder._id, status: "pending", isProcessing: { $ne: true } },
+      { _id: order._id, status: "pending", isProcessing: { $ne: true } },
       { $set: { isProcessing: true } },
       { new: true }
     ).populate("product");
