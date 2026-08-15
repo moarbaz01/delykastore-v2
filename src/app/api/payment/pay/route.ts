@@ -80,14 +80,13 @@ export async function POST(req: Request) {
     let checkValidTrans = await checkTransaction(tran_id);
     
     // Bakong/Cross-bank transactions can take a few seconds to settle on ABA's side.
-    // If it's PENDING, we wait and retry up to 5 times (15 seconds total).
+    // If it's PENDING or if the API request temporarily failed (null), we wait and retry up to 5 times (15 seconds total).
     let attempts = 0;
     while (
-      checkValidTrans &&
-      checkValidTrans.data?.payment_status === "PENDING" &&
+      (!checkValidTrans || checkValidTrans.data?.payment_status === "PENDING") &&
       attempts < 5
     ) {
-      console.log(`Transaction ${tran_id} is PENDING. Retrying in 3 seconds... (Attempt ${attempts + 1}/5)`);
+      console.log(`Transaction ${tran_id} check failed or is PENDING. Retrying in 3 seconds... (Attempt ${attempts + 1}/5)`);
       await new Promise((resolve) => setTimeout(resolve, 3000));
       checkValidTrans = await checkTransaction(tran_id);
       attempts++;
