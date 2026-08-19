@@ -400,7 +400,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
       }
     }
 
-    if (!formData.game && formData.type !== "account") {
+    if (!formData.game && formData.type !== "account" && formData.type !== "digital-service") {
       toast.error("Game is required.");
       toast.dismiss(loadingRef.current);
       setLoading(false);
@@ -414,7 +414,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
     }
 
     const isValid = formData.cost.every(
-      (cost) => cost.id && cost.price && (formData.type === "account" ? cost.durationDays : cost.amount)
+      (cost) => cost.id && cost.price && (cost.durationDays || cost.amount)
     );
     if (!isValid) {
       toast.error("Please fill all cost fields with valid values.");
@@ -1061,7 +1061,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
                 sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
               />
               {/* Conditional Amount/Duration Input */}
-              {formData.type === "account" ? (
+              {(formData.type === "account" || formData.type === "digital-service") ? (
                 <TextField
                   fullWidth
                   label="Duration (Days)"
