@@ -1061,7 +1061,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
                 sx={{ color: "#E5E7EB", backgroundColor: "#1F2937" }}
               />
               {/* Conditional Amount/Duration Input */}
-              {(formData.type === "account" || formData.type === "digital-service") ? (
+              {formData.type === "account" ? (
                 <TextField
                   fullWidth
                   label="Duration (Days)"
@@ -1077,7 +1077,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
               ) : (
                 <TextField
                   fullWidth
-                  label="Amount"
+                  label={formData.type === "digital-service" ? "Duration / Amount" : "Amount"}
                   value={costItem.amount || ""}
                   onChange={(e) =>
                     handleCostChange(index, "amount", e.target.value)
