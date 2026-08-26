@@ -9,7 +9,9 @@ import { Toaster } from "react-hot-toast";
 import Provider from "@/components/Provider";
 import LogoButton from "@/components/ui/LogoButton";
 import PaywayScript from "@/components/PaywayScript";
-
+import { headers } from "next/headers";
+import { getAnnouncementSetting } from "@/lib/getAnnouncementSetting";
+import MaintenanceScreen from "@/components/MaintenanceScreen";
 export const metadata: Metadata = {
   title: "DELYKASTORE",
   description: "Top-up your favorite games by using DELYKASTORE",
@@ -33,51 +35,68 @@ export const viewport: Viewport = {
   colorScheme: "dark",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch settings from DB to check maintenance mode
+  const settings = await getAnnouncementSetting();
+  
+  // Read pathname from the middleware header
+  const headersList = headers();
+  const pathname = headersList.get("x-pathname") || "";
+  
+  // Exempt admin routes, APIs, and auth routes from maintenance block
+  const isAdminOrApi = pathname.startsWith("/dashboard") || pathname.startsWith("/login") || pathname.startsWith("/api");
+  const isMaintenanceMode = settings?.isMaintenanceMode && !isAdminOrApi;
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
         className={`${outfit.variable} ${battambang.variable} font-sans antialiased relative min-h-screen`}
       >
-        {/* Global Gradient Background (Optimized for Safari Performance) */}
-        <div 
-          className="fixed inset-0 pointer-events-none -z-50"
-          style={{
-            backgroundColor: "#0D0B1A",
-            backgroundImage: `
-              radial-gradient(circle at 10% 10%, rgba(168, 85, 247, 0.15) 0%, transparent 40%),
-              radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.12) 0%, transparent 40%),
-              radial-gradient(circle at 75% 55%, rgba(192, 132, 252, 0.1) 0%, transparent 35%)
-            `
-          }}
-        >
-        </div>
-        <div className="relative z-0 flex flex-col min-h-screen">
-          <Provider>
-            <NextTopLoader color="#A855F7" showSpinner={false} />
-            <Toaster
-              toastOptions={{
-                style: {
-                  background: "#1A1730",
-                  color: "#F5F3FF",
-                  border: "1px solid rgba(168,85,247,0.2)",
-                },
+        {isMaintenanceMode ? (
+          <MaintenanceScreen message={settings?.maintenanceMessage} />
+        ) : (
+          <>
+            {/* Global Gradient Background (Optimized for Safari Performance) */}
+            <div 
+              className="fixed inset-0 pointer-events-none -z-50"
+              style={{
+                backgroundColor: "#0D0B1A",
+                backgroundImage: `
+                  radial-gradient(circle at 10% 10%, rgba(168, 85, 247, 0.15) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.12) 0%, transparent 40%),
+                  radial-gradient(circle at 75% 55%, rgba(192, 132, 252, 0.1) 0%, transparent 35%)
+                `
               }}
-            />
-            <Navbar />
-            <main className="flex-1 flex flex-col w-full">
-              {children}
-            </main>
-            <Footer />
-            <BottomNav />
-            <LogoButton />
-          </Provider>
-          <PaywayScript />
-        </div>
+            >
+            </div>
+            <div className="relative z-0 flex flex-col min-h-screen">
+              <Provider>
+                <NextTopLoader color="#A855F7" showSpinner={false} />
+                <Toaster
+                  toastOptions={{
+                    style: {
+                      background: "#1A1730",
+                      color: "#F5F3FF",
+                      border: "1px solid rgba(168,85,247,0.2)",
+                    },
+                  }}
+                />
+                <Navbar />
+                <main className="flex-1 flex flex-col w-full">
+                  {children}
+                </main>
+                <Footer />
+                <BottomNav />
+                <LogoButton />
+              </Provider>
+              <PaywayScript />
+            </div>
+          </>
+        )}
       </body>
     </html>
   );

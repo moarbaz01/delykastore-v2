@@ -57,6 +57,8 @@ const Sidebar = () => {
         { href: "/dashboard/game-list", label: "Api Game List", icon: Gamepad2 },
         { href: "/dashboard/aluu-packages", label: "ALUU Packages", icon: Gamepad2 },
         { href: "/dashboard/balance", label: "Balance", icon: Wallet },
+        { href: "/dashboard/events", label: "Events", icon: FaList },
+        { href: "/dashboard/settings", label: "Global Settings", icon: LayoutGrid },
       ],
     },
     {

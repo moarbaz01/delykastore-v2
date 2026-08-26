@@ -45,6 +45,7 @@ const nextConfig = {
     removeConsole: process.env.NODE_ENV === "production", // Removes console logs in production
   },
   transpilePackages: ['swiper', 'lucide-react'],
+  experimental: { serverComponentsExternalPackages: ['mongoose'] },
 };
 
 export default nextConfig;

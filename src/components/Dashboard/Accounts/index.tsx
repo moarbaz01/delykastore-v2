@@ -231,8 +231,10 @@ export default function AccountsClient() {
               <TableCell>Package</TableCell>
               <TableCell>Email / Username</TableCell>
               <TableCell>Password</TableCell>
+              <TableCell>Additional Info</TableCell>
               <TableCell>Reserved</TableCell>
               <TableCell>Expiry</TableCell>
+              <TableCell>Created At</TableCell>
               <TableCell>Status</TableCell>
               <TableCell sx={{ textAlign: "right" }}>Actions</TableCell>
             </TableRow>
@@ -241,7 +243,7 @@ export default function AccountsClient() {
             {accounts.length === 0 ? (
               <TableRow>
                 <TableCell
-                  colSpan={8}
+                  colSpan={10}
                   className="text-center py-12"
                 >
                   No accounts found.
@@ -260,8 +262,10 @@ export default function AccountsClient() {
                       return cost ? (cost.durationDays ? `${cost.durationDays} Days` : cost.amount) : acc.costId;
                     })()}
                   </TableCell>
-                  <TableCell sx={{ fontFamily: "monospace" }}>
-                    {acc.email}
+                  <TableCell sx={{ fontFamily: "monospace", maxWidth: "300px" }}>
+                    <div className="truncate w-full" title={acc.email}>
+                      {acc.email}
+                    </div>
                   </TableCell>
                   <TableCell>
                     <div className="flex items-center gap-2">
@@ -285,6 +289,15 @@ export default function AccountsClient() {
                     </div>
                   </TableCell>
                   <TableCell>
+                    {acc.additionalInfo ? (
+                      <span className="text-xs text-gray-300 line-clamp-2 max-w-[150px]">
+                        {acc.additionalInfo}
+                      </span>
+                    ) : (
+                      <span className="text-xs text-gray-500">—</span>
+                    )}
+                  </TableCell>
+                  <TableCell>
                     {acc.isReserved ? (
                       <span className="text-yellow-400 text-xs font-semibold">
                         YES
@@ -301,6 +314,11 @@ export default function AccountsClient() {
                     ) : (
                       <span className=" text-xs">—</span>
                     )}
+                  </TableCell>
+                  <TableCell>
+                    <span className="text-gray-400 text-xs">
+                      {new Date(acc.createdAt).toLocaleDateString()}
+                    </span>
                   </TableCell>
                   <TableCell>
                     <span

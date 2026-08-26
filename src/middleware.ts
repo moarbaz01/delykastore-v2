@@ -44,7 +44,15 @@ export async function middleware(req: NextRequest) {
     }
   }
 
-  return NextResponse.next();
+  // Forward the pathname so we can check it in layout.tsx for Maintenance Mode
+  const requestHeaders = new Headers(req.headers);
+  requestHeaders.set("x-pathname", pathname);
+
+  return NextResponse.next({
+    request: {
+      headers: requestHeaders,
+    },
+  });
 }
 
 export const config = {
