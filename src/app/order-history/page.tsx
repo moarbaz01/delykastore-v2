@@ -53,7 +53,7 @@ function CustomSelect({
     <div className="relative w-full sm:w-40 z-20" ref={ref}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-[#FFFFFF] border border-pink-500/15 rounded-xl px-4 py-2.5 text-sm text-white flex items-center justify-between hover:border-primary/50 transition-colors"
+        className="w-full bg-[#FFFFFF] border border-pink-500/15 rounded-xl px-4 py-2.5 text-sm text-gray-900 flex items-center justify-between hover:border-primary/50 transition-colors"
       >
         <span>{selectedLabel}</span>
         <ChevronDown
@@ -73,8 +73,8 @@ function CustomSelect({
                 setIsOpen(false);
               }}
               className={`w-full text-left px-4 py-2 text-sm transition-colors ${value === option.value
-                ? "bg-primary/20 text-white font-medium"
-                : "text-gray-600 hover:bg-white/5"
+                ? "bg-primary/20 text-primary font-bold"
+                : "text-gray-600 hover:bg-pink-50"
                 }`}
             >
               {option.label}
@@ -130,11 +130,11 @@ function OrderHistoryContent() {
   ];
 
   return (
-    <div className="min-h-screen text-gray-100 py-6 px-4 pb-28 md:pb-6">
+    <div className="min-h-screen text-gray-900 py-6 px-4 pb-28 md:pb-6">
       <div className="max-w-5xl mx-auto space-y-6 animate-fade-in">
         {/* Header & Controls */}
         <div className="space-y-4">
-          <h1 className="text-2xl font-bold text-white">Order History</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Order History</h1>
 
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
@@ -147,7 +147,7 @@ function OrderHistoryContent() {
                 placeholder="Search products..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-[#FFFFFF] border border-pink-500/15 rounded-xl pl-11 pr-4 py-2.5 text-sm focus:border-primary outline-none text-white transition-all shadow-sm"
+                className="w-full bg-[#FFFFFF] border border-pink-500/15 rounded-xl pl-11 pr-4 py-2.5 text-sm focus:border-primary outline-none text-gray-900 transition-all shadow-sm"
               />
             </div>
 
@@ -186,7 +186,7 @@ function OrderHistoryContent() {
                     {/* Top Info */}
                     <div className="flex-1 min-w-0">
                       <div className="flex justify-between items-start mb-1">
-                        <h3 className="font-bold text-white text-[15px] truncate pr-2">
+                        <h3 className="font-bold text-gray-900 text-[15px] truncate pr-2">
                           {order.product?.name || "Product Name"}
                         </h3>
                         <p className="text-[15px] font-bold text-primary shrink-0">
@@ -265,18 +265,18 @@ function OrderHistoryContent() {
                           <div className="flex flex-wrap gap-4 text-[13px] text-gray-600">
                             <div className="flex items-center gap-2">
                               <span className="text-gray-500">ID:</span>
-                              <span className="font-medium text-white">{order.gameCredentials?.userId || order.playerId || "N/A"}</span>
+                              <span className="font-medium text-gray-900">{order.gameCredentials?.userId || order.playerId || "N/A"}</span>
                             </div>
                             {order.gameCredentials?.zoneId && (
                               <div className="flex items-center gap-2">
                                 <span className="text-gray-500">Zone:</span>
-                                <span className="font-medium text-white">{order.gameCredentials.zoneId}</span>
+                                <span className="font-medium text-gray-900">{order.gameCredentials.zoneId}</span>
                               </div>
                             )}
                             {order.gameCredentials?.urlLink && (
                               <div className="flex items-center gap-2">
                                 <span className="text-gray-500">URL/Link:</span>
-                                <span className="font-medium text-white truncate max-w-[200px]" title={order.gameCredentials.urlLink}>
+                                <span className="font-medium text-gray-900 truncate max-w-[200px]" title={order.gameCredentials.urlLink}>
                                   {order.gameCredentials.urlLink}
                                 </span>
                               </div>
@@ -304,7 +304,7 @@ function OrderHistoryContent() {
         ) : (
           <div className="bg-[#FFFFFF] border border-pink-500/10 rounded-[20px] py-16 text-center shadow-sm">
             <PackageIcon size={32} className="mx-auto text-primary/40 mb-3" />
-            <p className="text-white font-medium mb-1">No orders found</p>
+            <p className="text-gray-900 font-medium mb-1">No orders found</p>
             <p className="text-gray-600 text-sm">Try adjusting your search or filters.</p>
           </div>
         )}
@@ -315,7 +315,7 @@ function OrderHistoryContent() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="p-2 rounded-xl bg-[#FFFFFF] border border-pink-500/20 text-white disabled:opacity-40 hover:bg-primary/10 transition-colors"
+              className="p-2 rounded-xl bg-[#FFFFFF] border border-pink-500/20 text-gray-600 disabled:opacity-40 hover:bg-primary/10 hover:text-primary transition-colors"
             >
               <ChevronLeft size={18} />
             </button>
@@ -325,7 +325,7 @@ function OrderHistoryContent() {
             <button
               onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
               disabled={page === pagination.totalPages}
-              className="p-2 rounded-xl bg-[#FFFFFF] border border-pink-500/20 text-white disabled:opacity-40 hover:bg-primary/10 transition-colors"
+              className="p-2 rounded-xl bg-[#FFFFFF] border border-pink-500/20 text-gray-600 disabled:opacity-40 hover:bg-primary/10 hover:text-primary transition-colors"
             >
               <ChevronRight size={18} />
             </button>

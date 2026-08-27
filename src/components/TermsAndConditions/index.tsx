@@ -12,7 +12,7 @@ const TermsAndConditions = () => {
           <div className="w-20 h-20 bg-[#FFFFFF] rounded-full flex items-center justify-center mx-auto mb-5 border border-pink-500/20 shadow-[0_0_30px_rgba(255,117,151,0.3)]">
             <FileText size={36} className="text-primary" />
           </div>
-          <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 mb-3">
+          <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600 mb-3">
             Terms and Conditions
           </h1>
           <p className="text-sm font-medium text-primary">Last Updated: October 27, 2024</p>
@@ -26,18 +26,18 @@ const TermsAndConditions = () => {
             
             {/* Section 1 */}
             <section>
-              <h2 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
+              <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
                 <ShieldCheck size={20} className="text-primary" />
                 Introduction
               </h2>
               <p className="pl-7">
-                Welcome to <strong className="text-white">DELYKASTORE</strong> (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;). These Terms and Conditions govern your use of our website. By accessing or using our services, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use the Site.
+                Welcome to <strong className="text-gray-900">DELYKASTORE</strong> (&quot;we&quot;, &quot;us&quot;, &quot;our&quot;). These Terms and Conditions govern your use of our website. By accessing or using our services, you agree to be bound by these Terms. If you do not agree to these Terms, please do not use the Site.
               </p>
             </section>
 
             {/* Section 2 */}
             <section>
-              <h2 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
+              <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
                 <AlertCircle size={20} className="text-amber-500" />
                 Purchases & Orders
               </h2>
@@ -45,7 +45,7 @@ const TermsAndConditions = () => {
                 You (hereafter referred to as &quot;buyer&quot; and &quot;user&quot;) agree to all orders placed on our platform. 
               </p>
               <ul className="list-disc list-inside pl-7 space-y-2">
-                <li>All purchases made through the Site are <strong className="text-white">final and non-refundable</strong>. This includes, but is not limited to, digital goods, game top-ups, subscriptions, and virtual currency.</li>
+                <li>All purchases made through the Site are <strong className="text-gray-900">final and non-refundable</strong>. This includes, but is not limited to, digital goods, game top-ups, subscriptions, and virtual currency.</li>
                 <li>Prices for goods and services are subject to change without notice. We reserve the right to modify prices and charges for products or services at any time.</li>
                 <li>Payment must be made through the available payment methods on the Site. By providing your payment information, you authorize us to charge your payment method for the amount specified at the time of purchase.</li>
               </ul>
@@ -53,7 +53,7 @@ const TermsAndConditions = () => {
 
             {/* Section 3 */}
             <section>
-              <h2 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
+              <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
                 <ShieldCheck size={20} className="text-blue-500" />
                 Use of the Site
               </h2>
@@ -66,7 +66,7 @@ const TermsAndConditions = () => {
 
             {/* Section 4 */}
             <section>
-              <h2 className="text-xl font-bold text-white mb-3 flex items-center gap-2">
+              <h2 className="text-xl font-bold text-gray-900 mb-3 flex items-center gap-2">
                 <RefreshCcw size={20} className="text-emerald-500" />
                 Changes to Terms
               </h2>
@@ -79,16 +79,16 @@ const TermsAndConditions = () => {
 
         {/* Contact Us Card */}
         <div className="bg-[#FFFFFF] border border-pink-500/20 rounded-[24px] p-6 text-center shadow-lg mt-8">
-          <h3 className="text-lg font-bold text-white mb-2">Have Questions?</h3>
+          <h3 className="text-lg font-bold text-gray-900 mb-2">Have Questions?</h3>
           <p className="text-sm text-gray-600 mb-6">If you have any questions or concerns about these Terms, please contact us.</p>
           
           <div className="flex flex-wrap justify-center gap-4">
-            <a href="mailto:tvhubcambodia@gmail.com" className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors text-sm font-medium text-white">
+            <a href="mailto:tvhubcambodia@gmail.com" className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-pink-50 border border-pink-500/20 hover:bg-pink-100 transition-colors text-sm font-medium text-gray-900">
               <Mail size={16} className="text-primary" />
               tvhubcambodia@gmail.com
             </a>
-            <a href="https://t.me/Delyy_kaa" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors text-sm font-medium text-white">
-              <FaTelegram size={16} className="text-blue-400" />
+            <a href="https://t.me/Delyy_kaa" target="_blank" rel="noreferrer" className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-pink-50 border border-pink-500/20 hover:bg-pink-100 transition-colors text-sm font-medium text-gray-900">
+              <FaTelegram size={16} className="text-blue-500" />
               @Delyy_kaa
             </a>
           </div>

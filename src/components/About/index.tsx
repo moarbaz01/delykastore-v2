@@ -5,13 +5,13 @@ import { FaTelegram } from "react-icons/fa";
 
 const AboutUs = () => {
   return (
-    <div className="min-h-screen text-white py-12 px-4 pb-28">
+    <div className="min-h-screen text-gray-900 py-12 px-4 pb-28">
       <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
         <div className="text-center mb-10">
           <div className="w-20 h-20 bg-[#FFFFFF] rounded-full flex items-center justify-center mx-auto mb-5 border border-pink-500/20 shadow-[0_0_30px_rgba(255,117,151,0.3)]">
             <Gamepad2 size={36} className="text-primary" />
           </div>
-          <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 mb-3">
+          <h1 className="text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-gray-900 to-gray-600 mb-3">
             About Us
           </h1>
           <p className="text-lg text-gray-600 max-w-lg mx-auto">
@@ -24,13 +24,13 @@ const AboutUs = () => {
           <div className="bg-[#FFFFFF] border border-pink-500/10 rounded-[24px] p-6 shadow-lg relative overflow-hidden group hover:border-pink-500/30 transition-colors">
             <div className="absolute top-0 right-0 w-32 h-32 bg-primary/5 rounded-full blur-[40px] -z-10 group-hover:opacity-100 opacity-50 transition-opacity"></div>
             
-            <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-gray-900 mb-4 flex items-center gap-2">
               <div className="w-2 h-6 bg-primary rounded-full"></div>
               Who We Are
             </h2>
             <div className="space-y-4 text-sm text-gray-600 leading-relaxed">
               <p>
-                Welcome to <strong className="text-white">DELYKASTORE</strong>! We are a dedicated team focused on bringing you the best quality digital products and game top-ups with a personalized, seamless shopping experience.
+                Welcome to <strong className="text-gray-900">DELYKASTORE</strong>! We are a dedicated team focused on bringing you the best quality digital products and game top-ups with a personalized, seamless shopping experience.
               </p>
               <p>
                 Our mission is to empower gamers in Cambodia and beyond by providing instant, secure access to in-game currencies and premium accounts. We take pride in our lightning-fast automated delivery systems and exceptional 24/7 customer support.
@@ -42,7 +42,7 @@ const AboutUs = () => {
           <div className="bg-[#FFFFFF] border border-pink-500/10 rounded-[24px] p-6 shadow-lg relative overflow-hidden group hover:border-pink-500/30 transition-colors">
             <div className="absolute bottom-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full blur-[40px] -z-10 group-hover:opacity-100 opacity-50 transition-opacity"></div>
 
-            <h2 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
+            <h2 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-2">
               <div className="w-2 h-6 bg-blue-500 rounded-full"></div>
               Get in Touch
             </h2>
@@ -54,7 +54,7 @@ const AboutUs = () => {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-0.5">Email Support</p>
-                  <a href="mailto:tvhubcambodia@gmail.com" className="text-sm font-medium text-white hover:text-primary transition-colors">
+                  <a href="mailto:tvhubcambodia@gmail.com" className="text-sm font-medium text-gray-900 hover:text-primary transition-colors">
                     tvhubcambodia@gmail.com
                   </a>
                 </div>
@@ -66,7 +66,7 @@ const AboutUs = () => {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-0.5">Telegram Support</p>
-                  <a href="https://t.me/Delyy_kaa" target="_blank" rel="noreferrer" className="text-sm font-medium text-white hover:text-blue-400 transition-colors">
+                  <a href="https://t.me/Delyy_kaa" target="_blank" rel="noreferrer" className="text-sm font-medium text-gray-900 hover:text-blue-400 transition-colors">
                     @Delyy_kaa
                   </a>
                 </div>
@@ -78,7 +78,7 @@ const AboutUs = () => {
                 </div>
                 <div>
                   <p className="text-[10px] font-bold text-gray-600 uppercase tracking-wider mb-0.5">Location</p>
-                  <p className="text-sm font-medium text-white">
+                  <p className="text-sm font-medium text-gray-900">
                     Phnom Penh, Cambodia
                   </p>
                 </div>
