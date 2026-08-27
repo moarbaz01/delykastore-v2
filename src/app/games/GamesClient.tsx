@@ -46,13 +46,13 @@ export default function GamesClient({ products }: { products: ProductType[] }) {
                 placeholder="Search games..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-[#FFFFFF]/80 border border-pink-500/20 text-white text-sm rounded-full focus:ring-2 focus:ring-pink-500 focus:border-transparent block pl-10 p-2.5 transition-all outline-none placeholder-gray-500 shadow-[0_0_15px_rgba(255,117,151,0.1)]"
+                className="w-full bg-[#FFFFFF]/80 border border-pink-500/20 text-gray-900 text-sm rounded-full focus:ring-2 focus:ring-pink-500 focus:border-transparent block pl-10 p-2.5 transition-all outline-none placeholder-gray-500 shadow-[0_0_15px_rgba(255,117,151,0.1)]"
               />
             </div>
           </div>
 
           {/* Tabs */}
-          <div className="flex overflow-x-auto hide-scrollbar gap-2 mb-6 pb-2">
+          <div className="flex flex-wrap gap-2 mb-6 pb-2">
             <button
               onClick={() => setActiveTab("all")}
               className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
