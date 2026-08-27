@@ -14,20 +14,20 @@ export default function EventSliderClient({ events }: { events: any[] }) {
     <>
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center gap-3">
-          <div className="  rounded-xl">
+          <div className="rounded-xl">
             <Sparkles className="text-primary w-5 h-5 md:w-6 md:h-6" />
           </div>
-          <h2 className="text-lg md:text-2xl font-black text-white uppercase tracking-wider font-heading">
+          <h2 className="text-lg md:text-2xl font-black text-gray-900 uppercase tracking-wider font-heading">
             Exclusive Events
           </h2>
         </div>
       </div>
 
       <div className="relative group">
-        <button className="event-prev absolute -top-[44px] md:-top-[50px] right-10 md:right-12 lg:right-14 z-20 flex items-center justify-center w-8 h-8 md:w-10 md:h-10 lg:w-10 lg:h-10 rounded-full border border-white/10 bg-black/50 text-white hover:bg-primary transition-all disabled:opacity-30 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+        <button className="event-prev absolute -top-[44px] md:-top-[50px] right-10 md:right-12 lg:right-14 z-20 flex items-center justify-center w-8 h-8 md:w-10 md:h-10 lg:w-10 lg:h-10 rounded-full border border-pink-500/10 bg-pink-50/80 text-primary hover:bg-pink-100 transition-all disabled:opacity-30 shadow-[0_4px_15px_rgba(255,117,151,0.15)]">
           <ChevronLeft className="w-4 h-4 md:w-5 md:h-5" />
         </button>
-        <button className="event-next absolute -top-[44px] md:-top-[50px] right-0 z-20 flex items-center justify-center w-8 h-8 md:w-10 md:h-10 lg:w-10 lg:h-10 rounded-full border border-white/10 bg-black/50 text-white hover:bg-primary transition-all disabled:opacity-30 shadow-[0_0_15px_rgba(0,0,0,0.5)]">
+        <button className="event-next absolute -top-[44px] md:-top-[50px] right-0 z-20 flex items-center justify-center w-8 h-8 md:w-10 md:h-10 lg:w-10 lg:h-10 rounded-full border border-pink-500/10 bg-pink-50/80 text-primary hover:bg-pink-100 transition-all disabled:opacity-30 shadow-[0_4px_15px_rgba(255,117,151,0.15)]">
           <ChevronRight className="w-4 h-4 md:w-5 md:h-5" />
         </button>
 
@@ -53,23 +53,23 @@ export default function EventSliderClient({ events }: { events: any[] }) {
           <SwiperSlide key={event._id} className={`py-1.5 px-1 ${events.length === 1 ? "max-w-[280px] md:max-w-[320px]" : ""}`}>
             <Link href={`/product/${event.productId}`} className="block h-full group hover:-translate-y-1 transition-transform duration-300">
               <GlowBorder borderRadius={16} className="h-full block">
-                <div className="relative text-white transition-colors duration-300 bg-[#1A1730]/80 border border-white/5 backdrop-blur-md h-full rounded-[inherit] overflow-hidden group-hover:bg-primary/20 flex flex-row items-center p-2 md:p-4 min-h-[80px] md:min-h-[130px] w-full">
+                <div className="relative text-gray-800 transition-colors duration-300 bg-white border border-pink-500/10 backdrop-blur-md h-full rounded-[inherit] overflow-hidden group-hover:bg-pink-50 flex flex-row items-center p-2 md:p-4 min-h-[80px] md:min-h-[130px] w-full">
                   {/* Background Image (blurred product main image) */}
                   <Image
                     src={event.image || "/placeholder.jpg"}
                     alt={event.name}
                     fill
-                    className="object-cover opacity-20 blur-md scale-110"
+                    className="object-cover opacity-10 blur-xl scale-110"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-r from-[#0D0B1A]/90 via-primary/20 to-transparent z-0" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/80 to-transparent z-0" />
 
                   {/* Left Side Content */}
                   <div className="relative z-10 flex flex-col items-start justify-center flex-1 pr-2 w-full max-w-[60%]">
-                    <h3 className="text-white font-extrabold text-xs md:text-lg truncate w-full drop-shadow-md">
+                    <h3 className="text-gray-900 font-extrabold text-xs md:text-lg truncate w-full drop-shadow-sm">
                       {event.name}
                     </h3>
                     {event.eventPrice && (
-                      <div className="mt-0.5 md:mt-1 border border-[#F5C754]/50 bg-[#F5C754]/20 text-[#F5C754] font-black px-1.5 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-sm shadow-sm w-fit">
+                      <div className="mt-0.5 md:mt-1 border border-pink-200 bg-pink-100/50 text-primary font-black px-1.5 py-0.5 md:px-3 md:py-1 rounded-full text-[10px] md:text-sm shadow-sm w-fit">
                         {event.eventPrice}
                       </div>
                     )}
@@ -100,7 +100,7 @@ export default function EventSliderClient({ events }: { events: any[] }) {
 
       <style jsx global>{`
         .event-swiper .swiper-pagination-bullet {
-          background: rgba(255, 255, 255, 0.3);
+          background: rgba(255, 117, 151, 0.3);
           opacity: 1;
         }
         .event-swiper .swiper-pagination-bullet-active {

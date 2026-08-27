@@ -53,18 +53,18 @@ function CustomSelect({
     <div className="relative w-full sm:w-40 z-20" ref={ref}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-[#1A163B] border border-purple-500/15 rounded-xl px-4 py-2.5 text-sm text-white flex items-center justify-between hover:border-primary/50 transition-colors"
+        className="w-full bg-[#FFFFFF] border border-pink-500/15 rounded-xl px-4 py-2.5 text-sm text-white flex items-center justify-between hover:border-primary/50 transition-colors"
       >
         <span>{selectedLabel}</span>
         <ChevronDown
           size={16}
-          className={`text-gray-400 transition-transform ${isOpen ? "rotate-180" : ""
+          className={`text-gray-600 transition-transform ${isOpen ? "rotate-180" : ""
             }`}
         />
       </button>
 
       {isOpen && (
-        <div className="absolute top-full mt-2 w-full bg-[#12102A] border border-purple-500/15 rounded-xl shadow-xl overflow-hidden py-1 animate-fade-in-up">
+        <div className="absolute top-full mt-2 w-full bg-[#FFFFFF] border border-pink-500/15 rounded-xl shadow-xl overflow-hidden py-1 animate-fade-in-up">
           {options.map((option) => (
             <button
               key={option.value}
@@ -74,7 +74,7 @@ function CustomSelect({
               }}
               className={`w-full text-left px-4 py-2 text-sm transition-colors ${value === option.value
                 ? "bg-primary/20 text-white font-medium"
-                : "text-gray-300 hover:bg-white/5"
+                : "text-gray-600 hover:bg-white/5"
                 }`}
             >
               {option.label}
@@ -139,7 +139,7 @@ function OrderHistoryContent() {
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
               <SearchIcon
-                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-600"
                 size={16}
               />
               <input
@@ -147,7 +147,7 @@ function OrderHistoryContent() {
                 placeholder="Search products..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                className="w-full bg-[#1A163B] border border-purple-500/15 rounded-xl pl-11 pr-4 py-2.5 text-sm focus:border-primary outline-none text-white transition-all shadow-sm"
+                className="w-full bg-[#FFFFFF] border border-pink-500/15 rounded-xl pl-11 pr-4 py-2.5 text-sm focus:border-primary outline-none text-white transition-all shadow-sm"
               />
             </div>
 
@@ -165,11 +165,11 @@ function OrderHistoryContent() {
             {orders.map((order: any, index: number) => (
               <Reveal key={order._id} width="100%" delay={(index % 10) * 0.05}>
                 <div
-                  className="bg-[#12102A] border border-purple-500/10 rounded-[16px] p-4 shadow-sm"
+                  className="bg-[#FFFFFF] border border-pink-500/10 rounded-[16px] p-4 shadow-sm"
                 >
                   <div className="flex items-start gap-4">
                     {/* Product Image */}
-                    <div className="w-14 h-14 rounded-xl bg-[#1A163B] border border-purple-500/20 flex-shrink-0 overflow-hidden flex justify-center items-center">
+                    <div className="w-14 h-14 rounded-xl bg-[#FFFFFF] border border-pink-500/20 flex-shrink-0 overflow-hidden flex justify-center items-center">
                       {order.product?.image ? (
                         <Image
                           src={order.product.image}
@@ -179,7 +179,7 @@ function OrderHistoryContent() {
                           className="object-cover w-full h-full"
                         />
                       ) : (
-                        <PackageIcon size={20} className="text-purple-400/50" />
+                        <PackageIcon size={20} className="text-primary/50" />
                       )}
                     </div>
 
@@ -205,25 +205,25 @@ function OrderHistoryContent() {
                         >
                           {order.status}
                         </span>
-                        <span className="text-gray-400 text-xs">
+                        <span className="text-gray-600 text-xs">
                           {new Date(order.createdAt).toLocaleDateString()}
                         </span>
                       </div>
 
                       {/* Simple Details Section */}
-                      <div className="mt-3 bg-[#1A163B]/50 rounded-lg p-3 border border-purple-500/5">
+                      <div className="mt-3 bg-[#FFFFFF]/50 rounded-lg p-3 border border-pink-500/5">
                         {order.product?.type === "account" ? (
                           order.accountDetails ? (
                             <div className="space-y-2">
                               {/* Email */}
                               <div className="flex items-center justify-between text-[13px]">
-                                <div className="flex items-center gap-2 text-gray-300 min-w-0">
-                                  <Mail size={14} className="text-gray-400 shrink-0" />
+                                <div className="flex items-center gap-2 text-gray-600 min-w-0">
+                                  <Mail size={14} className="text-gray-600 shrink-0" />
                                   <span className="truncate">{order.accountDetails.email}</span>
                                 </div>
                                 <button
                                   onClick={() => handleCopy(order.accountDetails.email, order._id + "e")}
-                                  className="text-gray-400 hover:text-primary transition-colors p-1"
+                                  className="text-gray-600 hover:text-primary transition-colors p-1"
                                 >
                                   {copiedId === order._id + "e" ? <Check size={14} /> : <Copy size={14} />}
                                 </button>
@@ -231,8 +231,8 @@ function OrderHistoryContent() {
 
                               {/* Password */}
                               <div className="flex items-center justify-between text-[13px]">
-                                <div className="flex items-center gap-2 text-gray-300 min-w-0">
-                                  <Lock size={14} className="text-gray-400 shrink-0" />
+                                <div className="flex items-center gap-2 text-gray-600 min-w-0">
+                                  <Lock size={14} className="text-gray-600 shrink-0" />
                                   <span className="truncate font-mono">
                                     {showPasswords[order._id] ? order.accountDetails.password : "••••••••"}
                                   </span>
@@ -240,13 +240,13 @@ function OrderHistoryContent() {
                                 <div className="flex items-center gap-1">
                                   <button
                                     onClick={() => setShowPasswords(prev => ({ ...prev, [order._id]: !prev[order._id] }))}
-                                    className="text-gray-400 hover:text-primary transition-colors p-1"
+                                    className="text-gray-600 hover:text-primary transition-colors p-1"
                                   >
                                     {showPasswords[order._id] ? <EyeOff size={14} /> : <Eye size={14} />}
                                   </button>
                                   <button
                                     onClick={() => handleCopy(order.accountDetails.password, order._id + "p")}
-                                    className="text-gray-400 hover:text-primary transition-colors p-1"
+                                    className="text-gray-600 hover:text-primary transition-colors p-1"
                                   >
                                     {copiedId === order._id + "p" ? <Check size={14} /> : <Copy size={14} />}
                                   </button>
@@ -262,7 +262,7 @@ function OrderHistoryContent() {
                           )
                         ) : (
                           // Game Topup Details
-                          <div className="flex flex-wrap gap-4 text-[13px] text-gray-300">
+                          <div className="flex flex-wrap gap-4 text-[13px] text-gray-600">
                             <div className="flex items-center gap-2">
                               <span className="text-gray-500">ID:</span>
                               <span className="font-medium text-white">{order.gameCredentials?.userId || order.playerId || "N/A"}</span>
@@ -289,7 +289,7 @@ function OrderHistoryContent() {
 
                   {/* Optional Expiry Alert for accounts */}
                   {order.expiresAt && (
-                    <div className="mt-3 pt-3 border-t border-purple-500/10 flex items-center gap-1.5 text-[11px] text-gray-400">
+                    <div className="mt-3 pt-3 border-t border-pink-500/10 flex items-center gap-1.5 text-[11px] text-gray-600">
                       {new Date(order.expiresAt) < new Date() ? (
                         <><XCircle size={12} className="text-rose-500" /> Expired</>
                       ) : (
@@ -302,10 +302,10 @@ function OrderHistoryContent() {
             ))}
           </div>
         ) : (
-          <div className="bg-[#12102A] border border-purple-500/10 rounded-[20px] py-16 text-center shadow-sm">
+          <div className="bg-[#FFFFFF] border border-pink-500/10 rounded-[20px] py-16 text-center shadow-sm">
             <PackageIcon size={32} className="mx-auto text-primary/40 mb-3" />
             <p className="text-white font-medium mb-1">No orders found</p>
-            <p className="text-gray-400 text-sm">Try adjusting your search or filters.</p>
+            <p className="text-gray-600 text-sm">Try adjusting your search or filters.</p>
           </div>
         )}
 
@@ -315,17 +315,17 @@ function OrderHistoryContent() {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="p-2 rounded-xl bg-[#12102A] border border-purple-500/20 text-white disabled:opacity-40 hover:bg-primary/10 transition-colors"
+              className="p-2 rounded-xl bg-[#FFFFFF] border border-pink-500/20 text-white disabled:opacity-40 hover:bg-primary/10 transition-colors"
             >
               <ChevronLeft size={18} />
             </button>
-            <span className="text-sm font-medium text-gray-400">
+            <span className="text-sm font-medium text-gray-600">
               {pagination.page} / {pagination.totalPages}
             </span>
             <button
               onClick={() => setPage((p) => Math.min(pagination.totalPages, p + 1))}
               disabled={page === pagination.totalPages}
-              className="p-2 rounded-xl bg-[#12102A] border border-purple-500/20 text-white disabled:opacity-40 hover:bg-primary/10 transition-colors"
+              className="p-2 rounded-xl bg-[#FFFFFF] border border-pink-500/20 text-white disabled:opacity-40 hover:bg-primary/10 transition-colors"
             >
               <ChevronRight size={18} />
             </button>

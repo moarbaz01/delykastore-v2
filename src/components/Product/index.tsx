@@ -436,10 +436,10 @@ const Product = ({
             <Reveal width="100%" delay={0.1}>
               <div
                 className="p-4 rounded-2xl"
-                style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
+                style={{ background: "#FFFFFF", border: "1px solid rgba(255,117,151,0.15)" }}
               >
-                <h2 className="text-sm font-bold mb-2" style={{ color: "#A855F7" }}>Description</h2>
-                <p className="text-gray-300 whitespace-pre-wrap text-sm leading-relaxed break-words">
+                <h2 className="text-sm font-bold mb-2" style={{ color: "#FF7597" }}>Description</h2>
+                <p className="text-gray-600 whitespace-pre-wrap text-sm leading-relaxed break-words">
                   {description}
                 </p>
               </div>
@@ -450,7 +450,7 @@ const Product = ({
             <Reveal width="100%" delay={0.1}>
               <div
                 className="p-4 rounded-2xl relative"
-                style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
+                style={{ background: "#FFFFFF", border: "1px solid rgba(255,117,151,0.15)" }}
               >
                 <Label text={formattedUrlLabel} number={1} />
                 <form className="flex flex-col gap-3 mt-4">
@@ -461,18 +461,18 @@ const Product = ({
                     value={urlLink}
                     name="urlLink"
                     autoComplete="on"
-                    className="rounded-xl w-full text-white placeholder:text-gray-500 focus:outline-none py-2.5 px-4 text-sm transition-all duration-200"
+                    className="rounded-xl w-full text-gray-900 placeholder:text-gray-500 focus:outline-none py-2.5 px-4 text-sm transition-all duration-200"
                     style={{
-                      background: "#0D0B1A",
-                      border: "1px solid rgba(168,85,247,0.2)",
+                      background: "#FDFDFD",
+                      border: "1px solid rgba(255,117,151,0.2)",
                     }}
                     onFocus={(e) => {
                       e.target.style.outline = "none";
-                      e.target.style.borderColor = "rgba(168,85,247,0.6)";
-                      e.target.style.boxShadow = "0 0 0 3px rgba(168,85,247,0.1)";
+                      e.target.style.borderColor = "rgba(255,117,151,0.6)";
+                      e.target.style.boxShadow = "0 0 0 3px rgba(255,117,151,0.1)";
                     }}
                     onBlur={(e) => {
-                      e.target.style.borderColor = "rgba(168,85,247,0.2)";
+                      e.target.style.borderColor = "rgba(255,117,151,0.2)";
                       e.target.style.boxShadow = "none";
                     }}
                   />
@@ -481,15 +481,7 @@ const Product = ({
             </Reveal>
           )}
 
-          {type === "digital-service" && !session && (
-            <Reveal width="100%" delay={0.15}>
-              <div className="p-3 mt-2 rounded-xl border border-amber-500/30 bg-amber-500/10 flex items-center gap-2">
-                <p className="text-sm text-amber-200">
-                  <span className="font-semibold text-amber-400">Guest Checkout:</span> Login if you want to track your order.
-                </p>
-              </div>
-            </Reveal>
-          )}
+
 
           <Reveal width="100%" delay={0.2}>
             <PackageSection

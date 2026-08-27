@@ -17,8 +17,8 @@ declare global {
 }
 
 const inputBaseStyle = {
-  background: "rgba(13,11,26,0.8)",
-  border: "1px solid rgba(168,85,247,0.2)",
+  background: "#FFFFFF",
+  border: "1px solid rgba(255,117,151,0.2)",
 };
 
 export default function LoginPage() {
@@ -138,7 +138,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col w-full relative bg-[#0D0B1A]">
+    <div className="min-h-screen flex flex-col w-full relative bg-[#FDFDFD]">
       
       {/* Unified Header - Mobile only */}
       <div className="w-full flex md:hidden items-center justify-between p-4 pt-6 relative z-30">
@@ -168,22 +168,22 @@ export default function LoginPage() {
         <div
           className="w-full max-w-md rounded-3xl p-6 md:p-10 shadow-2xl backdrop-blur-xl transition-all"
           style={{
-            background: "rgba(18,16,42,0.85)",
-            border: "1px solid rgba(168,85,247,0.2)",
-            boxShadow: "0 0 40px rgba(168,85,247,0.1), 0 25px 50px rgba(0,0,0,0.5)",
+            background: "rgba(255,255,255,0.95)",
+            border: "1px solid rgba(255,117,151,0.2)",
+            boxShadow: "0 0 40px rgba(255,117,151,0.1), 0 25px 50px rgba(0,0,0,0.1)",
           }}
         >
-          <h2 className="text-xl md:text-2xl font-bold text-white text-center mb-6 md:mb-8">
+              <h2 className="text-xl md:text-2xl font-bold text-gray-900 text-center mb-6 md:mb-8">
             Claim Your Player Profile
           </h2>
 
           <form onSubmit={handleSubmit} className="space-y-4 md:space-y-5">
             {/* Email */}
             <div
-              className="flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all duration-200 focus-within:border-purple-500"
+              className="flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all duration-200 focus-within:border-pink-500"
               style={inputBaseStyle}
             >
-              <Mail size={18} className="text-gray-400 shrink-0" />
+              <Mail size={18} className="text-gray-600 shrink-0" />
               <input
                 id="login-email"
                 type="email"
@@ -199,10 +199,10 @@ export default function LoginPage() {
             {/* Password */}
             <div>
               <div
-                className="flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all duration-200 focus-within:border-purple-500"
+                className="flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all duration-200 focus-within:border-pink-500"
                 style={inputBaseStyle}
               >
-                <Lock size={18} className="text-gray-400 shrink-0" />
+                <Lock size={18} className="text-gray-600 shrink-0" />
                 <input
                   id="login-password"
                   type={showPassword ? "text" : "password"}
@@ -210,13 +210,13 @@ export default function LoginPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="Password"
-                  className="bg-transparent text-white text-sm w-full outline-none placeholder-gray-500"
+                  className="bg-transparent text-gray-800 text-sm w-full outline-none placeholder-gray-400"
                   autoComplete="current-password"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-gray-400 hover:text-white transition-colors shrink-0"
+                  className="text-gray-600 hover:text-white transition-colors shrink-0"
                 >
                   {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                 </button>
@@ -225,7 +225,7 @@ export default function LoginPage() {
                 <Link
                   href="/forgot-password"
                   className="text-xs transition-colors hover:text-white"
-                  style={{ color: "#A855F7" }}
+                  style={{ color: "#FF7597" }}
                 >
                   Forgot password?
                 </Link>
@@ -235,10 +235,10 @@ export default function LoginPage() {
             {/* OTP Input (Shown only if AdminOTPRequired) */}
             {showOtp && (
               <div
-                className="flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all duration-200 focus-within:border-purple-500"
+                className="flex items-center gap-3 rounded-xl px-4 py-3.5 transition-all duration-200 focus-within:border-pink-500"
                 style={inputBaseStyle}
               >
-                <Lock size={18} className="text-gray-400 shrink-0" />
+                <Lock size={18} className="text-gray-600 shrink-0" />
                 <input
                   id="login-otp"
                   type="text"
@@ -246,7 +246,7 @@ export default function LoginPage() {
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
                   placeholder="Enter 6-digit OTP"
-                  className="bg-transparent text-white text-sm w-full outline-none placeholder-gray-500"
+                  className="bg-transparent text-gray-800 text-sm w-full outline-none placeholder-gray-400"
                   autoComplete="one-time-code"
                 />
               </div>
@@ -257,8 +257,8 @@ export default function LoginPage() {
               id="login-submit"
               type="submit"
               disabled={isLoading}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm text-white transition-all duration-300 mt-2 md:mt-4 disabled:opacity-60 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)]"
-              style={{ background: "linear-gradient(135deg, #7B2FBE 0%, #A855F7 100%)" }}
+              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-sm text-white transition-all duration-300 mt-2 md:mt-4 disabled:opacity-60 hover:shadow-[0_0_20px_rgba(255,117,151,0.4)]"
+              style={{ background: "linear-gradient(135deg, #E55577 0%, #FF7597 100%)" }}
             >
               {isLoading && <Loader2 size={16} className="animate-spin" />}
               {isLoading ? (showOtp ? "Verifying..." : "Signing in...") : (showOtp ? "Verify & Login" : "Login")}
@@ -267,15 +267,15 @@ export default function LoginPage() {
 
           {/* Divider */}
           <div className="flex items-center gap-3 my-6 md:my-8">
-            <div className="flex-1 h-px" style={{ background: "rgba(168,85,247,0.15)" }} />
+            <div className="flex-1 h-px" style={{ background: "rgba(255,117,151,0.15)" }} />
             <span className="text-gray-500 text-xs font-medium uppercase tracking-widest">OR</span>
-            <div className="flex-1 h-px" style={{ background: "rgba(168,85,247,0.15)" }} />
+            <div className="flex-1 h-px" style={{ background: "rgba(255,117,151,0.15)" }} />
           </div>
 
           {/* Telegram Login */}
           <div className="flex flex-col items-center gap-2">
             {isTgLoading ? (
-              <div className="flex items-center gap-2 text-gray-400 text-sm py-2">
+              <div className="flex items-center gap-2 text-gray-600 text-sm py-2">
                 <Loader2 size={16} className="animate-spin" />
                 Connecting to Telegram...
               </div>
@@ -285,8 +285,8 @@ export default function LoginPage() {
                 <button
                   type="button"
                   onClick={handleTelegramLogin}
-                  className="mt-1 w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm text-gray-200 transition-all duration-300 hover:bg-white/10"
-                  style={{ border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)" }}
+                  className="mt-1 w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm text-gray-800 transition-all duration-300 hover:bg-gray-50"
+                  style={{ border: "1px solid rgba(255,117,151,0.2)", background: "#FFFFFF" }}
                 >
                   <FaTelegramPlane size={20} className="text-[#54A9EB]" />
                   Log in with Telegram
@@ -296,8 +296,8 @@ export default function LoginPage() {
 
             <button
               onClick={() => signIn("google", { callbackUrl: "/" })}
-              className="mt-3 w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm text-gray-200 transition-all duration-300 hover:bg-white/10"
-              style={{ border: "1px solid rgba(255,255,255,0.1)", background: "rgba(255,255,255,0.05)" }}
+              className="mt-3 w-full flex items-center justify-center gap-2 py-3 rounded-xl font-bold text-sm text-gray-800 transition-all duration-300 hover:bg-gray-50"
+              style={{ border: "1px solid rgba(255,117,151,0.2)", background: "#FFFFFF" }}
             >
               <FaGoogle size={18} className="text-red-500" />
               Continue with Google
@@ -309,9 +309,9 @@ export default function LoginPage() {
           </div>
 
           {/* Sign up link */}
-          <div className="mt-6 md:mt-8 text-center text-xs text-gray-400">
+          <div className="mt-6 md:mt-8 text-center text-xs text-gray-600">
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="font-semibold transition-colors hover:text-white" style={{ color: "#A855F7" }}>
+            <Link href="/signup" className="font-semibold transition-colors hover:text-white" style={{ color: "#FF7597" }}>
               Sign up
             </Link>
           </div>

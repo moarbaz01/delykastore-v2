@@ -20,19 +20,19 @@ const PaymentSection = ({
   return (
     <div
       className="p-4 md:mb-0 mb-24 rounded-2xl relative"
-      style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
+      style={{ background: "#FFFFFF", border: "1px solid rgba(255,117,151,0.15)" }}
     >
       <Label text={"Payment Methods"} number={stepNumber} />
 
       {/* Payment method card */}
       <div
         className="rounded-xl p-4 flex items-center justify-between mt-4"
-        style={{ background: "#0D0B1A", border: "1px solid rgba(168,85,247,0.1)" }}
+        style={{ background: "#FDFDFD", border: "1px solid rgba(255,117,151,0.1)" }}
       >
         <div className="flex items-center gap-3">
           <div
             className="w-10 h-10 rounded-lg flex items-center justify-center"
-            style={{ background: "rgba(168,85,247,0.1)", border: "1px solid rgba(168,85,247,0.2)" }}
+            style={{ background: "rgba(255,117,151,0.1)", border: "1px solid rgba(255,117,151,0.2)" }}
           >
             <Image
               src="/images/aba.svg"
@@ -43,14 +43,14 @@ const PaymentSection = ({
             />
           </div>
           <div>
-            <h3 className="font-bold text-sm text-white">ABA KHQR</h3>
-            <p className="text-xs text-gray-400">Scan to pay with any banking App</p>
+            <h3 className="font-bold text-sm text-gray-900">ABA KHQR</h3>
+            <p className="text-xs text-gray-600">Scan to pay with any banking App</p>
           </div>
         </div>
         <span
           className="text-sm font-bold"
           style={{
-            background: "linear-gradient(135deg, #C084FC, #A855F7)",
+            background: "linear-gradient(135deg, #FF9CB5, #FF7597)",
             WebkitBackgroundClip: "text",
             WebkitTextFillColor: "transparent",
             backgroundClip: "text",
@@ -75,11 +75,11 @@ const PaymentSection = ({
             className="w-5 h-5 rounded-md cursor-pointer flex items-center justify-center transition-all duration-200"
             style={{
               background: isAgree
-                ? "linear-gradient(135deg, #7B2FBE, #A855F7)"
+                ? "linear-gradient(135deg, #E55577, #FF7597)"
                 : "transparent",
               border: isAgree
-                ? "1px solid #A855F7"
-                : "1px solid rgba(168,85,247,0.3)",
+                ? "1px solid #FF7597"
+                : "1px solid rgba(255,117,151,0.3)",
             }}
           >
             {isAgree && (
@@ -89,12 +89,12 @@ const PaymentSection = ({
             )}
           </div>
         </div>
-        <label htmlFor="agree" className="text-sm text-gray-300 cursor-pointer leading-relaxed">
+        <label htmlFor="agree" className="text-sm text-gray-600 cursor-pointer leading-relaxed">
           I agree
           <span
             onClick={() => router.push("/terms-and-conditions")}
             className="font-semibold ml-1 transition-colors cursor-pointer hover:opacity-80"
-            style={{ color: "#A855F7" }}
+            style={{ color: "#FF7597" }}
           >
             Terms and Conditions
           </span>

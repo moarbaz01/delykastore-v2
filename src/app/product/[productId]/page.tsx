@@ -27,7 +27,7 @@ export default async function Page({ params }: { params: { productId: string } }
       <div className="min-h-[50vh] flex items-center justify-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold mb-2">Product Not Found</h1>
-          <p className="text-gray-400">We couldn&apos;t find the product you&apos;re looking for.</p>
+          <p className="text-gray-600">We couldn&apos;t find the product you&apos;re looking for.</p>
         </div>
       </div>
     );

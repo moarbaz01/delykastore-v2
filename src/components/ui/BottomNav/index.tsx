@@ -29,8 +29,8 @@ const BottomNav = () => {
       <div
         className="fixed bottom-0 left-0 w-full z-[998] md:hidden backdrop-blur-xl transition-all duration-300"
         style={{
-          background: "rgba(13, 11, 26, 0.95)",
-          borderTop: "1px solid rgba(168,85,247,0.15)",
+          background: "rgba(255, 255, 255, 0.95)",
+          borderTop: "1px solid rgba(255,117,151,0.15)",
           paddingBottom: "env(safe-area-inset-bottom)", // For iOS home indicator
         }}
       >
@@ -60,14 +60,14 @@ const BottomNav = () => {
               >
                 <div
                   className={`transition-colors duration-200 ${
-                    isActive ? "text-[#A855F7]" : "text-gray-400"
+                    isActive ? "text-primary" : "text-gray-600"
                   }`}
                 >
                   <Icon size={22} strokeWidth={isActive ? 2.5 : 2} />
                 </div>
                 <span
                   className={`text-[10px] font-medium transition-colors duration-200 ${
-                    isActive ? "text-[#A855F7]" : "text-gray-400"
+                    isActive ? "text-primary" : "text-gray-600"
                   }`}
                 >
                   {item.label}

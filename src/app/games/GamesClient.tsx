@@ -39,14 +39,14 @@ export default function GamesClient({ products }: { products: ProductType[] }) {
 
             <div className="relative w-full md:w-80">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <Search size={18} className="text-purple-500/50" />
+                <Search size={18} className="text-pink-500/50" />
               </div>
               <input
                 type="text"
                 placeholder="Search games..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full bg-[#12102A]/80 border border-purple-500/20 text-white text-sm rounded-full focus:ring-2 focus:ring-purple-500 focus:border-transparent block pl-10 p-2.5 transition-all outline-none placeholder-gray-500 shadow-[0_0_15px_rgba(168,85,247,0.1)]"
+                className="w-full bg-[#FFFFFF]/80 border border-pink-500/20 text-white text-sm rounded-full focus:ring-2 focus:ring-pink-500 focus:border-transparent block pl-10 p-2.5 transition-all outline-none placeholder-gray-500 shadow-[0_0_15px_rgba(255,117,151,0.1)]"
               />
             </div>
           </div>
@@ -56,7 +56,7 @@ export default function GamesClient({ products }: { products: ProductType[] }) {
             <button
               onClick={() => setActiveTab("all")}
               className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                activeTab === "all" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+                activeTab === "all" ? "bg-primary text-white" : "bg-pink-50 text-gray-600 hover:text-gray-900 hover:bg-pink-100"
               }`}
             >
               All
@@ -64,7 +64,7 @@ export default function GamesClient({ products }: { products: ProductType[] }) {
             <button
               onClick={() => setActiveTab("topup")}
               className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                activeTab === "topup" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+                activeTab === "topup" ? "bg-primary text-white" : "bg-pink-50 text-gray-600 hover:text-gray-900 hover:bg-pink-100"
               }`}
             >
               Top-Up
@@ -72,7 +72,7 @@ export default function GamesClient({ products }: { products: ProductType[] }) {
             <button
               onClick={() => setActiveTab("account")}
               className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                activeTab === "account" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+                activeTab === "account" ? "bg-primary text-white" : "bg-pink-50 text-gray-600 hover:text-gray-900 hover:bg-pink-100"
               }`}
             >
               Premium Accounts
@@ -80,7 +80,7 @@ export default function GamesClient({ products }: { products: ProductType[] }) {
             <button
               onClick={() => setActiveTab("digital-service")}
               className={`px-4 py-1.5 rounded-full text-sm font-medium whitespace-nowrap transition-colors ${
-                activeTab === "digital-service" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+                activeTab === "digital-service" ? "bg-primary text-white" : "bg-pink-50 text-gray-600 hover:text-gray-900 hover:bg-pink-100"
               }`}
             >
               Digital Services
@@ -104,8 +104,8 @@ export default function GamesClient({ products }: { products: ProductType[] }) {
             </div>
           ) : (
             <div className="py-20 flex flex-col items-center justify-center text-center">
-              <Search size={48} className="text-purple-500/20 mb-4" />
-              <p className="text-gray-400 font-medium">No games found matching &quot;{searchTerm}&quot;</p>
+              <Search size={48} className="text-pink-500/20 mb-4" />
+              <p className="text-gray-600 font-medium">No games found matching &quot;{searchTerm}&quot;</p>
             </div>
           )}
         </div>

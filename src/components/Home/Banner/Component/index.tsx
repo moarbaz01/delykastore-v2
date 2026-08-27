@@ -48,9 +48,9 @@ const SliderComponent = ({
                     className="w-full max-h-[75vh] object-cover"
                   />
                   {/* Bottom gradient overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0D0B1A] via-transparent to-transparent opacity-60 pointer-events-none" />
-                  {/* Purple edge glow */}
-                  <div className="absolute inset-0 rounded-2xl ring-1 ring-purple-500/30 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#FDFDFD] via-transparent to-transparent opacity-60 pointer-events-none" />
+                  {/* Pink edge glow */}
+                  <div className="absolute inset-0 rounded-2xl ring-1 ring-pink-500/20 pointer-events-none" />
                 </div>
               </SwiperSlide>
             ))}
@@ -66,8 +66,8 @@ const SliderComponent = ({
                     height={600}
                     className="w-full max-h-[75vh] object-cover"
                   />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0D0B1A] via-transparent to-transparent opacity-60 pointer-events-none" />
-                  <div className="absolute inset-0 rounded-2xl ring-1 ring-purple-500/30 pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#FDFDFD] via-transparent to-transparent opacity-60 pointer-events-none" />
+                  <div className="absolute inset-0 rounded-2xl ring-1 ring-pink-500/20 pointer-events-none" />
                 </div>
               </SwiperSlide>
             ))}

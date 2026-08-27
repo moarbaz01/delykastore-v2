@@ -33,25 +33,25 @@ const PackageSection = ({
   return (
     <div
       className="p-4 rounded-2xl relative"
-      style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.15)" }}
+      style={{ background: "#FFFFFF", border: "1px solid rgba(255,117,151,0.15)" }}
     >
       <Label text={"Select Package"} number={stepNumber} />
       {groupedCost.map((item, index) => (
         <div key={index} className="mt-4">
           {item.category !== "no_category" && item.items.length !== 0 && (
             <div className="flex items-center gap-2 mt-2 mb-3">
-              <div className="h-px flex-1 bg-purple-500/10" />
+              <div className="h-px flex-1 bg-pink-500/10" />
               <h3
                 className="font-bold text-sm px-3 py-1 rounded-full"
                 style={{
-                  background: "rgba(168,85,247,0.1)",
-                  color: "#C084FC",
-                  border: "1px solid rgba(168,85,247,0.2)",
+                  background: "rgba(255,117,151,0.1)",
+                  color: "#FF7597",
+                  border: "1px solid rgba(255,117,151,0.2)",
                 }}
               >
                 {item.category}
               </h3>
-              <div className="h-px flex-1 bg-purple-500/10" />
+              <div className="h-px flex-1 bg-pink-500/10" />
             </div>
           )}
 

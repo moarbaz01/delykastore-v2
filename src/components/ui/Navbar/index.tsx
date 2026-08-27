@@ -101,8 +101,8 @@ const Navbar = () => {
       <div
         className={`sticky top-0 z-[999] h-[68px] flex items-center transition-all duration-300 ${
           scrolled
-            ? "bg-[#0D0B1A]/95 backdrop-blur-xl border-b border-purple-500/20 shadow-[0_4px_20px_rgba(0,0,0,0.4)]"
-            : "bg-[#0D0B1A]/80 backdrop-blur-md border-b border-purple-500/10"
+            ? "bg-white/95 backdrop-blur-xl border-b border-pink-500/10 shadow-[0_4px_20px_rgba(0,0,0,0.05)]"
+            : "bg-white/80 backdrop-blur-md border-b border-pink-500/5"
         }`}
       >
         <div className="max-w-screen-xl w-full mx-auto px-4">
@@ -115,7 +115,7 @@ const Navbar = () => {
             </Link>
 
             <div className="flex items-center gap-4">
-              <button onClick={() => setShow(!show)} className="text-gray-300 hover:text-white">
+              <button onClick={() => setShow(!show)} className="text-gray-600 hover:text-primary">
                 <Search size={22} strokeWidth={2} />
               </button>
             </div>
@@ -127,14 +127,14 @@ const Navbar = () => {
             <div className="flex items-center gap-6 relative" id="nav-dropdown">
               <button 
                 onClick={() => setIsNavDropdownOpen(!isNavDropdownOpen)}
-                className="text-gray-300 hover:text-white p-1 transition-colors flex items-center gap-1"
+                className="text-gray-600 hover:text-primary p-1 transition-colors flex items-center gap-1"
               >
                 <Menu size={28} strokeWidth={2} />
               </button>
 
               {isNavDropdownOpen && (
-                <div className="absolute left-0 top-full mt-4 w-56 animate-slide-down rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.6)] z-50"
-                  style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.2)" }}>
+                <div className="absolute left-0 top-full mt-4 w-56 animate-slide-down rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.1)] z-50"
+                  style={{ background: "#FFFFFF", border: "1px solid rgba(255,117,151,0.2)" }}>
                   <div className="p-2 space-y-1">
                     {[
                       { label: "Home", href: "/", icon: Home },
@@ -153,8 +153,8 @@ const Navbar = () => {
                           onClick={() => setIsNavDropdownOpen(false)}
                           className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all duration-200 ${
                             isActive 
-                              ? "bg-purple-500/10 text-purple-400" 
-                              : "text-gray-300 hover:bg-purple-500/10 hover:text-white"
+                              ? "bg-pink-500/10 text-primary" 
+                              : "text-gray-600 hover:bg-pink-500/5 hover:text-gray-900"
                           }`}
                         >
                           <Icon size={18} />
@@ -176,7 +176,7 @@ const Navbar = () => {
               {/* Search Toggle */}
               <button
                 onClick={() => setShow(!show)}
-                className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-300 hover:bg-purple-500/20 hover:border-purple-500/40 transition-all duration-200"
+                className="w-9 h-9 rounded-xl bg-pink-500/5 border border-pink-500/20 flex items-center justify-center text-primary hover:bg-pink-500/10 hover:border-pink-500/40 transition-all duration-200"
               >
                 <Search size={16} />
               </button>
@@ -186,47 +186,47 @@ const Navbar = () => {
                 <div className="relative" ref={dropdownRef}>
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                    className="flex items-center gap-2 rounded-xl transition-all duration-200 border border-purple-500/20 px-2.5 py-1.5 bg-purple-500/10 hover:bg-purple-500/20 hover:border-purple-500/40"
+                    className="flex items-center gap-2 rounded-xl transition-all duration-200 border border-pink-500/20 px-2.5 py-1.5 bg-pink-500/5 hover:bg-pink-500/10 hover:border-pink-500/40"
                   >
                     {session.user?.image ? (
-                      <div className="w-7 h-7 rounded-lg overflow-hidden relative border border-purple-500/30">
+                      <div className="w-7 h-7 rounded-lg overflow-hidden relative border border-pink-500/30">
                         <Image src={session.user.image} alt="Profile" fill className="object-cover" sizes="28px" />
                       </div>
                     ) : (
-                      <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-bold uppercase text-sm"
-                        style={{ background: "linear-gradient(135deg, #7B2FBE, #A855F7)" }}>
+                      <div className="w-7 h-7 rounded-lg flex items-center justify-center text-white font-bold uppercase text-sm shadow-sm"
+                        style={{ background: "linear-gradient(135deg, #FF7597, #E55577)" }}>
                         {session.user?.name?.[0] || session.user?.email?.[0] || <UserIcon size={14} />}
                       </div>
                     )}
                     {isDropdownOpen ? (
-                      <ChevronUp size={14} className="text-purple-300" />
+                      <ChevronUp size={14} className="text-primary" />
                     ) : (
-                      <ChevronDown size={14} className="text-purple-300" />
+                      <ChevronDown size={14} className="text-primary" />
                     )}
                   </button>
 
                   {isDropdownOpen && (
-                    <div className="absolute right-0 top-full mt-2 w-60 animate-slide-down rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.6)] z-50"
-                      style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.2)" }}>
+                    <div className="absolute right-0 top-full mt-2 w-60 animate-slide-down rounded-2xl overflow-hidden shadow-[0_8px_32px_rgba(0,0,0,0.1)] z-50"
+                      style={{ background: "#FFFFFF", border: "1px solid rgba(255,117,151,0.2)" }}>
                       {/* User Info */}
-                      <div className="p-4 border-b border-purple-500/10 flex items-center gap-3">
+                      <div className="p-4 border-b border-pink-500/10 flex items-center gap-3">
                         {session.user?.image ? (
-                          <div className="w-10 h-10 rounded-xl overflow-hidden relative shadow-sm shrink-0 border border-purple-500/30">
+                          <div className="w-10 h-10 rounded-xl overflow-hidden relative shadow-sm shrink-0 border border-pink-500/30">
                             <Image src={session.user.image} alt="Profile" fill className="object-cover" sizes="40px" />
                           </div>
                         ) : (
                           <div
                             className="w-10 h-10 rounded-xl flex items-center justify-center text-white font-bold text-lg uppercase shadow-sm shrink-0"
-                            style={{ background: "linear-gradient(135deg, #7B2FBE, #A855F7)" }}
+                            style={{ background: "linear-gradient(135deg, #FF7597, #E55577)" }}
                           >
                             {session.user?.name?.[0] || session.user?.email?.[0] || <UserIcon size={20} />}
                           </div>
                         )}
                         <div className="overflow-hidden">
-                          <div className="font-semibold text-white text-sm truncate">
+                          <div className="font-semibold text-gray-800 text-sm truncate">
                             {session.user?.name || "User"}
                           </div>
-                          <div className="text-xs text-gray-400 truncate">
+                          <div className="text-xs text-gray-500 truncate">
                             {session.user?.email}
                           </div>
                         </div>
@@ -237,13 +237,13 @@ const Navbar = () => {
                         <Link
                           href="/account"
                           onClick={() => setIsDropdownOpen(false)}
-                          className="flex items-center gap-3 px-3 py-2.5 hover:bg-purple-500/10 rounded-xl transition-colors text-sm font-medium text-gray-200 group"
+                          className="flex items-center gap-3 px-3 py-2.5 hover:bg-pink-500/10 rounded-xl transition-colors text-sm font-medium text-gray-700 group"
                         >
-                          <UserIcon size={16} className="text-purple-400 group-hover:text-purple-300" />
+                          <UserIcon size={16} className="text-primary group-hover:text-primary-dark" />
                           Account
                         </Link>
 
-                        <div className="h-px bg-purple-500/10 my-1" />
+                        <div className="h-px bg-pink-500/10 my-1" />
 
                         <button
                           onClick={() => {
@@ -262,8 +262,8 @@ const Navbar = () => {
               ) : (
                 <Link
                   href="/login"
-                  className="px-5 py-2 text-white text-sm font-semibold rounded-full transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:-translate-y-0.5 active:translate-y-0"
-                  style={{ background: "linear-gradient(135deg, #7B2FBE 0%, #A855F7 100%)" }}
+                  className="px-5 py-2 text-white text-sm font-semibold rounded-full transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,117,151,0.4)] hover:-translate-y-0.5 active:translate-y-0"
+                  style={{ background: "linear-gradient(135deg, #FF7597 0%, #FF9CB5 100%)" }}
                 >
                   Login
                 </Link>
@@ -282,19 +282,19 @@ const Navbar = () => {
           {/* Search panel */}
           <div className="relative z-10 mx-auto w-full max-w-2xl mt-24 px-4">
             <div
-              className="rounded-2xl overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.8)]"
-              style={{ background: "#12102A", border: "1px solid rgba(168,85,247,0.3)" }}
+              className="rounded-2xl overflow-hidden shadow-[0_8px_40px_rgba(0,0,0,0.15)] bg-white"
+              style={{ border: "1px solid rgba(255,117,151,0.3)" }}
             >
               {/* Input row */}
-              <div className="flex items-center gap-3 px-4 py-3 border-b border-purple-500/10">
-                <Search size={18} className="text-purple-400 shrink-0" />
+              <div className="flex items-center gap-3 px-4 py-3 border-b border-pink-500/10">
+                <Search size={18} className="text-primary shrink-0" />
                 <input
                   autoFocus
                   type="text"
                   placeholder="Search games or products..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="flex-1 bg-transparent text-white text-sm outline-none placeholder-gray-500"
+                  className="flex-1 bg-transparent text-gray-800 text-sm outline-none placeholder-gray-400"
                 />
                 <button onClick={closeSearch} className="text-gray-500 hover:text-white transition-colors">
                   <X size={18} />
@@ -302,11 +302,11 @@ const Navbar = () => {
               </div>
 
               {/* Tabs */}
-              <div className="flex overflow-x-auto hide-scrollbar gap-2 px-4 py-2 border-b border-purple-500/10">
+              <div className="flex overflow-x-auto hide-scrollbar gap-2 px-4 py-2 border-b border-pink-500/10">
                 <button
                   onClick={() => setActiveSearchTab("all")}
                   className={`px-3 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-colors ${
-                    activeSearchTab === "all" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+                    activeSearchTab === "all" ? "bg-primary text-white" : "bg-pink-50 text-gray-500 hover:text-gray-800"
                   }`}
                 >
                   All
@@ -314,7 +314,7 @@ const Navbar = () => {
                 <button
                   onClick={() => setActiveSearchTab("topup")}
                   className={`px-3 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-colors ${
-                    activeSearchTab === "topup" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+                    activeSearchTab === "topup" ? "bg-primary text-white" : "bg-pink-50 text-gray-500 hover:text-gray-800"
                   }`}
                 >
                   Top-Up
@@ -322,7 +322,7 @@ const Navbar = () => {
                 <button
                   onClick={() => setActiveSearchTab("account")}
                   className={`px-3 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-colors ${
-                    activeSearchTab === "account" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+                    activeSearchTab === "account" ? "bg-primary text-white" : "bg-pink-50 text-gray-500 hover:text-gray-800"
                   }`}
                 >
                   Accounts
@@ -330,7 +330,7 @@ const Navbar = () => {
                 <button
                   onClick={() => setActiveSearchTab("digital-service")}
                   className={`px-3 py-1 rounded-full text-[11px] font-medium whitespace-nowrap transition-colors ${
-                    activeSearchTab === "digital-service" ? "bg-primary text-white" : "bg-gray-800 text-gray-400 hover:text-white"
+                    activeSearchTab === "digital-service" ? "bg-primary text-white" : "bg-pink-50 text-gray-500 hover:text-gray-800"
                   }`}
                 >
                   Digital Services
@@ -345,7 +345,7 @@ const Navbar = () => {
                       key={product._id}
                       href={`/product/${product._id}`}
                       onClick={closeSearch}
-                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-purple-500/10 transition-colors group"
+                      className="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-pink-500/10 transition-colors group"
                     >
                       <FallbackImage
                         src={product.image}
@@ -353,9 +353,9 @@ const Navbar = () => {
                         width={36}
                         height={36}
                         fallbackIconSize={16}
-                        className="rounded-lg object-cover aspect-square shrink-0"
+                        className="rounded-lg object-cover aspect-square shrink-0 shadow-sm"
                       />
-                      <span className="text-sm text-gray-200 group-hover:text-white transition-colors font-medium">
+                      <span className="text-sm text-gray-700 group-hover:text-gray-900 transition-colors font-medium">
                         {product.name}
                       </span>
                     </Link>

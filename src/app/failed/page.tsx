@@ -14,7 +14,7 @@ const MyComponent = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ background: "#0D0B1A" }}>
+    <div className="min-h-screen flex items-center justify-center px-4 py-12" style={{ background: "#FDFDFD" }}>
       {/* Background glow */}
       <div className="fixed top-1/3 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full blur-3xl pointer-events-none"
         style={{ background: "rgba(239,68,68,0.07)" }} />
@@ -23,9 +23,9 @@ const MyComponent = () => {
         <div
           className="rounded-3xl p-8 text-center"
           style={{
-            background: "#12102A",
+            background: "#FFFFFF",
             border: "1px solid rgba(239,68,68,0.2)",
-            boxShadow: "0 25px 50px rgba(0,0,0,0.5), 0 0 40px rgba(239,68,68,0.07)",
+            boxShadow: "0 25px 50px rgba(0,0,0,0.1), 0 0 40px rgba(239,68,68,0.07)",
           }}
         >
           {/* Icon */}
@@ -36,12 +36,12 @@ const MyComponent = () => {
             <XCircle size={40} className="text-red-400" />
           </div>
 
-          <h1 className="text-2xl font-bold text-white mb-2">Payment Failed</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-2">Payment Failed</h1>
           <p className="text-red-400 text-sm font-medium mb-4">
             Oops! Something went wrong
           </p>
           <p
-            className="text-sm text-gray-400 mb-8 p-3 rounded-xl"
+            className="text-sm text-gray-600 mb-8 p-3 rounded-xl"
             style={{ background: "rgba(239,68,68,0.05)", border: "1px solid rgba(239,68,68,0.1)" }}
           >
             {message}
@@ -51,16 +51,16 @@ const MyComponent = () => {
           <div className="flex flex-col gap-2.5">
             <Link href="/" className="block">
               <button
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-sm font-semibold transition-all duration-300 hover:shadow-[0_0_20px_rgba(168,85,247,0.4)] hover:-translate-y-0.5"
-                style={{ background: "linear-gradient(135deg, #7B2FBE 0%, #A855F7 100%)" }}
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-white text-sm font-semibold transition-all duration-300 hover:shadow-[0_0_20px_rgba(255,117,151,0.4)] hover:-translate-y-0.5"
+                style={{ background: "linear-gradient(135deg, #E55577 0%, #FF7597 100%)" }}
               >
                 <RotateCcw size={15} /> Retry Payment
               </button>
             </Link>
             <Link href="/" className="block">
               <button
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-gray-400 text-sm font-medium transition-colors hover:text-white"
-                style={{ background: "transparent", border: "1px solid rgba(255,255,255,0.08)" }}
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl text-gray-600 text-sm font-medium transition-colors hover:text-gray-900 hover:bg-gray-50"
+                style={{ background: "transparent", border: "1px solid rgba(239,68,68,0.2)" }}
               >
                 <ArrowLeft size={15} /> Back to Home
               </button>

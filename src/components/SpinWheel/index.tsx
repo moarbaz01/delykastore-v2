@@ -284,7 +284,7 @@ const SpinWheel: React.FC = () => {
                                     <p className="text-lg">
                                         {isSpinning ? 'Spinning the wheel...' : showResult ? `You won: ${currentPrize}!` : 'Ready to spin!'}
                                     </p>
-                                    <p className="text-sm text-gray-400">
+                                    <p className="text-sm text-gray-600">
                                         Remaining Spins: {remainingSpins}
                                     </p>
                                 </div>
@@ -335,7 +335,7 @@ const SpinWheel: React.FC = () => {
                                         </div>
                                         <span className="text-sm font-medium">{prize.name}</span>
                                     </div>
-                                    <span className="text-xs text-gray-400">Win Rate: {prize.winRate}%</span>
+                                    <span className="text-xs text-gray-600">Win Rate: {prize.winRate}%</span>
                                 </div>
                             ))}
                         </div>
@@ -361,19 +361,19 @@ const SpinWheel: React.FC = () => {
 
                             {recentSpins.length > 0 ? (
                                 <div className="space-y-2">
-                                    <div className="grid grid-cols-2 text-sm text-gray-400 pb-2 border-b border-gray-700">
+                                    <div className="grid grid-cols-2 text-sm text-gray-600 pb-2 border-b border-gray-700">
                                         <span>Time</span>
                                         <span>Result</span>
                                     </div>
                                     {recentSpins.map((spin, index) => (
                                         <div key={index} className="grid grid-cols-2 text-sm py-1">
-                                            <span className="text-gray-300">{spin.time}</span>
+                                            <span className="text-gray-600">{spin.time}</span>
                                             <span className="text-primary">{spin.result}</span>
                                         </div>
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-gray-400 text-center py-4">No spins yet</p>
+                                <p className="text-gray-600 text-center py-4">No spins yet</p>
                             )}
                         </div>
                     </div>

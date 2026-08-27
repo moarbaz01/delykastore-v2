@@ -30,9 +30,9 @@ const battambang = Battambang({
 });
 
 export const viewport: Viewport = {
-  themeColor: "#1A1730",
+  themeColor: "#FFFFFF",
   interactiveWidget: "overlays-content",
-  colorScheme: "dark",
+  colorScheme: "light",
 };
 
 export default async function RootLayout({
@@ -60,28 +60,27 @@ export default async function RootLayout({
           <MaintenanceScreen message={settings?.maintenanceMessage} />
         ) : (
           <>
-            {/* Global Gradient Background (Optimized for Safari Performance) */}
+            {/* Global Background (Light Theme) */}
             <div 
-              className="fixed inset-0 pointer-events-none -z-50"
+              className="fixed inset-0 pointer-events-none -z-50 bg-[#FDFDFD]"
               style={{
-                backgroundColor: "#0D0B1A",
                 backgroundImage: `
-                  radial-gradient(circle at 10% 10%, rgba(168, 85, 247, 0.15) 0%, transparent 40%),
-                  radial-gradient(circle at 90% 90%, rgba(168, 85, 247, 0.12) 0%, transparent 40%),
-                  radial-gradient(circle at 75% 55%, rgba(192, 132, 252, 0.1) 0%, transparent 35%)
+                  radial-gradient(circle at 10% 10%, rgba(255, 117, 151, 0.05) 0%, transparent 40%),
+                  radial-gradient(circle at 90% 90%, rgba(255, 117, 151, 0.05) 0%, transparent 40%),
+                  radial-gradient(circle at 75% 55%, rgba(229, 85, 119, 0.03) 0%, transparent 35%)
                 `
               }}
             >
             </div>
             <div className="relative z-0 flex flex-col min-h-screen">
               <Provider>
-                <NextTopLoader color="#A855F7" showSpinner={false} />
+                <NextTopLoader color="#FF7597" showSpinner={false} />
                 <Toaster
                   toastOptions={{
                     style: {
-                      background: "#1A1730",
-                      color: "#F5F3FF",
-                      border: "1px solid rgba(168,85,247,0.2)",
+                      background: "#FFFFFF",
+                      color: "#1F2937",
+                      border: "1px solid rgba(255,117,151,0.2)",
                     },
                   }}
                 />

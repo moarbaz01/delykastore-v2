@@ -178,7 +178,7 @@ const SpinWheelContent: React.FC = () => {
             <span className="text-primary">Lucky</span>{" "}
             <span className="text-white">Spin</span>
           </h1>
-          <p className="text-gray-400 mt-2 text-sm">
+          <p className="text-gray-600 mt-2 text-sm">
             Spin the wheel & unlock rewards
           </p>
         </div>
@@ -227,7 +227,7 @@ const SpinWheelContent: React.FC = () => {
                 {isSpinning ? "Good luck..." : "TRY YOUR LUCK"}
               </button>
 
-              <p className="text-sm text-gray-400">
+              <p className="text-sm text-gray-600">
                 Remaining Spins: {remainingSpins}
               </p>
             </div>
@@ -243,7 +243,7 @@ const SpinWheelContent: React.FC = () => {
                 <div key={p.id} className="relative flex justify-between p-3 rounded-lg bg-secondary/50">
                   <span className="absolute left-0 top-0 h-full w-1" style={{ backgroundColor: p.color }} />
                   <span>{p.name}</span>
-                  <span className="text-xs text-gray-400">{p.winRate}%</span>
+                  <span className="text-xs text-gray-600">{p.winRate}%</span>
                 </div>
               ))}
             </div>

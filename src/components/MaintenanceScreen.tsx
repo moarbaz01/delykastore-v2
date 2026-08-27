@@ -8,7 +8,7 @@ interface MaintenanceScreenProps {
 
 export default function MaintenanceScreen({ message }: MaintenanceScreenProps) {
   return (
-    <div className="min-h-screen bg-[#0D0B1A] flex flex-col items-center justify-center p-4 relative overflow-hidden">
+    <div className="min-h-screen bg-[#FDFDFD] flex flex-col items-center justify-center p-4 relative overflow-hidden">
       {/* Background styling to match the site */}
       <div
         className="absolute inset-0 pointer-events-none -z-10"
@@ -31,7 +31,7 @@ export default function MaintenanceScreen({ message }: MaintenanceScreenProps) {
           Under Maintenance
         </h1>
         
-        <p className="text-gray-300 text-sm md:text-base leading-relaxed mb-8">
+        <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-8">
           {message || "We are currently undergoing scheduled maintenance to improve our services. Please check back later!"}
         </p>
 

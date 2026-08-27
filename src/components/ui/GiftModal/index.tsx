@@ -294,7 +294,7 @@ export default function GiftModal({
                                 Reward features
                             </span>
                         </div>
-                        <ul className="text-xs text-gray-300 space-y-1">
+                        <ul className="text-xs text-gray-600 space-y-1">
                             {data?.features.map((feature) => (
                                 <li key={feature.title} className="flex items-start gap-1">
                                     <div className="w-1 h-1 bg-primary rounded-full mt-1 flex-shrink-0"></div>
@@ -302,7 +302,7 @@ export default function GiftModal({
                                         <span className="font-semibold text-white">
                                             {feature.title}:
                                         </span>{" "}
-                                        <span className="text-gray-400">{feature.value}</span>
+                                        <span className="text-gray-600">{feature.value}</span>
                                     </div>
                                 </li>
                             ))}
@@ -322,7 +322,7 @@ export default function GiftModal({
                         onClick={makeEntry}
                         className={`flex-1 py-2 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 active:scale-95 flex items-center justify-center gap-1 relative overflow-hidden text-sm ${userWagering >= nextWagering
                             ? "bg-primary text-white hover:from-primary/90 hover:to-accent/90"
-                            : "bg-gray-700 text-gray-400 cursor-not-allowed"
+                            : "bg-gray-700 text-gray-600 cursor-not-allowed"
                             }`}
                         disabled={userWagering < nextWagering || isLoading}
                     >
@@ -408,7 +408,7 @@ function PrizeOption({
                             </div>
                         )}
                         <span
-                            className={`font-bold text-sm ${active ? "text-white" : "text-gray-400"
+                            className={`font-bold text-sm ${active ? "text-white" : "text-gray-600"
                                 }`}
                         >
                             ${price}

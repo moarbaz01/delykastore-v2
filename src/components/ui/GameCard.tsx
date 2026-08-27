@@ -46,7 +46,7 @@ const GameCard = ({
         className="group block"
       >
         <div
-          className={`relative rounded-2xl overflow-hidden transition-all duration-300 bg-[#161430] hover:shadow-[0_0_25px_rgba(168,85,247,0.2)] hover:-translate-y-1 ${
+          className={`relative rounded-2xl overflow-hidden transition-all duration-300 bg-white border border-pink-500/10 hover:shadow-[0_0_25px_rgba(255,117,151,0.2)] hover:-translate-y-1 ${
             !stock ? "opacity-60" : ""
           }`}
         >
@@ -73,12 +73,12 @@ const GameCard = ({
 
           {/* Info at the bottom */}
           <div className="p-3 flex flex-col justify-end h-full">
-            <p className="text-sm font-bold text-white leading-tight truncate mb-2">
+            <p className="text-sm font-bold text-gray-900 leading-tight truncate mb-2">
               {name}
             </p>
             <div className="flex items-center w-full mt-auto">
-              <div className="px-3 py-1 bg-gradient-to-r from-purple-600 to-primary rounded-lg text-[10px] md:text-xs font-bold text-white shadow-sm shadow-purple-500/20 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.5)] transition-all">
-                Top Up
+              <div className="px-3 py-1 bg-gradient-to-r from-pink-400 to-primary rounded-lg text-[10px] md:text-xs font-bold text-white shadow-sm shadow-pink-500/20 group-hover:shadow-[0_0_15px_rgba(255,117,151,0.5)] transition-all">
+                {type === "account" ? "Buy Now" : type === "digital-service" ? "Buy Now" : "Top Up"}
               </div>
             </div>
           </div>

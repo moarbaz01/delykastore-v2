@@ -12,7 +12,7 @@ export default function GlowBorder({
   children,
   className = "",
   borderRadius = "16px",
-  color = "#A855F7",
+  color = "#FF7597",
 }: GlowBorderProps) {
   const radius = typeof borderRadius === "number" ? `${borderRadius}px` : borderRadius;
 

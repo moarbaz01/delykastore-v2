@@ -5,11 +5,11 @@ import { FaTelegram } from "react-icons/fa";
 
 const TermsAndConditions = () => {
   return (
-    <div className="min-h-screen text-gray-200 py-12 px-4 pb-28">
+    <div className="min-h-screen text-gray-700 py-12 px-4 pb-28">
       <div className="max-w-3xl mx-auto space-y-8 animate-fade-in">
         {/* Header */}
         <div className="text-center mb-10">
-          <div className="w-20 h-20 bg-[#12102A] rounded-full flex items-center justify-center mx-auto mb-5 border border-purple-500/20 shadow-[0_0_30px_rgba(168,85,247,0.3)]">
+          <div className="w-20 h-20 bg-[#FFFFFF] rounded-full flex items-center justify-center mx-auto mb-5 border border-pink-500/20 shadow-[0_0_30px_rgba(255,117,151,0.3)]">
             <FileText size={36} className="text-primary" />
           </div>
           <h1 className="text-3xl md:text-4xl font-black text-transparent bg-clip-text bg-gradient-to-r from-white to-gray-400 mb-3">
@@ -19,10 +19,10 @@ const TermsAndConditions = () => {
         </div>
 
         {/* Content Container */}
-        <div className="bg-[#12102A] border border-purple-500/10 rounded-[24px] p-6 md:p-8 shadow-lg relative overflow-hidden">
+        <div className="bg-[#FFFFFF] border border-pink-500/10 rounded-[24px] p-6 md:p-8 shadow-lg relative overflow-hidden">
           <div className="absolute top-[-10%] right-[-10%] w-64 h-64 bg-primary/5 rounded-full blur-[60px] -z-10"></div>
           
-          <div className="space-y-8 text-sm leading-relaxed text-gray-300">
+          <div className="space-y-8 text-sm leading-relaxed text-gray-600">
             
             {/* Section 1 */}
             <section>
@@ -78,9 +78,9 @@ const TermsAndConditions = () => {
         </div>
 
         {/* Contact Us Card */}
-        <div className="bg-[#1A163B] border border-purple-500/20 rounded-[24px] p-6 text-center shadow-lg mt-8">
+        <div className="bg-[#FFFFFF] border border-pink-500/20 rounded-[24px] p-6 text-center shadow-lg mt-8">
           <h3 className="text-lg font-bold text-white mb-2">Have Questions?</h3>
-          <p className="text-sm text-gray-400 mb-6">If you have any questions or concerns about these Terms, please contact us.</p>
+          <p className="text-sm text-gray-600 mb-6">If you have any questions or concerns about these Terms, please contact us.</p>
           
           <div className="flex flex-wrap justify-center gap-4">
             <a href="mailto:tvhubcambodia@gmail.com" className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-white/5 border border-white/10 hover:bg-white/10 transition-colors text-sm font-medium text-white">

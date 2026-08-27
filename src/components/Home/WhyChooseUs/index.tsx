@@ -5,7 +5,7 @@ const features = [
     icon: FaTag,
     title: "Affordable Prices",
     description: "We always provide high-quality products at the lowest prices for all available games.",
-    color: "#A855F7",
+    color: "#FF7597",
   },
   {
     icon: FaWallet,
@@ -23,7 +23,7 @@ const features = [
     icon: FaBolt,
     title: "Fast Service",
     description: "Fast delivery and service for all product purchases.",
-    color: "#A855F7",
+    color: "#FF7597",
   },
   {
     icon: FaShieldAlt,
@@ -37,20 +37,20 @@ export default function WhyChooseUs() {
   return (
     <section className="py-16 px-4 relative overflow-hidden">
       {/* Background glow blobs */}
-      <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-purple-500/5 rounded-full blur-3xl pointer-events-none" />
+      <div className="absolute top-1/2 left-1/4 w-64 h-64 bg-pink-500/5 rounded-full blur-3xl pointer-events-none" />
       <div className="absolute bottom-0 right-1/4 w-48 h-48 bg-violet-500/5 rounded-full blur-3xl pointer-events-none" />
 
       <div className="max-w-7xl mx-auto relative">
         {/* Section title */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold text-purple-400 mb-4"
-            style={{ background: "rgba(168,85,247,0.1)", border: "1px solid rgba(168,85,247,0.2)" }}>
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold text-primary mb-4"
+            style={{ background: "rgba(255,117,151,0.1)", border: "1px solid rgba(255,117,151,0.2)" }}>
             <span>⭐</span> Why Choose Us
           </div>
           <h2
             className="text-3xl md:text-4xl font-bold mb-4"
             style={{
-              background: "linear-gradient(135deg, #C084FC 0%, #A855F7 50%, #7B2FBE 100%)",
+              background: "linear-gradient(135deg, #C084FC 0%, #FF7597 50%, #E55577 100%)",
               WebkitBackgroundClip: "text",
               WebkitTextFillColor: "transparent",
               backgroundClip: "text",
@@ -58,7 +58,7 @@ export default function WhyChooseUs() {
           >
             Why Choose Us
           </h2>
-          <p className="text-gray-400 text-base max-w-2xl mx-auto leading-relaxed">
+          <p className="text-gray-600 text-base max-w-2xl mx-auto leading-relaxed">
             We offer the best gaming experience with unmatched features and benefits
           </p>
         </div>
@@ -70,9 +70,9 @@ export default function WhyChooseUs() {
             return (
               <div
                 key={index}
-                className="group relative rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(168,85,247,0.2)]"
+                className="group relative rounded-2xl p-6 transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(255,117,151,0.2)]"
                 style={{
-                  background: "#12102A",
+                  background: "#FFFFFF",
                   border: "1px solid rgba(168, 85, 247, 0.15)",
                   animationDelay: `${index * 100}ms`,
                 }}
@@ -89,7 +89,7 @@ export default function WhyChooseUs() {
                 <h3 className="text-base font-bold text-white mb-2">
                   {feature.title}
                 </h3>
-                <p className="text-gray-400 text-sm leading-relaxed">
+                <p className="text-gray-600 text-sm leading-relaxed">
                   {feature.description}
                 </p>
 

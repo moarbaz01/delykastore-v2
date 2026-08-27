@@ -17,19 +17,19 @@ const SectionHeader = ({
     <div className="flex items-center justify-between mb-5">
       <div className="flex items-center gap-2.5">
         {icon && (
-          <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center text-purple-400">
+          <div className="w-8 h-8 rounded-lg bg-pink-500/10 flex items-center justify-center text-primary">
             {icon}
           </div>
         )}
         <div className="relative">
-          <h2 className="text-lg font-bold text-white tracking-wide">{title}</h2>
-          <div className="absolute -bottom-1 left-0 h-0.5 w-8 rounded-full bg-gradient-to-r from-purple-500 to-violet-500" />
+          <h2 className="text-lg font-bold text-gray-900 tracking-wide">{title}</h2>
+          <div className="absolute -bottom-1 left-0 h-0.5 w-8 rounded-full bg-gradient-to-r from-primary to-pink-300" />
         </div>
       </div>
       {viewAllHref && (
         <Link
           href={viewAllHref}
-          className="text-xs font-semibold text-purple-400 hover:text-purple-300 transition-colors flex items-center gap-1 group"
+          className="text-xs font-semibold text-primary hover:text-primary-dark transition-colors flex items-center gap-1 group"
         >
           {viewAllLabel}
           <svg

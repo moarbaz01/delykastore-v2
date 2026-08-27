@@ -12,14 +12,14 @@ const Marquee = () => {
       <div className="flex w-[200%] animate-marquee items-center justify-around gap-8">
         <div className="flex flex-1 justify-around items-center gap-8 px-4 whitespace-nowrap">
           {words.map((word, i) => (
-            <span key={`first-${i}`} className="text-xl md:text-2xl font-black italic text-purple-400/20 tracking-wider">
+            <span key={`first-${i}`} className="text-xl md:text-2xl font-black italic text-primary/20 tracking-wider">
               {word}
             </span>
           ))}
         </div>
         <div className="flex flex-1 justify-around items-center gap-8 px-4 whitespace-nowrap">
           {words.map((word, i) => (
-            <span key={`second-${i}`} className="text-xl md:text-2xl font-black italic text-purple-400/20 tracking-wider">
+            <span key={`second-${i}`} className="text-xl md:text-2xl font-black italic text-primary/20 tracking-wider">
               {word}
             </span>
           ))}

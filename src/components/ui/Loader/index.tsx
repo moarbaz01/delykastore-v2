@@ -13,7 +13,7 @@ const Loader = ({ fullScreen = false }: LoaderProps) => {
 
   if (fullScreen) {
     return (
-      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#0D0B1A]/80 backdrop-blur-md">
+      <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[#FDFDFD]/80 backdrop-blur-md">
         {content}
       </div>
     );

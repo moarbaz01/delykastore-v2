@@ -20,7 +20,7 @@ export default function FallbackImage({
   if (error || !src) {
     return (
       <div
-        className={`flex items-center justify-center bg-purple-500/10 text-purple-400 ${className}`}
+        className={`flex items-center justify-center bg-pink-500/10 text-primary ${className}`}
         style={{ width: rest.width, height: rest.height }}
       >
         <Gamepad2 size={fallbackIconSize} />
