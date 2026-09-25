@@ -132,22 +132,6 @@ export const useOrder = (setPaymentData: (value: any) => void) => {
     [setPaymentData],
   );
 
-  const testOrder = useCallback(async (orderId: string) => {
-    try {
-      setIsLoading(true);
-      const res = await axios.post("/api/test/fulfill", { orderId });
-      if (res.status === 200) {
-        toast.success("Test Order Successful!");
-        window.location.href = "/order-history";
-      }
-    } catch (error: any) {
-      toast.error(
-        `Test Order Failed: ${error.response?.data?.message || error.message}`,
-      );
-    } finally {
-      setIsLoading(false);
-    }
-  }, []);
-
-  return { createOrder, testOrder, isLoading };
+  return { createOrder, isLoading };
 };
+
