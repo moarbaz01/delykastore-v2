@@ -7,6 +7,7 @@ export interface IProduct extends Document {
   game: string;
   slides: string[];
   banner?: string;
+  bannerType?: "image" | "video" | "youtube";
   region?: string;
   isDeleted: boolean;
   apiName?: string;
@@ -63,6 +64,11 @@ const productSchema = new Schema<IProduct>(
     ],
     banner: {
       type: String,
+    },
+    bannerType: {
+      type: String,
+      enum: ["image", "video", "youtube"],
+      default: "image",
     },
     region: {
       type: String,

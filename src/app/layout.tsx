@@ -54,6 +54,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body
+        suppressHydrationWarning
         className={`${outfit.variable} ${battambang.variable} font-sans antialiased relative min-h-screen`}
       >
         {isMaintenanceMode ? (

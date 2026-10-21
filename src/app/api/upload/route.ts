@@ -1,8 +1,15 @@
 import { cloudinaryUpload } from "@/utils/cloudinary";
+import { authOptions } from "@/utils/authOptions";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 export async function POST(req: Request) {
   try {
+    const session = await getServerSession(authOptions);
+    if (!session || session?.user?.role !== "admin") {
+      return NextResponse.json({ message: "Unauthorized" }, { status: 401 });
+    }
+
     // Parse the form data
     const formData = await req.formData();
     const image = formData.get("image") as File;

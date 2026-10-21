@@ -21,6 +21,8 @@ import GiftModal from "../ui/GiftModal";
 import axios from "axios";
 import { Reveal } from "../ui/Reveal";
 import { getOptimizedUrl } from "@/utils/optimizeImage";
+import { getYoutubeId } from "@/utils/youtube";
+import VideoPlayer from "../ui/VideoPlayer";
 import toast from "react-hot-toast";
 
 declare const AbaPayway: any;
@@ -33,6 +35,7 @@ const Product = ({
   region,
   slides,
   banner,
+  bannerType,
   isApi,
   stock,
   cost,
@@ -77,6 +80,7 @@ const Product = ({
   };
   slides: string[];
   banner: string;
+  bannerType?: "image" | "video" | "youtube";
   game: string;
   cost: {
     id: string;
@@ -377,7 +381,22 @@ const Product = ({
           <div className=" flex flex-col gap-4 md:sticky md:mt-0 mt-4 md:top-20">
             {slides.length > 0 && <SliderComponent slides={slides} />}
 
-            {banner && (
+            {banner && bannerType === "youtube" && getYoutubeId(banner) && (
+              <div className="aspect-video w-full overflow-hidden rounded-lg">
+                <iframe
+                  src={`https://www.youtube-nocookie.com/embed/${getYoutubeId(banner)}`}
+                  title={name}
+                  loading="lazy"
+                  allow="accelerometer; autoplay; encrypted-media; picture-in-picture"
+                  allowFullScreen
+                  className="w-full h-full"
+                />
+              </div>
+            )}
+            {banner && bannerType === "video" && (
+              <VideoPlayer src={banner} className="w-full" />
+            )}
+            {banner && (!bannerType || bannerType === "image") && (
               <div className="flex items-center gap-4 ">
                 <Image
                   src={getOptimizedUrl(banner as string, 800)}

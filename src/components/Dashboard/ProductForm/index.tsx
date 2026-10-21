@@ -19,6 +19,7 @@ import toast from "react-hot-toast";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
+import { getYoutubeId } from "@/utils/youtube";
 
 interface CostItem {
   id: string;
@@ -49,6 +50,7 @@ interface Product {
   urlInputType?: string;
   slides: (string | File)[];
   banner: string | File;
+  bannerType: "image" | "video" | "youtube";
   image: string | File | null;
   isDeleted: boolean;
   cost: CostItem[];
@@ -90,6 +92,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
     ],
     slides: product?.slides || [],
     banner: product?.banner || "",
+    bannerType: product?.bannerType || "image",
     stock: product?.stock || false,
     spinActive: product?.spinActive || false,
     spinCostIds: product?.spinCostIds || [],
@@ -213,6 +216,44 @@ const ProductForm = ({ product }: { product?: Product }) => {
   const handleRemoveBanner = () => {
     setFormData((prev) => ({ ...prev, banner: "" }));
     setBannerPreview("");
+  };
+
+  const handleBannerTypeChange = (type: Product["bannerType"]) => {
+    if (type === formData.bannerType) return;
+    // Switching type discards the current banner so image/video/link never mix
+    setFormData((prev) => ({ ...prev, bannerType: type, banner: "" }));
+    setBannerPreview("");
+  };
+
+  const handleYoutubeInput = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData((prev) => ({ ...prev, banner: e.target.value }));
+  };
+
+  // Uploads a video straight to Cloudinary with a server-signed request, so
+  // large files skip the serverless body-size limit of /api/upload
+  const uploadVideoDirect = async (file: File, folder: string) => {
+    const signRes = await fetch("/api/upload/sign", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ folder }),
+    });
+    if (!signRes.ok) throw new Error("Failed to sign upload");
+    const { signature, timestamp, apiKey, cloudName } = await signRes.json();
+
+    const form = new FormData();
+    form.append("file", file);
+    form.append("api_key", apiKey);
+    form.append("timestamp", String(timestamp));
+    form.append("signature", signature);
+    form.append("folder", folder);
+
+    const res = await fetch(
+      `https://api.cloudinary.com/v1_1/${cloudName}/video/upload`,
+      { method: "POST", body: form }
+    );
+    if (!res.ok) throw new Error("Video upload failed");
+    const { secure_url } = await res.json();
+    return secure_url as string;
   };
 
   // Slides upload handler
@@ -459,9 +500,22 @@ const ProductForm = ({ product }: { product?: Product }) => {
     data.append("isTesting", JSON.stringify(formData.isTesting));
 
     // Upload banner if it's a new file
+    if (formData.bannerType === "youtube") {
+      const link = typeof formData.banner === "string" ? formData.banner.trim() : "";
+      if (link && !getYoutubeId(link)) {
+        toast.error("Invalid YouTube link.");
+        toast.dismiss(loadingRef.current);
+        setLoading(false);
+        return;
+      }
+    }
+    data.append("bannerType", formData.bannerType);
     if (formData.banner && typeof formData.banner !== "string") {
       try {
-        const bannerUrl = await handleUploadImage(formData.banner, "/banners");
+        const bannerUrl =
+          formData.bannerType === "video"
+            ? await uploadVideoDirect(formData.banner, "/banners")
+            : await handleUploadImage(formData.banner, "/banners");
         data.append("banner", bannerUrl);
       } catch (error) {
         console.error("Failed to upload banner:", error);
@@ -471,7 +525,7 @@ const ProductForm = ({ product }: { product?: Product }) => {
         return;
       }
     } else if (typeof formData.banner === "string") {
-      data.append("banner", formData.banner);
+      data.append("banner", formData.banner.trim());
     }
 
     // Upload slides
@@ -940,9 +994,90 @@ const ProductForm = ({ product }: { product?: Product }) => {
 
           {/* Banner Upload */}
           <div className="mb-4">
-            {!bannerPreview && !(formData.banner && typeof formData.banner === "string") && (
+            <label className="block mb-2 text-white font-medium">Banner</label>
+            <div className="flex gap-2 mb-3">
+              {(
+                [
+                  ["image", "Image"],
+                  ["video", "Video"],
+                  ["youtube", "YouTube link"],
+                ] as const
+              ).map(([type, label]) => (
+                <Button
+                  key={type}
+                  size="small"
+                  variant={formData.bannerType === type ? "contained" : "outlined"}
+                  onClick={() => handleBannerTypeChange(type)}
+                  sx={{ textTransform: "none" }}
+                >
+                  {label}
+                </Button>
+              ))}
+            </div>
+
+            {formData.bannerType === "youtube" && (
+              <div className="mt-2">
+                <TextField
+                  fullWidth
+                  size="small"
+                  placeholder="https://www.youtube.com/watch?v=..."
+                  value={typeof formData.banner === "string" ? formData.banner : ""}
+                  onChange={handleYoutubeInput}
+                  error={
+                    typeof formData.banner === "string" &&
+                    !!formData.banner.trim() &&
+                    !getYoutubeId(formData.banner)
+                  }
+                  helperText="Paste a YouTube watch, youtu.be, shorts or embed link"
+                  InputProps={{ style: { color: "white" } }}
+                />
+                {typeof formData.banner === "string" && getYoutubeId(formData.banner) && (
+                  <div className="mt-2 aspect-video w-full max-w-md">
+                    <iframe
+                      className="w-full h-full rounded border border-gray-600"
+                      src={`https://www.youtube-nocookie.com/embed/${getYoutubeId(formData.banner)}`}
+                      allowFullScreen
+                    />
+                  </div>
+                )}
+                {typeof formData.banner === "string" && formData.banner && (
+                  <Button
+                    onClick={handleRemoveBanner}
+                    color="secondary"
+                    variant="outlined"
+                    size="small"
+                    className="mt-2 text-red-400 border-red-500/30 hover:border-red-500"
+                  >
+                    Remove Banner
+                  </Button>
+                )}
+              </div>
+            )}
+
+            {formData.bannerType === "video" && bannerPreview && (
+              <div className="mt-2">
+                <video
+                  src={bannerPreview}
+                  controls
+                  muted
+                  className="rounded border border-gray-600 max-w-md w-full"
+                />
+                <Button
+                  onClick={handleRemoveBanner}
+                  color="secondary"
+                  variant="outlined"
+                  size="small"
+                  className="mt-2 text-red-400 border-red-500/30 hover:border-red-500"
+                >
+                  Remove Banner
+                </Button>
+              </div>
+            )}
+
+            {formData.bannerType !== "youtube" &&
+              !bannerPreview &&
+              !(formData.banner && typeof formData.banner === "string") && (
               <>
-                <label className="block mb-2 text-white font-medium">Banner Image</label>
                 <Button
                   variant="outlined"
                   component="label"
@@ -958,13 +1093,13 @@ const ProductForm = ({ product }: { product?: Product }) => {
                   <input
                     type="file"
                     onChange={handleBannerUpload}
-                    accept="image/*"
+                    accept={formData.bannerType === "video" ? "video/*" : "image/*"}
                     hidden
                   />
                 </Button>
               </>
             )}
-            {bannerPreview && (
+            {formData.bannerType === "image" && bannerPreview && (
               <div className="mt-2">
                 <Image
                   src={bannerPreview}
@@ -985,18 +1120,28 @@ const ProductForm = ({ product }: { product?: Product }) => {
                 </Button>
               </div>
             )}
-            {formData.banner &&
+            {formData.bannerType !== "youtube" &&
+              formData.banner &&
               typeof formData.banner === "string" &&
               !bannerPreview && (
                 <div className="mt-2">
-                  <Image
-                    src={formData.banner}
-                    height={150}
-                    width={300}
-                    alt="Banner"
-                    className="rounded border border-gray-600"
-                    style={{ objectFit: "cover" }}
-                  />
+                  {formData.bannerType === "video" ? (
+                    <video
+                      src={formData.banner}
+                      controls
+                      muted
+                      className="rounded border border-gray-600 max-w-md w-full"
+                    />
+                  ) : (
+                    <Image
+                      src={formData.banner}
+                      height={150}
+                      width={300}
+                      alt="Banner"
+                      className="rounded border border-gray-600"
+                      style={{ objectFit: "cover" }}
+                    />
+                  )}
                   <Button
                     onClick={handleRemoveBanner}
                     color="secondary"

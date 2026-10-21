@@ -32,6 +32,7 @@ const productSchema = z.object({
   ),
   slides: z.array(z.string()).optional(),
   banner: z.any().optional(),
+  bannerType: z.enum(["image", "video", "youtube"]).optional(),
   game: z.string(),
   isApi: z.boolean().optional(),
   requiresServerId: z.boolean().optional(),
@@ -358,7 +359,11 @@ export async function PUT(req: NextRequest) {
       validatedData.banner instanceof File
         ? cloudinaryUpload(validatedData.banner, "/banners")
         : Promise.resolve({
-            url: validatedData.banner || existingProduct.banner,
+            // An empty string means the banner was removed
+            url:
+              validatedData.banner !== undefined
+                ? validatedData.banner
+                : existingProduct.banner,
           }),
       validatedData.slides && validatedData.slides.length > 0
         ? uploadFiles(validatedData.slides, "/slides")
@@ -386,7 +391,10 @@ export async function PUT(req: NextRequest) {
     const updateData: any = {
       ...validatedData,
       image: imageUrl.url || existingProduct.image,
-      banner: bannerUrl.url || existingProduct.banner,
+      banner: bannerUrl.url ?? "",
+      bannerType: bannerUrl.url
+        ? validatedData.bannerType || existingProduct.bannerType || "image"
+        : "image",
       slides: slidesUrls.length > 0 ? slidesUrls : existingProduct.slides,
       cost: costImages,
     };
@@ -400,7 +408,6 @@ export async function PUT(req: NextRequest) {
 
     // Explicitly restore mandatory fields if they were deleted by the loop
     if (!updateData.image) updateData.image = existingProduct.image;
-    if (!updateData.banner) updateData.banner = existingProduct.banner;
 
     // Handle image deletions
     if (validatedData.image instanceof File && existingProduct.image) {
@@ -410,10 +417,18 @@ export async function PUT(req: NextRequest) {
       }
     }
 
-    if (validatedData.banner instanceof File && existingProduct.banner) {
+    // Delete the old banner asset when it was replaced or removed
+    if (
+      existingProduct.banner &&
+      existingProduct.bannerType !== "youtube" &&
+      existingProduct.banner !== updateData.banner
+    ) {
       const publicId = extractPublicId(existingProduct.banner);
       if (publicId) {
-        await cloudinaryDelete(publicId);
+        await cloudinaryDelete(
+          publicId,
+          existingProduct.bannerType === "video" ? "video" : "image",
+        );
       }
     }
 
@@ -487,11 +502,14 @@ export async function DELETE(req: NextRequest) {
     }
 
     // Delete banner if exists
-    if (product.banner) {
+    if (product.banner && product.bannerType !== "youtube") {
       try {
         const publicId = extractPublicId(product.banner);
         if (publicId) {
-          const { success } = await cloudinaryDelete(publicId);
+          const { success } = await cloudinaryDelete(
+            publicId,
+            product.bannerType === "video" ? "video" : "image",
+          );
           deletionResults.banner = success;
         }
       } catch (error) {
