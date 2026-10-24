@@ -28,6 +28,8 @@ export interface IOrder extends Document {
   };
   expiresAt?: Date;
   isProcessing?: boolean;
+  telegramMessageId?: number;
+  telegramChatId?: string;
   createdAt: Date;
   updatedAt: Date;
 }
