@@ -117,6 +117,14 @@ const orderSchema = new Schema<IOrder>(
       type: Boolean,
       default: false,
     },
+    telegramMessageId: {
+      type: Number,
+      default: null,
+    },
+    telegramChatId: {
+      type: String,
+      default: null,
+    },
   },
   { timestamps: true },
 );

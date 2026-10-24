@@ -305,7 +305,12 @@ export async function POST(req: Request) {
     if (lockedOrder.status === "success" || (lockedOrder.product as any)?.type === "digital-service") {
       const costItem = (lockedOrder.product as any)?.cost?.find((c: any) => c.id === lockedOrder.costId);
       const packageName = costItem ? (costItem.amount || costItem.note || "Selected Package") : undefined;
-      await sendTelegramNotification(lockedOrder, (lockedOrder.product as any)?.name || "Unknown Product", packageName);
+      const tgResult = await sendTelegramNotification(lockedOrder, (lockedOrder.product as any)?.name || "Unknown Product", packageName);
+      if (tgResult) {
+        lockedOrder.telegramMessageId = tgResult.messageId;
+        lockedOrder.telegramChatId = tgResult.chatId;
+        await lockedOrder.save();
+      }
     }
 
     // Create spin transaction if costId is in spinCostIds and spinActive is true
