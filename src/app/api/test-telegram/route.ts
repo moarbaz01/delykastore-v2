@@ -10,6 +10,23 @@ export const revalidate = 0;
 // GET /api/test-telegram → creates a real pending order + sends telegram notification
 export async function GET(req: NextRequest) {
   try {
+    const { searchParams } = new URL(req.url);
+    const checkId = searchParams.get("checkId");
+    if (checkId) {
+      await dbConnect();
+      const order = await Order.findById(checkId);
+      if (!order) {
+        return NextResponse.json({ error: "Order not found" }, { status: 404 });
+      }
+      return NextResponse.json({
+        orderId: order._id,
+        status: order.status,
+        telegramMessageId: order.telegramMessageId,
+        telegramChatId: order.telegramChatId,
+        updatedAt: order.updatedAt,
+      });
+    }
+
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
     const chatIds = process.env.TELEGRAM_CHAT_ID?.split(",").map((id) => id.trim()).filter(Boolean);
 
