@@ -104,6 +104,7 @@ export async function POST(req: NextRequest) {
     const newStatus = action === "complete" ? "success" : "failed";
     console.log(`[TG-WEBHOOK] 💾 Updating order status to: ${newStatus}`);
     order.status = newStatus;
+    order.isProcessing = false;
     if (incomingChatId) order.telegramChatId = String(incomingChatId);
     if (incomingMessageId) order.telegramMessageId = incomingMessageId;
     await order.save();
