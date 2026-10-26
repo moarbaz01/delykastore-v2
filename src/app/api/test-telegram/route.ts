@@ -11,6 +11,13 @@ export const revalidate = 0;
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
+    const action = searchParams.get("action");
+    if (action === "cleanup") {
+      await dbConnect();
+      const res = await Order.deleteMany({ costId: "test-cost-id" });
+      return NextResponse.json({ success: true, message: `Cleaned up ${res.deletedCount} test orders` });
+    }
+
     const checkId = searchParams.get("checkId");
     if (checkId) {
       await dbConnect();
