@@ -88,7 +88,7 @@ export const sendTelegramNotification = async (
 
 // ─── Edit existing Telegram message (e.g., after Complete/Cancel) ─────────────
 export const editTelegramMessage = async (
-  chatId: string,
+  chatId: string | number,
   messageId: number,
   newText: string,
   removeButtons = true
@@ -104,8 +104,8 @@ export const editTelegramMessage = async (
       parse_mode: "HTML",
       ...(removeButtons ? { reply_markup: { inline_keyboard: [] } } : {}),
     });
-  } catch (err) {
-    console.error("Failed to edit Telegram message:", err);
+  } catch (err: any) {
+    console.error("Failed to edit Telegram message:", err?.response?.data || err?.message || err);
   }
 };
 

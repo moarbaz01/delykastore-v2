@@ -1,29 +1,36 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/database";
 import { Order } from "@/models/order.model";
+import "@/models/product.model"; // Ensure Product model is registered in Mongoose
 import { editTelegramMessage } from "@/utils/telegramNotifier";
+import mongoose from "mongoose";
 import axios from "axios";
 
 // ─── Answer callback query (removes loading spinner in Telegram) ──────────────
-const answerCallbackQuery = async (callbackQueryId: string, text: string) => {
+const answerCallbackQuery = async (
+  callbackQueryId: string,
+  text: string,
+  showAlert = false
+) => {
   const botToken = process.env.TELEGRAM_BOT_TOKEN;
-  if (!botToken) return;
+  if (!botToken || !callbackQueryId) return;
   try {
     await axios.post(`https://api.telegram.org/bot${botToken}/answerCallbackQuery`, {
       callback_query_id: callbackQueryId,
       text,
-      show_alert: false,
+      show_alert: showAlert,
     });
-  } catch (err) {
-    console.error("answerCallbackQuery error:", err);
+  } catch (err: any) {
+    console.error("answerCallbackQuery error:", err?.response?.data || err?.message || err);
   }
 };
 
 export async function POST(req: NextRequest) {
+  let callbackQueryId: string | undefined;
   try {
     console.log("[TG-WEBHOOK] 📥 Request received");
     const body = await req.json();
-    console.log("[TG-WEBHOOK] Body type:", Object.keys(body || {}).join(", "));
+    console.log("[TG-WEBHOOK] Body keys:", Object.keys(body || {}).join(", "));
 
     // Only handle callback_query (button taps)
     const callbackQuery = body?.callback_query;
@@ -32,13 +39,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true });
     }
 
-    const callbackQueryId: string = callbackQuery.id;
+    callbackQueryId = callbackQuery.id;
     const data: string = callbackQuery?.data ?? "";
+    console.log(`[TG-WEBHOOK] 🎯 Callback query received: id=${callbackQueryId}, data="${data}"`);
 
     // Parse action and orderId from callback_data e.g. "complete:6719abc..."
     const colonIdx = data.indexOf(":");
     if (colonIdx === -1) {
-      await answerCallbackQuery(callbackQueryId, "⚠️ Invalid data.");
+      await answerCallbackQuery(callbackQueryId, "⚠️ Invalid button action.", true);
       return NextResponse.json({ ok: true });
     }
     const action = data.slice(0, colonIdx);
@@ -47,27 +55,47 @@ export async function POST(req: NextRequest) {
 
     if (!orderId || !["complete", "cancel"].includes(action)) {
       console.warn(`[TG-WEBHOOK] ⚠️ Unknown action: ${action}`);
-      await answerCallbackQuery(callbackQueryId, "⚠️ Unknown action.");
+      await answerCallbackQuery(callbackQueryId, "⚠️ Unknown action.", true);
+      return NextResponse.json({ ok: true });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(orderId)) {
+      console.warn(`[TG-WEBHOOK] ⚠️ Invalid ObjectId: ${orderId}`);
+      await answerCallbackQuery(callbackQueryId, "⚠️ Invalid Order ID.", true);
       return NextResponse.json({ ok: true });
     }
 
     console.log("[TG-WEBHOOK] 🔌 Connecting to DB...");
     await dbConnect();
 
-    const order = await Order.findById(orderId).populate("product");
+    let order = null;
+    try {
+      order = await Order.findById(orderId).populate("product");
+    } catch (popErr) {
+      console.warn("[TG-WEBHOOK] Populate product failed, querying plain order:", popErr);
+      order = await Order.findById(orderId);
+    }
+
     if (!order) {
       console.error(`[TG-WEBHOOK] ❌ Order not found: ${orderId}`);
-      await answerCallbackQuery(callbackQueryId, "❌ Order not found.");
+      await answerCallbackQuery(callbackQueryId, "❌ Order not found in database.", true);
       return NextResponse.json({ ok: true });
     }
     console.log(`[TG-WEBHOOK] 📋 Order found — current status: ${order.status}`);
+
+    // Extract exact chat & message ID from the incoming button click
+    const incomingChatId = callbackQuery.message?.chat?.id;
+    const incomingMessageId = callbackQuery.message?.message_id;
+    const chatId = incomingChatId || order.telegramChatId;
+    const messageId = incomingMessageId || order.telegramMessageId;
 
     // Prevent double-action if already processed
     if (order.status !== "pending") {
       console.warn(`[TG-WEBHOOK] ⚠️ Already processed — status: ${order.status}`);
       await answerCallbackQuery(
         callbackQueryId,
-        `⚠️ Order already marked as ${order.status}.`
+        `⚠️ Order already marked as ${order.status.toUpperCase()}!`,
+        true
       );
       return NextResponse.json({ ok: true });
     }
@@ -76,6 +104,8 @@ export async function POST(req: NextRequest) {
     const newStatus = action === "complete" ? "success" : "failed";
     console.log(`[TG-WEBHOOK] 💾 Updating order status to: ${newStatus}`);
     order.status = newStatus;
+    if (incomingChatId) order.telegramChatId = String(incomingChatId);
+    if (incomingMessageId) order.telegramMessageId = incomingMessageId;
     await order.save();
     console.log(`[TG-WEBHOOK] ✅ DB updated successfully`);
 
@@ -103,15 +133,12 @@ export async function POST(req: NextRequest) {
     updatedMsg += `\n🕐 <i>Updated by admin</i>`;
 
     // ─── Edit the stored Telegram message ────────────────────────────────────
-    const chatId = order.telegramChatId;
-    const messageId = order.telegramMessageId;
     console.log(`[TG-WEBHOOK] ✏️ Editing message — chatId: ${chatId}, messageId: ${messageId}`);
-
     if (chatId && messageId) {
       await editTelegramMessage(chatId, messageId, updatedMsg, true);
       console.log("[TG-WEBHOOK] ✅ Telegram message edited successfully");
     } else {
-      console.warn("[TG-WEBHOOK] ⚠️ No telegramChatId/messageId stored — cannot edit message");
+      console.warn("[TG-WEBHOOK] ⚠️ No chatId/messageId available — cannot edit message");
     }
 
     // ─── Toast notification to admin ──────────────────────────────────────────
@@ -119,12 +146,15 @@ export async function POST(req: NextRequest) {
       action === "complete"
         ? "✅ Order marked as Complete!"
         : "❌ Order marked as Cancelled!";
-    await answerCallbackQuery(callbackQueryId, toastMsg);
+    await answerCallbackQuery(callbackQueryId, toastMsg, false);
 
     console.log(`[TG-WEBHOOK] 🎉 Done — action: ${action}, orderId: ${orderId}`);
     return NextResponse.json({ ok: true });
   } catch (error: any) {
     console.error("[TG-WEBHOOK] ❌ Unexpected error:", error?.message || error);
+    if (callbackQueryId) {
+      await answerCallbackQuery(callbackQueryId, "❌ Server error processing button.", true);
+    }
     return NextResponse.json({ ok: false, error: "Internal Server Error" }, { status: 500 });
   }
 }
