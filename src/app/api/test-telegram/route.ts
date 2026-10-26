@@ -3,6 +3,9 @@ import { dbConnect } from "@/lib/database";
 import { Order } from "@/models/order.model";
 import axios from "axios";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 // ─── Test Telegram Notification with Working Inline Buttons ──────────────────
 // GET /api/test-telegram → creates a real pending order + sends telegram notification
 export async function GET(req: NextRequest) {
@@ -96,15 +99,32 @@ export async function GET(req: NextRequest) {
       console.log(`[TEST-TELEGRAM] 💾 Saved messageId: ${savedMessageId} to order`);
     }
 
-    return NextResponse.json({
-      success: true,
-      message: "✅ Test order created + Telegram notification sent. Buttons will work!",
-      orderId,
-      telegramMessageId: savedMessageId,
-      results,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        message: "✅ Test order created + Telegram notification sent. Buttons will work!",
+        orderId,
+        telegramMessageId: savedMessageId,
+        results,
+      },
+      {
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate, proxy-revalidate",
+          Pragma: "no-cache",
+          Expires: "0",
+        },
+      }
+    );
   } catch (error: any) {
     console.error("[TEST-TELEGRAM] ❌ Unexpected error:", error);
-    return NextResponse.json({ error: error.message }, { status: 500 });
+    return NextResponse.json(
+      { error: error.message },
+      {
+        status: 500,
+        headers: {
+          "Cache-Control": "no-store, no-cache, must-revalidate",
+        },
+      }
+    );
   }
 }
