@@ -1,8 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { dbConnect } from "@/lib/database";
+import { Order } from "@/models/order.model";
 import axios from "axios";
 
-// ─── Test Telegram Notification with Inline Buttons ──────────────────────────
-// GET /api/test-telegram → sends a fake order notification
+// ─── Test Telegram Notification with Working Inline Buttons ──────────────────
+// GET /api/test-telegram → creates a real pending order + sends telegram notification
 export async function GET(req: NextRequest) {
   try {
     const botToken = process.env.TELEGRAM_BOT_TOKEN;
@@ -13,10 +15,29 @@ export async function GET(req: NextRequest) {
       return NextResponse.json({ error: "Missing env vars" }, { status: 500 });
     }
 
-    const fakeOrderId = "TEST" + Date.now().toString().slice(-8);
+    // ─── Create a real pending order in DB ────────────────────────────────────
+    await dbConnect();
+    console.log("[TEST-TELEGRAM] 📝 Creating test order in DB...");
 
+    const testOrder = await Order.create({
+      costId: "test-cost-id",
+      orderDetails: "TEST ORDER — created via /api/test-telegram",
+      gameCredentials: {
+        userId: "123456789",
+        urlLink: "https://tiktok.com/@testuser",
+      },
+      orderType: "digital-service",
+      amount: "1.50",
+      status: "pending",
+      isCouponApplied: false,
+    });
+
+    const orderId = testOrder._id.toString();
+    console.log(`[TEST-TELEGRAM] ✅ Test order created — ID: ${orderId}`);
+
+    // ─── Build notification message ───────────────────────────────────────────
     const message =
-      `🧪 <b>[TEST ORDER] New Order #${fakeOrderId}</b>\n` +
+      `🧪 <b>[TEST ORDER] New Order #${orderId.slice(-6)}</b>\n` +
       `━━━━━━━━━━━━━━━━━━\n` +
       `📦 <b>Service:</b> TikTok Likes\n` +
       `🎁 <b>Package:</b> 1000 Likes — $1.50\n` +
@@ -26,21 +47,23 @@ export async function GET(req: NextRequest) {
       `👤 <b>Buyer:</b> TestUser\n` +
       `⚙️ <b>Mode:</b> digital-service\n` +
       `━━━━━━━━━━━━━━━━━━\n` +
-      `🆔 <b>Order ID:</b> <code>${fakeOrderId}</code>\n` +
-      `⏳ <b>Status:</b> Pending\n\n` +
-      `<i>⚠️ Yeh ek TEST notification hai — buttons kaam nahi karenge (fake orderId)</i>`;
+      `🆔 <b>Order ID:</b> <code>${orderId}</code>\n` +
+      `⏳ <b>Status:</b> Pending`;
 
     const inline_keyboard = [
       [
-        { text: "✅ Complete", callback_data: `complete:${fakeOrderId}` },
-        { text: "❌ Cancel",   callback_data: `cancel:${fakeOrderId}` },
+        { text: "✅ Complete", callback_data: `complete:${orderId}` },
+        { text: "❌ Cancel",   callback_data: `cancel:${orderId}` },
       ],
     ];
 
+    // ─── Send Telegram notification ───────────────────────────────────────────
     const results: any[] = [];
+    let savedMessageId: number | null = null;
+    let savedChatId: string | null = null;
 
     for (const chatId of chatIds) {
-      console.log(`[TEST-TELEGRAM] 📤 Sending test notification to chat: ${chatId}`);
+      console.log(`[TEST-TELEGRAM] 📤 Sending to chat: ${chatId}`);
       try {
         const res = await axios.post(
           `https://api.telegram.org/bot${botToken}/sendMessage`,
@@ -51,17 +74,33 @@ export async function GET(req: NextRequest) {
             reply_markup: { inline_keyboard },
           }
         );
-        console.log(`[TEST-TELEGRAM] ✅ Sent to ${chatId} — messageId: ${res.data?.result?.message_id}`);
-        results.push({ chatId, success: true, messageId: res.data?.result?.message_id });
+        const msgId = res.data?.result?.message_id;
+        console.log(`[TEST-TELEGRAM] ✅ Sent — messageId: ${msgId}`);
+        results.push({ chatId, success: true, messageId: msgId });
+
+        if (!savedMessageId && msgId) {
+          savedMessageId = msgId;
+          savedChatId = chatId;
+        }
       } catch (err: any) {
-        console.error(`[TEST-TELEGRAM] ❌ Failed to send to ${chatId}:`, err?.response?.data || err.message);
+        console.error(`[TEST-TELEGRAM] ❌ Failed for ${chatId}:`, err?.response?.data || err.message);
         results.push({ chatId, success: false, error: err?.response?.data || err.message });
       }
     }
 
+    // ─── Save messageId back to order ─────────────────────────────────────────
+    if (savedMessageId && savedChatId) {
+      testOrder.telegramMessageId = savedMessageId;
+      testOrder.telegramChatId = savedChatId;
+      await testOrder.save();
+      console.log(`[TEST-TELEGRAM] 💾 Saved messageId: ${savedMessageId} to order`);
+    }
+
     return NextResponse.json({
-      message: "Test notification sent",
-      fakeOrderId,
+      success: true,
+      message: "✅ Test order created + Telegram notification sent. Buttons will work!",
+      orderId,
+      telegramMessageId: savedMessageId,
       results,
     });
   } catch (error: any) {
