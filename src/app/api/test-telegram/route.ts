@@ -99,16 +99,30 @@ export async function GET(req: NextRequest) {
       console.log(`[TEST-TELEGRAM] 💾 Saved messageId: ${savedMessageId} to order`);
     }
 
-    // Check bot identity on Vercel
+    // Check bot identity on Vercel and auto-register webhook if not set!
     let botInfo: any = null;
     let webhookInfo: any = null;
+    let webhookStatus: string = "verified";
+    const targetWebhookUrl = "https://delykastore.com/api/webhook/telegram";
+
     try {
       const meRes = await axios.get(`https://api.telegram.org/bot${botToken}/getMe`);
       botInfo = meRes.data?.result;
       const whRes = await axios.get(`https://api.telegram.org/bot${botToken}/getWebhookInfo`);
       webhookInfo = whRes.data?.result;
+
+      if (webhookInfo?.url !== targetWebhookUrl) {
+        console.log(`[TEST-TELEGRAM] ⚡ Webhook URL was "${webhookInfo?.url}", auto-registering to "${targetWebhookUrl}"...`);
+        const setRes = await axios.post(`https://api.telegram.org/bot${botToken}/setWebhook`, {
+          url: targetWebhookUrl,
+          allowed_updates: ["message", "callback_query"],
+        });
+        webhookStatus = `Auto-registered: ${setRes.data?.description || "OK"}`;
+        webhookInfo.url = targetWebhookUrl;
+      }
     } catch (e: any) {
       botInfo = { error: e.message };
+      webhookStatus = `Error: ${e.message}`;
     }
 
     return NextResponse.json(
@@ -119,6 +133,7 @@ export async function GET(req: NextRequest) {
         telegramMessageId: savedMessageId,
         botInfo: { id: botInfo?.id, username: botInfo?.username },
         webhookUrl: webhookInfo?.url,
+        webhookStatus,
         results,
       },
       {
