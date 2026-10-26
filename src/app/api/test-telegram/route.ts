@@ -99,12 +99,26 @@ export async function GET(req: NextRequest) {
       console.log(`[TEST-TELEGRAM] 💾 Saved messageId: ${savedMessageId} to order`);
     }
 
+    // Check bot identity on Vercel
+    let botInfo: any = null;
+    let webhookInfo: any = null;
+    try {
+      const meRes = await axios.get(`https://api.telegram.org/bot${botToken}/getMe`);
+      botInfo = meRes.data?.result;
+      const whRes = await axios.get(`https://api.telegram.org/bot${botToken}/getWebhookInfo`);
+      webhookInfo = whRes.data?.result;
+    } catch (e: any) {
+      botInfo = { error: e.message };
+    }
+
     return NextResponse.json(
       {
         success: true,
         message: "✅ Test order created + Telegram notification sent. Buttons will work!",
         orderId,
         telegramMessageId: savedMessageId,
+        botInfo: { id: botInfo?.id, username: botInfo?.username },
+        webhookUrl: webhookInfo?.url,
         results,
       },
       {
