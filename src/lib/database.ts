@@ -25,21 +25,43 @@ const cached =
     promise: null,
   });
 
+const MAX_ATTEMPTS = 3;
+
+const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+const connectWithRetry = async () => {
+  let lastError: unknown;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      return await mongoose.connect(MONGODB_URI, {
+        bufferCommands: false,
+        // Each serverless instance keeps its own pool; a small cap and a short
+        // idle time keep the total under the Atlas connection limit
+        maxPoolSize: 10,
+        maxIdleTimeMS: 10000,
+        connectTimeoutMS: 10000,
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 45000,
+        tls: true,
+      });
+    } catch (error) {
+      lastError = error;
+      console.error(`MongoDB connect attempt ${attempt} failed:`, error);
+      // Drop the half-open client so the next attempt starts fresh
+      await mongoose.disconnect().catch(() => {});
+      if (attempt < MAX_ATTEMPTS) await sleep(300 * attempt);
+    }
+  }
+  throw lastError;
+};
+
 export const dbConnect = async () => {
   if (cached.conn) {
     return cached.conn;
   }
 
   if (!cached.promise) {
-    cached.promise = mongoose.connect(MONGODB_URI, {
-      bufferCommands: false,
-      // Each serverless instance keeps its own pool; a small cap keeps the
-      // total under the Atlas connection limit
-      maxPoolSize: 10,
-      serverSelectionTimeoutMS: 10000,
-      socketTimeoutMS: 45000,
-      tls: true,
-    });
+    cached.promise = connectWithRetry();
   }
 
   try {
