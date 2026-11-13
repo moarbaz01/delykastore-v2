@@ -33,6 +33,9 @@ export const dbConnect = async () => {
   if (!cached.promise) {
     cached.promise = mongoose.connect(MONGODB_URI, {
       bufferCommands: false,
+      // Each serverless instance keeps its own pool; a small cap keeps the
+      // total under the Atlas connection limit
+      maxPoolSize: 10,
       serverSelectionTimeoutMS: 10000,
       socketTimeoutMS: 45000,
       tls: true,
