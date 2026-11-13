@@ -1,5 +1,3 @@
-"use client";
-import { motion } from "framer-motion";
 import { ReactNode } from "react";
 
 interface RevealProps {
@@ -8,22 +6,21 @@ interface RevealProps {
   delay?: number;
 }
 
+// CSS-only fade so content is visible as soon as the HTML arrives, without
+// waiting for JavaScript to hydrate on slow connections
 export const Reveal = ({ children, width = "fit-content", delay = 0 }: RevealProps) => {
   return (
     <div style={{ position: "relative", width, zIndex: 1 }}>
-      <motion.div
-        variants={{
-          hidden: { opacity: 0, y: 50, scale: 0.95 },
-          visible: { opacity: 1, y: 0, scale: 1 },
+      <div
+        className="animate-fade-in"
+        style={{
+          width: "100%",
+          animationDelay: `${delay}s`,
+          animationFillMode: "backwards",
         }}
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-50px" }}
-        transition={{ duration: 0.5, delay: delay, ease: [0.25, 0.25, 0, 1] }}
-        style={{ width: "100%" }}
       >
         {children}
-      </motion.div>
+      </div>
     </div>
   );
 };

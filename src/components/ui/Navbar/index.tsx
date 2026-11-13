@@ -111,7 +111,7 @@ const Navbar = () => {
 
 
             <Link href="/" className="flex items-center">
-              <Image src="/images/logo-animated.gif" alt="DELYKASTORE" width={120} height={40} className="h-8 md:h-10 w-auto" />
+              <Image src="/images/logo-animated.webp" alt="DELYKASTORE" width={120} height={40} className="h-8 md:h-10 w-auto" />
             </Link>
 
             <div className="flex items-center gap-4">
@@ -167,7 +167,7 @@ const Navbar = () => {
               )}
 
               <Link href="/" className="flex items-center">
-                <Image src="/images/logo-animated.gif" alt="DELYKASTORE" width={140} height={48} className="h-10 w-auto" />
+                <Image src="/images/logo-animated.webp" alt="DELYKASTORE" width={140} height={48} className="h-10 w-auto" />
               </Link>
             </div>
 

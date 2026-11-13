@@ -2,9 +2,10 @@ import { dbConnect } from "@/lib/database";
 import { Event } from "@/models/event.model";
 import EventSliderClient from "./Client";
 import mongoose from "mongoose";
+import { unstable_cache } from "next/cache";
 
-export default async function EventSlider() {
-  try {
+const getEvents = unstable_cache(
+  async () => {
     await dbConnect();
 
     // Ensure Product model is registered before population
@@ -14,7 +15,7 @@ export default async function EventSlider() {
 
     const eventDocs = await Event.find().populate("productId").lean();
 
-    if (!eventDocs || eventDocs.length === 0) return null;
+    if (!eventDocs || eventDocs.length === 0) return [];
 
     // Map the events to the structure expected by the client component
     const mappedEvents = eventDocs.map((event: any) => {
@@ -32,7 +33,16 @@ export default async function EventSlider() {
       };
     });
 
-    const serializedEvents = JSON.parse(JSON.stringify(mappedEvents));
+    return JSON.parse(JSON.stringify(mappedEvents)) as any[];
+  },
+  ["home-events"],
+  { revalidate: 60, tags: ["events", "products"] },
+);
+
+export default async function EventSlider() {
+  try {
+    const serializedEvents = await getEvents();
+    if (serializedEvents.length === 0) return null;
 
     return (
       <div className="relative w-full overflow-hidden mt-4 mb-2">

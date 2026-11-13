@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { dbConnect } from "@/lib/database";
 import { Event } from "@/models/event.model";
+import { revalidateTag } from "next/cache";
 
 export async function GET() {
   try {
@@ -42,6 +43,7 @@ export async function POST(req: NextRequest) {
     }
 
     const event = await Event.create({ productId, costId });
+    revalidateTag("events");
 
     return NextResponse.json({ success: true, data: event }, { status: 201 });
   } catch (error: any) {

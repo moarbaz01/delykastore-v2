@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { dbConnect } from "@/lib/database";
 import { Event } from "@/models/event.model";
+import { revalidateTag } from "next/cache";
 
 export async function DELETE(
   req: NextRequest,
@@ -20,6 +21,7 @@ export async function DELETE(
       return NextResponse.json({ success: false, message: "Event not found" }, { status: 404 });
     }
 
+    revalidateTag("events");
     return NextResponse.json({ success: true, message: "Event deleted successfully" }, { status: 200 });
   } catch (error: any) {
     console.error("DELETE /api/events/[id] error:", error);

@@ -10,6 +10,7 @@ import mongoose from "mongoose";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { z } from "zod";
 
 // Zod schema for validation
@@ -152,6 +153,7 @@ export async function POST(req: NextRequest) {
 
     // Save product to the database
     const product = await Product.create(productData);
+    revalidateTag("products");
     return NextResponse.json(product, { status: 201 });
   } catch (error) {
     console.error("POST Error:", error);
@@ -437,6 +439,7 @@ export async function PUT(req: NextRequest) {
       new: true,
     });
 
+    revalidateTag("products");
     return NextResponse.json(updatedProduct, { status: 200 });
   } catch (error) {
     console.error("PUT Error:", error);
@@ -567,6 +570,7 @@ export async function DELETE(req: NextRequest) {
 
     // Soft delete the product
     await Product.findByIdAndDelete(id);
+    revalidateTag("products");
 
     return NextResponse.json(
       {

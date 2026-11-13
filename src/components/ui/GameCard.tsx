@@ -55,7 +55,7 @@ const GameCard = ({
             <Image
               src={image}
               alt={name}
-              priority={true}
+              sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, 33vw"
               fill
               className={`object-cover transition-transform duration-700 group-hover:scale-110 ${
                 !stock ? "grayscale" : ""

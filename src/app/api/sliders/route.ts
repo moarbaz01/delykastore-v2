@@ -3,6 +3,7 @@ import { Slider } from "@/models/slider.model";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/utils/authOptions";
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 
 export async function GET(req: Request) {
   try {
@@ -72,6 +73,7 @@ export async function POST(req: NextRequest) {
     }
 
     const slider = await Slider.create({ title, description, images });
+    revalidateTag("sliders");
     return NextResponse.json(
       {
         message: "Slider created successfully",
@@ -123,6 +125,7 @@ export async function PUT(req: NextRequest) {
         { status: 404 }
       );
     }
+    revalidateTag("sliders");
 
     return NextResponse.json({
       message: "Slider updated successfully",
@@ -166,6 +169,7 @@ export async function DELETE(req: NextRequest) {
         { status: 404 }
       );
     }
+    revalidateTag("sliders");
 
     return NextResponse.json({
       message: "Slider deleted successfully",

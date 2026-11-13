@@ -143,7 +143,7 @@ export default function ForgotPasswordPage() {
         </Link>
         <div className="absolute left-1/2 -translate-x-1/2 flex items-center justify-center">
           <Image
-            src="/images/logo-animated.gif"
+            src="/images/logo-animated.webp"
             alt="DELYKASTORE"
             width={120}
             height={50}
