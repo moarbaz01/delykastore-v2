@@ -31,6 +31,7 @@ const Footer = () => {
             <div className="flex gap-3">
               <Link
                 href="https://t.me/Delyy_kaa"
+                aria-label="Telegram"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-pink-50 border border-pink-500/20 flex items-center justify-center text-primary hover:bg-pink-100 hover:border-pink-500/40 hover:text-primary-dark transition-all duration-200 shadow-sm shadow-pink-500/10"
@@ -39,6 +40,7 @@ const Footer = () => {
               </Link>
               <Link
                 href="https://www.facebook.com/share/18FUJ1LddM/?mibextid=wwXIfr"
+                aria-label="Facebook"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="w-10 h-10 rounded-full bg-pink-50 border border-pink-500/20 flex items-center justify-center text-primary hover:bg-pink-100 hover:border-pink-500/40 hover:text-primary-dark transition-all duration-200 shadow-sm shadow-pink-500/10"

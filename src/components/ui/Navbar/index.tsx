@@ -115,7 +115,7 @@ const Navbar = () => {
             </Link>
 
             <div className="flex items-center gap-4">
-              <button onClick={() => setShow(!show)} className="text-gray-600 hover:text-primary">
+              <button onClick={() => setShow(!show)} aria-label="Search" className="text-gray-600 hover:text-primary">
                 <Search size={22} strokeWidth={2} />
               </button>
             </div>
@@ -127,6 +127,7 @@ const Navbar = () => {
             <div className="flex items-center gap-6 relative" id="nav-dropdown">
               <button 
                 onClick={() => setIsNavDropdownOpen(!isNavDropdownOpen)}
+                aria-label="Open menu"
                 className="text-gray-600 hover:text-primary p-1 transition-colors flex items-center gap-1"
               >
                 <Menu size={28} strokeWidth={2} />
@@ -176,6 +177,7 @@ const Navbar = () => {
               {/* Search Toggle */}
               <button
                 onClick={() => setShow(!show)}
+                aria-label="Search"
                 className="w-9 h-9 rounded-xl bg-pink-500/5 border border-pink-500/20 flex items-center justify-center text-primary hover:bg-pink-500/10 hover:border-pink-500/40 transition-all duration-200"
               >
                 <Search size={16} />
@@ -186,6 +188,7 @@ const Navbar = () => {
                 <div className="relative" ref={dropdownRef}>
                   <button
                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    aria-label="Account menu"
                     className="flex items-center gap-2 rounded-xl transition-all duration-200 border border-pink-500/20 px-2.5 py-1.5 bg-pink-500/5 hover:bg-pink-500/10 hover:border-pink-500/40"
                   >
                     {session.user?.image ? (
@@ -296,7 +299,7 @@ const Navbar = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="flex-1 bg-transparent text-gray-800 text-sm outline-none placeholder-gray-400"
                 />
-                <button onClick={closeSearch} className="text-gray-500 hover:text-white transition-colors">
+                <button onClick={closeSearch} aria-label="Close search" className="text-gray-500 hover:text-white transition-colors">
                   <X size={18} />
                 </button>
               </div>
