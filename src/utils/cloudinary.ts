@@ -23,6 +23,12 @@ const cloudinaryUpload = async (
       "base64"
     );
 
+    // Compress static images on upload: cap the size and let Cloudinary pick
+    // the quality. GIF/SVG are left alone so animation and vectors survive.
+    const compressible =
+      file.type.startsWith("image/") &&
+      !["image/gif", "image/svg+xml"].includes(file.type);
+
     // Upload the file to Cloudinary
     const data: UploadApiResponse | UploadApiErrorResponse = await new Promise(
       (resolve) => {
@@ -31,6 +37,12 @@ const cloudinaryUpload = async (
           {
             folder,
             resource_type: "auto",
+            ...(compressible && {
+              transformation: [
+                { width: 1600, height: 1600, crop: "limit" },
+                { quality: "auto:good" },
+              ],
+            }),
           },
           (error, result) => {
             resolve(result as UploadApiResponse | UploadApiErrorResponse);
